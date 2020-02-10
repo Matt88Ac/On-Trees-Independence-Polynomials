@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "Polynomial.h"
+#include <errno.h>
 
 int main()
 {
