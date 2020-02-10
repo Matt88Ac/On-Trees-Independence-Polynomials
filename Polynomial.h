@@ -7,6 +7,7 @@
 
 #include "Tree_G.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ using namespace std;
 class Mono
 {
 	friend ostream& operator <<(ostream&, const Mono&);
+
 public:
 	Mono(ull c = 0, int d = 0) : deg(d), coef(c) {};
 
@@ -26,9 +28,10 @@ public:
 	bool operator ==(const Mono& m) const { return ((m.deg == deg && m.coef == coef)); }
 	void operator +=(const Mono& m) { this->coef += m.coef; }
 	Mono operator+(const Mono& m) const { Mono tmp(this->coef + m.coef, deg); return tmp; }
-
 	void operator *=(const Mono& m) { this->deg += m.deg; this->coef *= m.coef; }
 	Mono operator*(const Mono& m) const { Mono tmp(this->coef*m.coef, deg + m.deg); return tmp; }
+
+	operator string() const;
 
 	bool isAddAble(const Mono& m) const { return deg == m.deg; }
 
@@ -40,13 +43,31 @@ public:
 };
 
 
+Mono::operator string() const
+{
+	if (coef == 0) { return "0"; }
+
+	if (coef == 1)
+	{
+		if (deg == 1) { return "X"; }
+		else if (deg > 1) { return (string)("X^" + to_string(deg)); }
+		return "1";
+	}
+
+	else
+	{	
+		if (deg == 1) { return (string)(to_string(coef)  + "*X"); }
+		else if (deg > 1) { return (string)(to_string(coef) + "X^" + to_string(deg)); }
+		return to_string(coef);
+	}
+
+	return "";
+}
+
 
 ostream& operator <<(ostream& os, const Mono& x)
 {
-	if (x.coef == 0)
-	{
-		os << "0"; return os;
-	}
+	if (x.coef == 0) { os << "0"; return os; }
 
 	if (x.coef == 1)
 	{
@@ -98,6 +119,8 @@ public:
 	IndeP operator*(const Mono&);
 	IndeP operator*(const IndeP&);
 
+	operator string() const;
+
 	IndeP ComputeTree(const TreeGraph&, IndeP&);
 
 	IndeP TimeSaver(const TreeGraph&);
@@ -114,6 +137,20 @@ protected:
 
 };
 
+
+IndeP::operator string() const
+{
+
+	string poly;
+	if (!size) { return "0"; }
+
+	for (int i = 0; i < (int)Holder.size() - 1; i++) { poly += (string)Holder[i] + " + "; }
+
+	poly += (string)Holder[(int)Holder.size() - 1];
+
+	return poly;
+
+}
 
 ostream& operator <<(ostream& os, const IndeP& P)
 {
@@ -132,6 +169,7 @@ ostream& operator <<(ostream& os, const IndeP& P)
 
 	os << P.Holder[P.size - 1];
 	return os;
+
 }
 
 

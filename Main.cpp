@@ -6,13 +6,14 @@
 int main()
 {
 
-	TreeGraph x(20);
+	TreeGraph x(10);
 
 	cout << x << endl;
 
 	IndeP P(x);
 
 	cout << P << endl;
+	cout << (string)P << endl;
 
 
 	system("pause");
