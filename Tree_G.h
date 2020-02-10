@@ -43,6 +43,7 @@ public:
 
 	int ind;
 	int degree;
+	coordinate Position;
 	vector<vertex> N;
 	vector<int> Nindex;
 
@@ -424,6 +425,8 @@ public:
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
 	void Draw_Graph();
+	void Draw_Graph(char const *f_name);
+
 
 protected:
 	vector<vertex> A;
@@ -448,15 +451,54 @@ void TreeGraph::Draw_Graph() {
 	random_device seed; //seed for psudo random engine 
 	mt19937 random_number_generator(seed()); //merssene twisster using the PR seed
 	uniform_int_distribution<size_t> indices(50,(this->size_v*100)-50 );
-
+	int Px, Py;
+	
 	for(int i =0;i<this->size_v;i++){
-		ImageBody.Draw_Circle(indices(random_number_generator), indices(random_number_generator), 5, CSET.Blue,"Fill");
+		Px = indices(random_number_generator);
+		Py = indices(random_number_generator);
+		ImageBody.Draw_Circle(Px,Py, 5, CSET.Color_Serial_Number[i+5],"Fill");
+		V[i].Position.x = Px;
+		V[i].Position.y = Py;
 	}
 
+	for (int i = 0; i < this->size_v; i++) {
+		for (int j = 0; j < i; j++) {
+			if (Edges[i][j] == 1) {
+				ImageBody.Draw_Line(V[i].Position.y, V[i].Position.x, V[j].Position.y, V[j].Position.x, CSET.Color_Serial_Number[i+5]);
+			}
+		}
+	}
 
 
 	ImageBody.Write_Image("Test");
 }
+void TreeGraph::Draw_Graph(char const *f_name) {
+	this->ImageBody.Load_Blank_Canvas(this->size_v * 100, this->size_v * 100, CSET.Azure);
+	random_device seed; //seed for psudo random engine 
+	mt19937 random_number_generator(seed()); //merssene twisster using the PR seed
+	uniform_int_distribution<size_t> indices(50, (this->size_v * 100) - 50);
+	int Px, Py;
+	ImageBody.Draw_Text(20, (this->size_v * 100) / 2, f_name, CSET.Black);
+	for (int i = 0; i < this->size_v; i++) {
+		Px = indices(random_number_generator);
+		Py = indices(random_number_generator);
+		ImageBody.Draw_Circle(Px, Py, 5, CSET.Color_Serial_Number[i + 5], "Fill");
+		V[i].Position.x = Px;
+		V[i].Position.y = Py;
+	}
+
+	for (int i = 0; i < this->size_v; i++) {
+		for (int j = 0; j < i; j++) {
+			if (Edges[i][j] == 1) {
+				ImageBody.Draw_Line(V[i].Position.y, V[i].Position.x, V[j].Position.y, V[j].Position.x, CSET.Color_Serial_Number[i + 5]);
+			}
+		}
+	}
+
+
+	ImageBody.Write_Image(f_name);
+}
+
 
 ostream& operator << (ostream& os, const TreeGraph& x)
 {
