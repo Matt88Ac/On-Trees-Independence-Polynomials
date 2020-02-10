@@ -1,6 +1,6 @@
 #pragma once
 
-/* To compute the independence polynomial, declare:  IndeP( intGraph_type your_Graph / TreeGraph_type your_Graph )  */
+/* To compute the independence polynomial, declare:  IndeP( TreeGraph_type your_Graph )  */
 
 
 
