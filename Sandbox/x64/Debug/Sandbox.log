@@ -1,7 +1,1 @@
-﻿  ColorCatalogSU.cpp
-c1xx : fatal error C1083: Cannot open source file: '..\..\..\Image_Handle\SIPL Core\ColorCatalogSU.cpp': No such file or directory
-  Image_h.cpp
-c1xx : fatal error C1083: Cannot open source file: '..\..\..\Image_Handle\SIPL Core\Image_h.cpp': No such file or directory
-  Main.cpp
-c:\users\tomda\desktop\עמג\on-trees-independence-polynomials\on-trees-independence-polynomials\tree_g.h(453): warning C4267: 'argument': conversion from 'size_t' to 'const int', possible loss of data
-  Generating Code...
+﻿C:\Users\tomda\Desktop\עמג\On-Trees-Independence-Polynomials\On-Trees-Independence-Polynomials\Sandbox\Sandbox.vcxproj : error MSB4025: The project file could not be loaded. Could not find file 'C:\Users\tomda\Desktop\עמג\On-Trees-Independence-Polynomials\On-Trees-Independence-Polynomials\Sandbox\Sandbox.vcxproj'.
