@@ -3,8 +3,7 @@
 #include <iostream>
 #include "Polynomial.h"
 #include <errno.h>
-//xxxxxxxxxxxxxxxxxxxx
-//mamamamamamama
+ //xx
 
 
 int main()

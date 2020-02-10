@@ -115,6 +115,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Polynomial.h" />
+    <ClInclude Include="..\Tree_G.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
