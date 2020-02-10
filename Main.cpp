@@ -3,12 +3,10 @@
 #include <iostream>
 #include "Polynomial.h"
 
-
-
 int main()
 {
 
-	TreeGraph x(7);
+	TreeGraph x(20);
 
 	cout << x << endl;
 
