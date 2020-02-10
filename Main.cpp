@@ -1,5 +1,4 @@
 /*  TEST */
-
 #include <iostream>
 #include "Polynomial.h"
 #include <errno.h>
@@ -9,7 +8,7 @@
 int main()
 {
 
-	TreeGraph x(20);
+	TreeGraph x(10);
 
 	cout << x << endl;
 
