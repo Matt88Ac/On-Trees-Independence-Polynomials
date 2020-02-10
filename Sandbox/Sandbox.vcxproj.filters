@@ -21,19 +21,19 @@
     <ClInclude Include="..\Polynomial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\Image_Header.h">
+    <ClInclude Include="..\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\stb_image.h">
+    <ClInclude Include="..\stb_image_write.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\stb_image_write.h">
+    <ClInclude Include="..\Characters.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\Characters.h">
+    <ClInclude Include="..\Color_Catalog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\Color_Catalog.h">
+    <ClInclude Include="..\Image_Header.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -41,10 +41,10 @@
     <ClCompile Include="..\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Image_Handle\SIPL Core\ColorCatalogSU.cpp">
+    <ClCompile Include="..\ColorCatalogSU.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Image_Handle\SIPL Core\Image_h.cpp">
+    <ClCompile Include="..\Image_h.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

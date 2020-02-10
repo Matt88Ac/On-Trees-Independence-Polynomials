@@ -119,17 +119,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\Characters.h" />
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\Color_Catalog.h" />
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\Image_Header.h" />
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\stb_image.h" />
-    <ClInclude Include="..\..\..\Image_Handle\SIPL Core\stb_image_write.h" />
+    <ClInclude Include="..\Characters.h" />
+    <ClInclude Include="..\Color_Catalog.h" />
+    <ClInclude Include="..\Image_Header.h" />
     <ClInclude Include="..\Polynomial.h" />
+    <ClInclude Include="..\stb_image.h" />
+    <ClInclude Include="..\stb_image_write.h" />
     <ClInclude Include="..\Tree_G.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\Image_Handle\SIPL Core\ColorCatalogSU.cpp" />
-    <ClCompile Include="..\..\..\Image_Handle\SIPL Core\Image_h.cpp" />
+    <ClCompile Include="..\ColorCatalogSU.cpp" />
+    <ClCompile Include="..\Image_h.cpp" />
     <ClCompile Include="..\Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
