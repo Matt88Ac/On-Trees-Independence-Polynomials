@@ -1,7 +1,5 @@
 
-/*
- For a Tree-Graph object, declare : TreeGraph( integer wanted-number-of-vertexes )
-*/
+/* For a Tree-Graph object, declare : TreeGraph( integer wanted-number-of-vertexes ) */
 
 
 
