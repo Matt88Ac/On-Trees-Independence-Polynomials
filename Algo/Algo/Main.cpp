@@ -1,14 +1,14 @@
 /*  TEST */
 
 #include <iostream>
-#include "TestAuto.h"
+#include "Polynomial.h"
 
 
 
 int main()
 {
 
-	TreeGraph x(18);
+	TreeGraph x(7);
 
 	cout << x << endl;
 

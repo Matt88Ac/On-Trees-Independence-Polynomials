@@ -142,7 +142,6 @@
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="TestAuto.h" />
     <ClInclude Include="Polynomial.h" />
     <ClInclude Include="Tree_G.h" />
   </ItemGroup>
