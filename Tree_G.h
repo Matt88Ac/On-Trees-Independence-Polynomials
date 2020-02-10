@@ -11,6 +11,9 @@
 #include <stdbool.h>
 #include <queue>
 #include <random>
+#include "Image_Header.h"
+#include "Color_Catalog.h"
+
 using namespace std;
 
 
@@ -420,22 +423,40 @@ public:
 
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
+	void Draw_Graph();
 
 protected:
 	vector<vertex> A;
 	vector <vertex> B;
+	
 	int size_v;
 	int size_E;
 	bool **Edges;
 	vector<vertex> V;
 	int max_deg_vrx;
 
+	Image ImageBody;
+	Color_Palette CSET;
 };
 
 
 
 
 
+void TreeGraph::Draw_Graph() {
+	this->ImageBody.Load_Blank_Canvas(this->size_v * 100, this->size_v * 100, CSET.Azure);
+	random_device seed; //seed for psudo random engine 
+	mt19937 random_number_generator(seed()); //merssene twisster using the PR seed
+	uniform_int_distribution<size_t> indices(50,(this->size_v*100)-50 );
+
+	for(int i =0;i<this->size_v;i++){
+		ImageBody.Draw_Circle(indices(random_number_generator), indices(random_number_generator), 5, CSET.Blue,"Fill");
+	}
+
+
+
+	ImageBody.Write_Image("Test");
+}
 
 ostream& operator << (ostream& os, const TreeGraph& x)
 {

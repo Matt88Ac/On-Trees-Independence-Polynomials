@@ -15,7 +15,9 @@ int main()
 	IndeP P(x);
 
 	cout << P << endl;
+	x.Draw_Graph();
 
+	system("Test.jpg");
 
 	system("pause");
 	return 0;
