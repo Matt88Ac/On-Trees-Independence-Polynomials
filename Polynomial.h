@@ -120,6 +120,8 @@ public:
 	IndeP operator*(const IndeP&);
 
 	operator string() const;
+	
+	bool isUni() const;
 
 	IndeP ComputeTree(const TreeGraph&, IndeP&);
 
@@ -135,8 +137,27 @@ protected:
 	int size;
 	bool gonna_save_some_time;
 
+
 };
 
+
+bool IndeP::isUni() const
+{
+
+	int i, length = (int)Holder.size();
+	bool flag = false;
+
+	for ( i = 0; i < length-1; i++)
+	{
+		if (Holder[i].coef > Holder[i + 1].coef && !flag) { flag = true; }
+		
+		if (Holder[i].coef < Holder[i + 1].coef && flag) { return false; }
+	
+	}
+
+	return true;
+
+}
 
 IndeP::operator string() const
 {
@@ -151,6 +172,9 @@ IndeP::operator string() const
 	return poly;
 
 }
+
+
+
 
 ostream& operator <<(ostream& os, const IndeP& P)
 {

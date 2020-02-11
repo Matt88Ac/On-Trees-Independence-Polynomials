@@ -418,6 +418,7 @@ public:
 
 	const vector<vertex>& GetV()const { return V; }
 
+
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
 
