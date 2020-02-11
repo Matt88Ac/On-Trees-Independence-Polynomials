@@ -17,6 +17,7 @@ int main()
 
 
 	cout << P << endl;
+	x.set_IPoly(P.Get_PolyString());
 	x.Draw_Graph("TEST");
 
 

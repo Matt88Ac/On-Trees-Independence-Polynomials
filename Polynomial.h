@@ -102,6 +102,7 @@ public:
 
 	IndeP TimeSaver(const TreeGraph&);
 
+	string Get_PolyString();
 
 	~IndeP() { Holder.clear(); Holder.shrink_to_fit(); size = 0; };
 
@@ -375,4 +376,22 @@ IndeP IndeP::ComputeTree(const TreeGraph& T, IndeP& curr)
 
 	return curr;
 
+}
+
+
+string IndeP::Get_PolyString() {
+	stringstream ss;
+	string via;
+
+	ss << "I(G:X)=1";
+
+/*
+	for (int i = 0; i < (int)Holder.size() - 1; i++)
+	{
+		ss << Holder[i] << " + ";
+	}
+
+	ss << Holder[size - 1];
+	*/
+	return ss.str();
 }

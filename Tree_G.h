@@ -430,7 +430,7 @@ public:
 	void Draw_Graph();
 	void Draw_Graph(char const *f_name);
 	void Draw_Graph(char const *f_name, int mod);
-
+	void set_IPoly(string Poly) { this->IPoly = Poly; }
 
 
 protected:
@@ -445,6 +445,7 @@ protected:
 
 	Image ImageBody;
 	Color_Palette CSET;
+	string IPoly;
 };
 
 
@@ -499,6 +500,8 @@ void TreeGraph::Draw_Graph(char const *f_name) {
 			}
 		}
 	}
+
+	ImageBody.Draw_Text((this->size_v * 100)-30, (this->size_v * 100) / 2, IPoly.c_str(), CSET.Black);
 
 
 	ImageBody.Write_Image(f_name);
