@@ -292,11 +292,11 @@ public:
 
 	}
 
-	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0) {};
+	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0), Edges(NULL) {};
 
 
 	// Used for Independence Polynomial computation;
-	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx) : max_deg_vrx(0)
+	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx) : max_deg_vrx(0), Edges(NULL)
 	{
 
 
