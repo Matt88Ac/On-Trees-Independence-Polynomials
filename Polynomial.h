@@ -105,7 +105,7 @@ class IndeP
 public:
 	IndeP(const TreeGraph& T) : size(0), gonna_save_some_time(false) { IndeP X;  *this = ComputeTree(T, X); }
 
-	IndeP() : size(0) {};
+	IndeP() : size(0), gonna_save_some_time(false) {};
 
 	void operator+=(const Mono&);
 	void operator+=(const IndeP&);

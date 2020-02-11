@@ -7,11 +7,16 @@
 int main()
 {
 	
-	TreeGraph x(20);
+	TreeGraph x(30);
 	
 	IndeP P(x);
 
-	static random_device sid;
+	cout << x << endl;
+
+	cout << P << endl;
+
+
+	/*static random_device sid;
 	static mt19937 rng(sid());
 
 	uniform_int_distribution<int> uid(5, 60);
@@ -27,9 +32,9 @@ int main()
 		P = IndeP(x);
 		x.~TreeGraph();
 		
-	}
+	}*/
 
-	cout << "******************" << P << "********************" << endl;
+	//cout << "******************" << P << "********************" << endl;
 
 	system("pause");
 	return 0;
