@@ -13,6 +13,9 @@
 
 
 using namespace std;
+#define ALTER 1
+#define PI 3.14159265
+
 
 
 
@@ -21,8 +24,8 @@ typedef struct pixel {
 	uint8_t r;
 	uint8_t g;
 	uint8_t b;
-	unsigned index_range;
-	unsigned analysis;
+	int index_range;
+	int analysis;
 }pixel;
 
 struct coordinate {
@@ -31,11 +34,13 @@ struct coordinate {
 };
 
 struct Point {
-	double x{ 0 }, y{ 0 },z{ 0 };
-	//int i, j;
+	double x{ 0 }, y{ 0 }, z{ 0 };
+	//x = r, y = g, z =b
 };
 
 using VectorFrame = vector<Point>;
+using PixelFrame = vector<pixel>;
+using CoordinateFrame = vector<coordinate>;
 
 class Pixel_C {
 private:
@@ -68,13 +73,13 @@ public:
 	int Downright_X, Downright_Y;
 	int Distnace_Treshold;
 
-	Blob(int const &x, int const &y, int const &Distnace_Treshold );
+	Blob(int const &x, int const &y, int const &Distnace_Treshold);
 	void Clear();
 	void SetProps(int const &x, int const &y);
 	void add(int const &px, int const &py);
 	bool Near(int const &x, int const &y);
 	float Size();
-	
+
 };
 
 
@@ -102,15 +107,15 @@ protected:
 	pixel Avrage_Sigment_Color(pixel **pix_sigment, int rows, int cols);
 	void Grayscale(int const &alter);
 	int Color_Distance(pixel const &a, pixel const &b);
-	float Color_DistanceSq(pixel const &a, pixel const &b);
+	double Color_DistanceSq(pixel const &a, pixel const &b);
 	float Color_Delta(pixel const &A, pixel const &B);
 	bool Distance_Neighbors(const float max_distance, int i, int j);
-	float Get_Angle_Between_Coordinates(int const start_x, int const start_y, int const target_x, int const target_y,const char *mode);
+	float Get_Angle_Between_Coordinates(int const start_x, int const start_y, int const target_x, int const target_y, const char *mode);
 	void LineHigh(const int start_x, const int start_y, const int target_x, const int target_y, pixel const &color);
 	void LineLow(const int start_x, const int start_y, const int target_x, const int target_y, pixel const &color);
 	void BresenhamsLine(const int start_x, const int start_y, const int target_x, const int target_y, pixel const &color);
 	void BresenhamsLine(const int start_x, const int start_y, const int target_x, const int target_y, const unsigned char color);
-	void Blob_Framing(int const &distance_treshold,pixel const &frame_color);
+	void Blob_Framing(int const &distance_treshold, pixel const &frame_color);
 	VectorFrame K_Means(const VectorFrame& data, size_t k, size_t number_of_iterations);
 
 public:
@@ -124,7 +129,7 @@ public:
 
 	pixel **Pixel_Matrix;
 	void init_pixel_matrix();
-
+	void Update_Pixel_Matrix();
 	int getWidth() const;
 	int getHeight()const;
 	void getPixelCopy(int Height, int Width, pixel &save_pixel);
@@ -143,7 +148,10 @@ public:
 	void Write_Image(const char *f_name);
 	void Color_Spec(int w, int h, char color);
 	void Color_Spec(int index, char color);
-	void Color_Spec(int index,pixel const &color);
+	void Color_Spec(int index, pixel const &color);
+	void Fill_In_Pixel_Frame(PixelFrame &frame);
+	void Connect_VectorFrame_Via_Lines(VectorFrame &frame);
+
 
 	void operator+(Image const &a);
 	void operator-(Image const &b);
@@ -164,7 +172,7 @@ public:
 
 	void Draw_Square(const int center_x, const int center_y, const int s_width, const int s_height, pixel const &color);
 	void Draw_Square(const int center_x, const int center_y, const int s_width, const int s_height, pixel const &color, const char *mode);
-	void Draw_Square(const int center_x, const int center_y, const int s_width,const int s_height, pixel const &color, const char *mode, const unsigned space);
+	void Draw_Square(const int center_x, const int center_y, const int s_width, const int s_height, pixel const &color, const char *mode, const unsigned space);
 
 	void Draw_Circle(const int center_x, const int center_y, const int c_radius, const unsigned char color);
 	void Draw_Circle(const int center_x, const int center_y, const int c_radius, pixel const &color);
@@ -190,6 +198,7 @@ public:
 	void Mark_Different_Pixels(Image &Source, const char *mode);
 	void Mark_Different_Pixels(Image &Source, int const &Color_Treshold, int const &Distnace_Treshold, pixel const &frame_color);
 	void Write_ChannelGraph();
+	double Image_Difference_Value(Image &b);
 	void Write_Channel(const char color);
 	void Shutdown_Channel(const char color);
 	void Flip180();
@@ -206,13 +215,35 @@ public:
 	void Draw_Text(const int center_y, const int center_x, const char *text);
 	void Draw_Text(const int center_y, const int center_x, const char *text, const char color);
 	void Draw_Text(const int center_y, const int center_x, const char *text, pixel const &color);
-	void Color_Flooring(const char *mode,int const &alter);
-	void Figure_Detection(int const &blob_distance_treshold, int const &color_distance_treshold,int const &Thresholding_level);
+	void Color_Flooring(const char *mode, int const &alter);
+	void Figure_Detection(int const &blob_distance_treshold, int const &color_distance_treshold, int const &Thresholding_level);
 	void Image_Segmentation(int const &k, int const &iterations, int const &alter);
-
+	pixel Dominant_Color_Via_Line(const int start_y, const int start_x, const int target_y, const int target_x);
+	PixelFrame Get_Line_Pixels(const int start_y, const int start_x, const int target_y, const int target_x);
 	void Write_Average_Color_Palette(int const &palette_size);
+	VectorFrame Get_Average_Color_Palette(int const &palette_size);
+	void Register_PixelFrame(PixelFrame const &Frame);
+	void Set_Colors_Using_Average_Palette(VectorFrame const &Average_Colors);
 	void Convert_RGB_To_LAB(int const &alter);
 	void Pixel_Griding();
+	void Image_Rebuild_With_Lines(int const &Iterations);
+	double Get_Neighbour_Mean_R(int const &i, int const &j);
+	double Get_Neighbour_Mean_G(int const &i, int const &j);
+	double Get_Neighbour_Mean_B(int const &i, int const &j);
+	double Get_Neighbour_Mean_R(int const &i, int const &j, double Kernel[3][3], double Kernel_Normal);
+	double Get_Neighbour_Mean_G(int const &i, int const &j, double Kernel[3][3], double Kernel_Normal);
+	double Get_Neighbour_Mean_B(int const &i, int const &j, double Kernel[3][3], double Kernel_Normal);
+	CoordinateFrame GetCoordinateFrame(const int start_y, const int start_x, const int target_y, const int target_x);
+	void Image_Convolution(int const &iterations, int const &alter, const char *Type);
+
+	void Image_Convolution(double Kernel[3][3], int const &iterations, int const &alter);
+
+	void Save_As_PNG(const char *name);
 };
 
 
+using ImageFrame = vector<Image>;
+
+bool operator^(CoordinateFrame A, CoordinateFrame B);
+bool operator==(pixel&a, pixel const &b);
+bool operator!=(pixel&a, pixel const &b);

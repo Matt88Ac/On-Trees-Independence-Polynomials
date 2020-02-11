@@ -11,8 +11,11 @@
 #include <stdbool.h>
 #include <queue>
 #include <random>
+#include <sstream>
 #include "Image_Header.h"
 #include "Color_Catalog.h"
+
+#define PLANER 914
 
 using namespace std;
 
@@ -426,6 +429,8 @@ public:
 
 	void Draw_Graph();
 	void Draw_Graph(char const *f_name);
+	void Draw_Graph(char const *f_name, int mod);
+
 
 
 protected:
@@ -498,6 +503,104 @@ void TreeGraph::Draw_Graph(char const *f_name) {
 
 	ImageBody.Write_Image(f_name);
 }
+void TreeGraph::Draw_Graph(char const *f_name,int mod) {
+	this->ImageBody.Load_Blank_Canvas(this->size_v * 100, this->size_v * 100, CSET.Azure);
+	random_device seed; //seed for psudo random engine 
+	mt19937 random_number_generator(seed()); //merssene twisster using the PR seed
+	uniform_int_distribution<size_t> indices(50, (this->size_v * 100) - 50);
+	stringstream ss;
+	string via;
+	int Px, Py,planer_score=0,iterdebug=0;
+	bool set = false;
+	ImageBody.Draw_Text(20, (this->size_v * 100) / 2, f_name, CSET.Black);
+	for (int i = 0; i < this->size_v; i++) {
+		Px = indices(random_number_generator);
+		Py = indices(random_number_generator);
+		V[i].Position.x = Px;
+		V[i].Position.y = Py;
+	}
+
+	while (true) {
+		for (int i = 0; i < this->size_v; i++) {
+			for (int j = 0; j < i; j++) {
+				if (Edges[i][j] == 1) {
+					PixelFrame Path = ImageBody.Get_Line_Pixels(V[i].Position.y, V[i].Position.x, V[j].Position.y, V[j].Position.x);
+					for (int k = 0; k < Path.size(); k++) {
+						if (k >5 && Path[k].r != CSET.Azure.r && Path[k].g != CSET.Azure.g &&Path[k].b != CSET.Azure.b) {
+							V[j].Position.x = indices(random_number_generator);
+							V[j].Position.y = indices(random_number_generator);
+							set = true;
+							break;
+						}
+					}
+					if (set == true) {
+						break;
+					}
+					else {
+						ImageBody.Draw_Line(V[i].Position.y, V[i].Position.x, V[j].Position.y, V[j].Position.x, CSET.Color_Serial_Number[i + 5]);
+						ImageBody.Update_Pixel_Matrix();
+					}
+					
+					Path.clear();
+
+				}
+			}
+			if (set == true) {
+				break;
+			}
+		}
+		if (set == true) {
+			set = false;
+
+
+		/*	ss << iterdebug;
+			via = ss.str();
+			ImageBody.Write_Image(via.c_str());
+			ss.str(string());
+			iterdebug++;*/
+
+			if (this->ImageBody.Pixel_Matrix == nullptr) {
+				ImageBody.init_pixel_matrix();
+			}
+			for (int i = 0; i < this->ImageBody.getHeight(); i++) {
+				for (int j = 0; j < this->ImageBody.getWidth(); j++) {
+					ImageBody.Color_Spec(ImageBody.Pixel_Matrix[i][j].index_range, CSET.Azure);
+					ImageBody.Pixel_Matrix[i][j].r = CSET.Azure.r;
+					ImageBody.Pixel_Matrix[i][j].g = CSET.Azure.g;
+					ImageBody.Pixel_Matrix[i][j].b = CSET.Azure.b;
+
+				}
+			}
+			planer_score = 0;
+		}
+		else {
+			planer_score++;
+			if (planer_score == size_v) {
+				break;
+			}
+		}
+	}
+
+
+
+
+
+	for (int i = 0; i < this->size_v; i++) {
+		ImageBody.Draw_Circle(V[i].Position.x, V[i].Position.y, 5, CSET.Color_Serial_Number[i + 5], "Fill");
+
+	}
+	for (int i = 0; i < this->size_v; i++) {
+		for (int j = 0; j < i; j++) {
+			if (Edges[i][j] == 1) {
+				ImageBody.Draw_Line(V[i].Position.y, V[i].Position.x, V[j].Position.y, V[j].Position.x, CSET.Color_Serial_Number[i + 5]);
+			}
+		}
+	}
+
+
+	ImageBody.Write_Image(f_name);
+}
+
 
 
 ostream& operator << (ostream& os, const TreeGraph& x)

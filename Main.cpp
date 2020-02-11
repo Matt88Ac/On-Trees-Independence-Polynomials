@@ -9,7 +9,7 @@
 int main()
 {
 
-	TreeGraph x(20);
+	TreeGraph x(10);
 
 	cout << x << endl;
 
@@ -17,22 +17,22 @@ int main()
 
 
 	cout << P << endl;
-	x.Draw_Graph();
+	x.Draw_Graph("TEST");
 
 
-	for (int i = 0; i < 10; i++) {
-		stringstream ss;
-		string via;
-		TreeGraph temp(5+i);
-		ss << i;
-		via = ss.str();
+	//for (int i = 0; i < 10; i++) {
+	//	stringstream ss;
+	//	string via;
+	//	TreeGraph temp(5+i);
+	//	ss << i;
+	//	via = ss.str();
 
-		temp.Draw_Graph(via.c_str());
-	}
+	//	temp.Draw_Graph(via.c_str());
+	//}
 
 
 
-	system("Test.jpg");
+	system("TEST.jpg");
 
 	system("pause");
 	return 0;
