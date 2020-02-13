@@ -57,49 +57,52 @@ class TreeGraph
 public:
 
 	// Tree Generator:
-	TreeGraph(int size)
+	
+	TreeGraph(int size) : max_deg_vrx(0), size_v(size), size_E(size-1)
 	{
 		int no_of_nil = size;
 		int no_of_e = 0;
 
+		int much_left = 0, i, sA = 0, sB = 0, j = 0;
+		static random_device sid;
+		static mt19937 rng(sid());
+		Edges = (bool**)malloc(sizeof(bool*) * size);
+		
+		for (i = 0; i < size; i++) { Edges[i] = (bool*)calloc(size, sizeof(bool)); }
+
+		uniform_int_distribution<int> uid(1, size - 1);
+
 		while (no_of_nil != 1 && (no_of_e != size - 1))
-		{
-
-			int much_left = 0, i, sA = 0, sB = 0, j;
-			static random_device sid;
-			static mt19937 rng(sid());
-
-			uniform_int_distribution<int> uid(1, size - 1);
-
+		{	
+			int max = 0;
+			
 			sA = uid(rng);
 			sB = size - sA;
 
-			size_E = size - 1;
-			size_v = size;
-			Edges = new bool*[size];
+			vector<vertex> tmpA, tmpB, tmpV;
 
 			for (i = 0; i < sA; i++)
 			{
-				V.push_back(vertex(i, 0));
-				Edges[i] = (bool*)calloc(size, sizeof(bool));
-				A.push_back(V[i]);
+				tmpV.push_back(vertex(i, 0));
+				tmpA.push_back(tmpV[i]);
 				j = i;
 
 			}
 
+			A = tmpA;
+
 			j++;
 			for (i = 0; i < sB; i++)
 			{
-				V.push_back(vertex(j, 0));
-				Edges[j] = (bool*)calloc(size, sizeof(bool));
-				B.push_back(V[j]);
+				tmpV.push_back(vertex(j, 0));
+				tmpB.push_back(tmpV[j]);
 				j++;
 			}
 
-			j = 0;
+			B = tmpB;
+			V = tmpV;
 
-			max_deg_vrx = 0;
-			int max = 0;
+			j = 0;
 
 			much_left = size_E;
 
@@ -176,9 +179,6 @@ public:
 
 
 				}
-
-
-
 
 
 			}
@@ -270,16 +270,10 @@ public:
 			{
 				(*this).~TreeGraph();
 				this->~TreeGraph();
-				
-				for (i = 0; i < size; i++)
-				{
-					delete Edges[i];
-				}
+		
+				for (i = 0; i < size; i++) { for ( j = 0; j < size; j++) { Edges[i][j] = false; } }
 
-				delete Edges;
-
-				no_of_e = 0;
-				no_of_nil = size;
+				no_of_e = 0;  no_of_nil = size;				
 
 			}
 
@@ -292,11 +286,11 @@ public:
 
 	}
 
-	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0) {};
+	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0), Edges(NULL) {};
 
 
 	// Used for Independence Polynomial computation;
-	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx) : max_deg_vrx(0)
+	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx) : max_deg_vrx(0), Edges(NULL)
 	{
 
 
@@ -343,7 +337,7 @@ public:
 
 		}
 
-
+		
 
 		//T-N[x], xEV
 		else
@@ -418,6 +412,7 @@ public:
 
 	const vector<vertex>& GetV()const { return V; }
 
+
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
 
@@ -475,12 +470,9 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 {
 	queue<vertex> Queue;
-	int *color;
-
-	color = (int*)calloc(size_v, 4); /* white = 0,
-											grey = 1,
-												black = 2 */
-	color[0] = 1;
+	int *color = (int*)calloc(size_v, 4);/* white = 0,	grey = 1,  black = 2 */
+	color[0]++;
+	
 	Queue.push(V[0]);
 
 	while (!Queue.empty())
@@ -505,6 +497,6 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 
 	}
 
-	delete color;
+	free(color);
 
 }

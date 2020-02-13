@@ -7,6 +7,7 @@
 
 #include "Tree_G.h"
 #include <iostream>
+#include <string>
 
 using namespace std;
 
@@ -18,6 +19,7 @@ using namespace std;
 class Mono
 {
 	friend ostream& operator <<(ostream&, const Mono&);
+
 public:
 	Mono(ull c = 0, int d = 0) : deg(d), coef(c) {};
 
@@ -26,9 +28,10 @@ public:
 	bool operator ==(const Mono& m) const { return ((m.deg == deg && m.coef == coef)); }
 	void operator +=(const Mono& m) { this->coef += m.coef; }
 	Mono operator+(const Mono& m) const { Mono tmp(this->coef + m.coef, deg); return tmp; }
-
 	void operator *=(const Mono& m) { this->deg += m.deg; this->coef *= m.coef; }
 	Mono operator*(const Mono& m) const { Mono tmp(this->coef*m.coef, deg + m.deg); return tmp; }
+
+	operator string() const;
 
 	bool isAddAble(const Mono& m) const { return deg == m.deg; }
 
@@ -40,13 +43,31 @@ public:
 };
 
 
+Mono::operator string() const
+{
+	if (coef == 0) { return "0"; }
+
+	if (coef == 1)
+	{
+		if (deg == 1) { return "X"; }
+		else if (deg > 1) { return (string)("X^" + to_string(deg)); }
+		return "1";
+	}
+
+	else
+	{	
+		if (deg == 1) { return (string)(to_string(coef)  + "*X"); }
+		else if (deg > 1) { return (string)(to_string(coef) + "X^" + to_string(deg)); }
+		return to_string(coef);
+	}
+
+	return "";
+}
+
 
 ostream& operator <<(ostream& os, const Mono& x)
 {
-	if (x.coef == 0)
-	{
-		os << "0"; return os;
-	}
+	if (x.coef == 0) { os << "0"; return os; }
 
 	if (x.coef == 1)
 	{
@@ -84,7 +105,7 @@ class IndeP
 public:
 	IndeP(const TreeGraph& T) : size(0), gonna_save_some_time(false) { IndeP X;  *this = ComputeTree(T, X); }
 
-	IndeP() : size(0) {};
+	IndeP() : size(0), gonna_save_some_time(false) {};
 
 	void operator+=(const Mono&);
 	void operator+=(const IndeP&);
@@ -97,6 +118,10 @@ public:
 
 	IndeP operator*(const Mono&);
 	IndeP operator*(const IndeP&);
+
+	operator string() const;
+	
+	bool isUni() const;
 
 	IndeP ComputeTree(const TreeGraph&, IndeP&);
 
@@ -112,7 +137,47 @@ protected:
 	int size;
 	bool gonna_save_some_time;
 
+
 };
+
+
+bool IndeP::isUni() const
+{
+
+	int i, length = (int)Holder.size();
+	bool flag = false;
+
+	for ( i = 0; i < length-1; i++)
+	{
+		int p = i + 1;
+		if (Holder[i].coef > Holder[p].coef && !flag) { flag = true; }
+		
+		if (Holder[i].coef < Holder[p].coef && flag) { return false; }
+	
+	}
+
+	return true;
+
+}
+
+
+
+
+IndeP::operator string() const
+{
+
+	string poly;
+	if (!size) { return "0"; }
+
+	for (int i = 0; i < (int)Holder.size() - 1; i++) { poly += (string)Holder[i] + " + "; }
+
+	poly += (string)Holder[(int)Holder.size() - 1];
+
+	return poly;
+
+}
+
+
 
 
 ostream& operator <<(ostream& os, const IndeP& P)
@@ -130,8 +195,10 @@ ostream& operator <<(ostream& os, const IndeP& P)
 		os << P.Holder[i] << " + ";
 	}
 
-	os << P.Holder[P.size - 1];
+	int ll = P.size - 1;
+	os << P.Holder[ll];
 	return os;
+
 }
 
 
@@ -161,7 +228,8 @@ void IndeP::operator+=(const Mono& m)
 
 	for (int j = 0; j < (int)Holder.size() - 1; j++)
 	{
-		if (Holder[j] >= Holder[j + 1]) { swap(Holder[j], Holder[j + 1]); }
+		int p = j + 1;
+		if (Holder[j] >= Holder[p]) { swap(Holder[j], Holder[p]); }
 	}
 
 

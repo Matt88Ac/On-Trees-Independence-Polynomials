@@ -3,14 +3,15 @@
 #include <iostream>
 #include "Polynomial.h"
 
+
 int main()
 {
-
+	
 	TreeGraph x(20);
+	
+	IndeP P(x);
 
 	cout << x << endl;
-
-	IndeP P(x);
 
 	cout << P << endl;
 
