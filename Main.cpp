@@ -7,14 +7,18 @@
 int main()
 {
 	
-	TreeGraph x(20);
-	
-	IndeP P(x);
+	TreeGraph x(10);
+	TreeGraph y(10);
 
-	cout << x << endl;
+	cout << x << endl << endl;
 
-	cout << P << endl;
+	cout << y << endl;
 
+	bool bla = x.Are_Isomorphic(y);
+
+	cout << bla << endl;
+
+	if (bla) { IndeP P(x); cout << P << endl; }
 
 	system("pause");
 	return 0;

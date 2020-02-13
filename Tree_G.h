@@ -410,8 +410,9 @@ public:
 
 	bool ** GetMatrix() const { return Edges; }
 
-	const vector<vertex>& GetV()const { return V; }
+	const vector<vertex>& GetV() const { return V; }
 
+	bool Are_Isomorphic(const TreeGraph&)const;
 
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
@@ -466,7 +467,6 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 
 }
 
-
 void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 {
 	queue<vertex> Queue;
@@ -499,4 +499,27 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 
 	free(color);
 
+}
+
+bool TreeGraph::Are_Isomorphic(const TreeGraph& T) const
+{
+	if (T.getsize()!=size_v) { return false; }
+
+	vector<int> deg_arr_given, deg_arr_T;
+
+	for (int i = 0; i < (int)T.V.size(); i++)
+	{
+		deg_arr_given.push_back(V[i].degree);
+
+		deg_arr_T.push_back(T.V[i].degree);
+	}
+
+	sort(deg_arr_given.begin(), deg_arr_given.end());
+	sort(deg_arr_T.begin(), deg_arr_T.end());
+
+	for (int i = 0; i < (int)deg_arr_given.size(); i++) { if (deg_arr_given[i] != deg_arr_T[i]) { return false; } }
+
+	deg_arr_given.clear(); deg_arr_T.clear(); deg_arr_T.shrink_to_fit(); deg_arr_given.shrink_to_fit();
+
+	return true;
 }
