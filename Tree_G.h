@@ -471,7 +471,7 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 {
 	queue<vertex> Queue;
 	int *color = (int*)calloc(size_v, 4);/* white = 0,	grey = 1,  black = 2 */
-	color[0]++;
+	color[number_of_edges]++;
 	
 	Queue.push(V[0]);
 
