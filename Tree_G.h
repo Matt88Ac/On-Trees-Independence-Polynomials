@@ -57,7 +57,8 @@ class TreeGraph
 public:
 
 	// Tree Generator:
-	TreeGraph(int size) : max_deg_vrx(0)
+	
+	TreeGraph(int size) : max_deg_vrx(0), size_v(size), size_E(size-1)
 	{
 		int no_of_nil = size;
 		int no_of_e = 0;
@@ -78,9 +79,6 @@ public:
 			sA = uid(rng);
 			sB = size - sA;
 
-			size_E = size - 1;
-			size_v = size;
-			
 			vector<vertex> tmpA, tmpB, tmpV;
 
 			for (i = 0; i < sA; i++)
@@ -472,12 +470,9 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 {
 	queue<vertex> Queue;
-	int *color;
-
-	color = (int*)calloc(size_v, 4); /* white = 0,
-											grey = 1,
-												black = 2 */
-	color[0] = 1;
+	int *color = (int*)calloc(size_v, 4);/* white = 0,	grey = 1,  black = 2 */
+	color[0]++;
+	
 	Queue.push(V[0]);
 
 	while (!Queue.empty())

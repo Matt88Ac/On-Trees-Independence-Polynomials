@@ -149,9 +149,10 @@ bool IndeP::isUni() const
 
 	for ( i = 0; i < length-1; i++)
 	{
-		if (Holder[i].coef > Holder[i + 1].coef && !flag) { flag = true; }
+		int p = i + 1;
+		if (Holder[i].coef > Holder[p].coef && !flag) { flag = true; }
 		
-		if (Holder[i].coef < Holder[i + 1].coef && flag) { return false; }
+		if (Holder[i].coef < Holder[p].coef && flag) { return false; }
 	
 	}
 
@@ -194,7 +195,8 @@ ostream& operator <<(ostream& os, const IndeP& P)
 		os << P.Holder[i] << " + ";
 	}
 
-	os << P.Holder[P.size - 1];
+	int ll = P.size - 1;
+	os << P.Holder[ll];
 	return os;
 
 }
@@ -226,7 +228,8 @@ void IndeP::operator+=(const Mono& m)
 
 	for (int j = 0; j < (int)Holder.size() - 1; j++)
 	{
-		if (Holder[j] >= Holder[j + 1]) { swap(Holder[j], Holder[j + 1]); }
+		int p = j + 1;
+		if (Holder[j] >= Holder[p]) { swap(Holder[j], Holder[p]); }
 	}
 
 
