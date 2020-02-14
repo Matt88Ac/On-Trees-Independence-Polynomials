@@ -10,15 +10,19 @@ int main()
 	TreeGraph x(10);
 	TreeGraph y(10);
 
-	cout << x << endl << endl;
+	IndeP Px(x);
+	IndeP Py(y);
 
-	cout << y << endl;
+	cout << x << endl;
 
-	bool bla = x.Are_Isomorphic(y);
+		cout << y << endl;
+	
+		cout << (x.Are_Isomorphic(y) ? "They are isomorphic." : "They aren't isomorphic.") << endl << endl;
 
-	cout << bla << endl;
+	cout << Px << endl << endl;
 
-	if (bla) { IndeP P(x); cout << P << endl; }
+	cout << Py << endl;
+	
 
 	system("pause");
 	return 0;
