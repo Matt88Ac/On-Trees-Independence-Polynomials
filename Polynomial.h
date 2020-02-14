@@ -98,10 +98,12 @@ void swap(Mono& a, Mono&b)
 
 
 
-// Class pupose is holding the Independence Polynomial of the given graph.
+// Class purpose is holding the Independence Polynomial of the given graph.
 class IndeP
 {
 	friend ostream& operator <<(ostream&, const IndeP&);
+	friend void operator <<(IndeP& dest, const IndeP& source) { dest.~IndeP(); dest.Holder = source.Holder; dest.size = source.size; }
+
 public:
 	IndeP(const TreeGraph& T) : size(0), gonna_save_some_time(false) { IndeP X;  *this = ComputeTree(T, X); }
 
@@ -128,7 +130,7 @@ public:
 	IndeP TimeSaver(const TreeGraph&);
 
 
-	~IndeP() { Holder.clear(); Holder.shrink_to_fit(); size = 0; };
+	~IndeP() { Holder.clear(); Holder.shrink_to_fit(); size = 0; gonna_save_some_time = false; };
 
 
 protected:
@@ -200,7 +202,6 @@ ostream& operator <<(ostream& os, const IndeP& P)
 	return os;
 
 }
-
 
 
 

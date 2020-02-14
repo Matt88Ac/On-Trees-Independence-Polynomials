@@ -8,6 +8,7 @@ int main()
 {
 	
 	TreeGraph x(10);
+	
 	TreeGraph y(10);
 
 	IndeP Px(x);
@@ -15,9 +16,9 @@ int main()
 
 	cout << x << endl;
 
-		cout << y << endl;
+	cout << y << endl;
 	
-		cout << (x.Are_Isomorphic(y) ? "They are isomorphic." : "They aren't isomorphic.") << endl << endl;
+	cout << (x.Are_Isomorphic(y) ? "They are isomorphic." : "They aren't isomorphic.") << endl << endl;
 
 	cout << Px << endl << endl;
 

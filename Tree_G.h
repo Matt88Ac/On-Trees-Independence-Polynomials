@@ -467,6 +467,7 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 
 }
 
+
 void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 {
 	queue<vertex> Queue;
@@ -500,6 +501,7 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 	free(color);
 
 }
+
 
 bool TreeGraph::Are_Isomorphic(const TreeGraph& T) const
 {
