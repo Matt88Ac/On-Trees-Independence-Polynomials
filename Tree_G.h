@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <stdbool.h>
 #include <queue>
+#include <chrono>
+#include <thread>
 #include <random>
 using namespace std;
 
@@ -70,20 +72,20 @@ public:
 		
 		for (i = 0; i < size; i++) { Edges[i] = (bool*)calloc(size, sizeof(bool)); }
 
-		uniform_int_distribution<int> uid(1, size - 1);
+		uniform_int_distribution<int> uid(1, size - 1); // Random selection of a number, inside the given interval
 
 		while (no_of_nil != 1 && (no_of_e != size - 1))
 		{	
 			int max = 0;
 			
-			sA = uid(rng);
+			sA = uid(rng); // sizing A randomly, between 1 and size-1
 			sB = size - sA;
 
 			vector<vertex> tmpA, tmpB, tmpV;
 
 			for (i = 0; i < sA; i++)
 			{
-				tmpV.push_back(vertex(i, 0));
+				tmpV.push_back(vertex(i, 0)); // creating vertexes for the graph
 				tmpA.push_back(tmpV[i]);
 				j = i;
 
@@ -137,8 +139,8 @@ public:
 				}
 
 				for (i; much_left && i < sA; i++)
-				{
-					uniform_int_distribution<int> nei(0, sB - 1);
+				{ 
+					uniform_int_distribution<int> nei(0, sB - 1); // random selection of a vertex from B
 					int x = nei(rng);
 
 					if (Edges[A[i].ind][B[x].ind]) { i--; continue; }

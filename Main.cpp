@@ -7,9 +7,29 @@
 int main()
 {
 	
-	TreeGraph x(10);
+	TreeGraph x(6);
 	
-	TreeGraph y(10);
+	
+	static random_device sid;
+	static mt19937 rng(sid());
+	uniform_int_distribution<int> uid(4, 20);
+
+
+	IndeP P(x);
+
+	while (P.isUni())
+	{
+		cout << (string)P << endl << endl;
+
+		this_thread::sleep_for(chrono::seconds(1));
+		
+		P = IndeP(TreeGraph(uid(rng)));
+	}
+
+
+	cout << "****************************************" << P;
+
+	/*TreeGraph y(6);
 
 	IndeP Px(x);
 	IndeP Py(y);
@@ -22,7 +42,7 @@ int main()
 
 	cout << Px << endl << endl;
 
-	cout << Py << endl;
+	cout << Py << endl;*/
 	
 
 	system("pause");
