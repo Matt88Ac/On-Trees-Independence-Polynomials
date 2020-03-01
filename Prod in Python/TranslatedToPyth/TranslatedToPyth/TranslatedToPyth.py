@@ -31,7 +31,23 @@ class Tree():
     size_of_v = 0
     size_of_e = 0
     V = []
+    E =[[]]
+
+    def __init__(self, size):
+        self.size_of_v = size
+        self.size_of_e = size-1
+
+        for i in range(0,size):
+            self.V.append(Vertex(i,0))
+
+        size_A = random(1,size-1)
+        size_B = size - size_A
 
 
-   def __init__(self, size):
-       self.
+
+
+      
+
+
+
+
