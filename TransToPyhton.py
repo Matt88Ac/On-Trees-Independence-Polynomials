@@ -1,19 +1,23 @@
+# -*- coding: utf-8 -*-
+
 
 import random
+import numpy as np
 
 
-class Vertex():
+
+class Vertex() :
     ind = 0
-    neighbors =[]
+    neighbors = []
     degree = 0
 
-    def __init__(self, index=0, deg = 0):
+    def __init__(self, index=0, deg=0):
         self.ind = index
         self.degree = deg
-  
-    def AddNei(self,Nindex):
-        self.neighbors.append(Nindex) 
-        self.degree+=1
+
+    def AddNei (self, nindex):
+        self.neighbors.append(nindex)
+        self.degree += 1
 
     def GetDegree(self):
         return self.degree
@@ -75,7 +79,7 @@ class Tree():
                 if A_index == size_A:
                     A_index = 0
 
-                x = random.randint(size_A,size-1); # x is an index for side B.
+                x = random.randint(size_A,size-1) # x is an index for side B.
 
                 if self.E[A_index][x] == True:
                     continue
@@ -100,6 +104,8 @@ class Tree():
 
 
       
+
+
 
 
 
