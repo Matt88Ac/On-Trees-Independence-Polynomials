@@ -40,8 +40,17 @@ class Tree():
         for i in range(0,size):
             self.V.append(Vertex(i,0))
 
-        size_A = random(1,size-1)
+        size_A = random.randint(1,size-1)
         size_B = size - size_A
+
+
+        if size_A >= size_B:
+
+
+
+
+
+
 
 
 
