@@ -52,6 +52,8 @@ public class Polynomial
 	
 	public int Getlength() { return this.Poly.size(); }
 	
+	//----------------------------------------------------------------------------------
+	
 	public void addMono(Monomial x)
 	{
 		if(this.Poly.size()==0) { this.Poly.add(x); }
@@ -69,14 +71,61 @@ public class Polynomial
 		
 	}
 	
+	//------------------------------------------------------------------------------
+	
 	public void addPoly(Polynomial P) 
 	{
 		for(int i=0; i<P.Getlength(); i++) { this.addMono(P.Poly.get(i)); }
 		
 	}
 	
+	//-----------------------------------------------------------------
 	
+	public void mulMono(Monomial x)
+	{
+		for(int i=0; i<this.Poly.size(); i++)
+		{
+			this.Poly.get(i).multi(x);
+		}
+	}
 	
+	//-------------------------------------------------------
+	
+	public Polynomial mulMono_to_ret(Monomial x)
+	{
+		Polynomial tmp = new Polynomial();
+		
+		tmp.Poly = this.Poly;
+		
+		for(int i=0; i<tmp.Getlength(); i++)
+		{
+			tmp.Poly.get(i).multi(x);
+		}
+		
+		return tmp;
+	}
+	
+	// ----------------------------------------
+	
+	public void mulPoly(Polynomial P)
+	{
+		Polynomial tmp = new Polynomial();
+		
+		for(int i=0; i<P.Getlength(); i++)
+		{
+			tmp.addPoly(this.mulMono_to_ret(P.Poly.get(i)));
+		}
+		
+		this.Poly = tmp.Poly;
+	
+	}
+	
+
+
+
+
+
+
 }
 
 
