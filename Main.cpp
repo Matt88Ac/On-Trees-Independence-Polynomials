@@ -7,10 +7,12 @@
 int main()
 {
 	
-	TreeGraph x(6);
+
+
+	TreeGraph x(10);
 	
 	
-	static random_device sid;
+	/*static random_device sid;
 	static mt19937 rng(sid());
 	uniform_int_distribution<int> uid(4, 20);
 
@@ -27,9 +29,9 @@ int main()
 	}
 
 
-	cout << "****************************************" << P;
+	cout << "****************************************" << P;*/
 
-	/*TreeGraph y(6);
+	TreeGraph y(10);
 
 	IndeP Px(x);
 	IndeP Py(y);
@@ -42,7 +44,7 @@ int main()
 
 	cout << Px << endl << endl;
 
-	cout << Py << endl;*/
+	cout << Py << endl << endl;
 	
 
 	system("pause");

@@ -270,8 +270,15 @@ public:
 
 			if (no_of_nil != 1 || no_of_e != (size - 1))
 			{
-				(*this).~TreeGraph();
-				this->~TreeGraph();
+				V.clear();
+				V.shrink_to_fit();
+
+				A.clear();
+				A.shrink_to_fit();
+
+				B.clear();
+				B.shrink_to_fit();
+
 		
 				for (i = 0; i < size; i++) { for ( j = 0; j < size; j++) { Edges[i][j] = false; } }
 
