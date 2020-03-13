@@ -1,7 +1,3 @@
-import java.io.*;
-import java.util.*;
-import java.lang.Math.*;
-
 @SuppressWarnings("unused")
 
 public class Main {
@@ -10,7 +6,7 @@ public class Main {
     {
         TreeGraphs T = new TreeGraphs(9);
 
-
+        IndependencePolynomial P = new IndependencePolynomial(T);
     }
 
 }

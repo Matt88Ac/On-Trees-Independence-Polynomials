@@ -17,7 +17,7 @@ public class Vertex {
     private int degree;
     private ArrayList<Integer> nei_index;
 
-    public Vertex(int ind, int deg) { this.index = ind; this.degree=deg;  nei_index = new ArrayList<Integer>(); }
+    public Vertex(int ind, int deg) { this.index = ind; this.degree=deg;  nei_index = new ArrayList<>(); }
 
     public void AddNeigh(int ind) { this.nei_index.add(ind); this.degree++; }
     public void RemoveNeigh(int which_one) { this.nei_index.remove(which_one); this.degree--; }

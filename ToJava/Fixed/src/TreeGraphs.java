@@ -183,7 +183,7 @@ public class TreeGraphs {
         if(x_or_nx)
         {
             newT.size_v = this.size_v-1;
-            newT.size_e = this.size_e -1;
+            newT.size_e = this.size_e;
 
             newT.V = this.GetV();
 
@@ -209,8 +209,7 @@ public class TreeGraphs {
 
         else
         {
-
-
+            newT.size_v = this.size_v - 1 - vertex_to_remove.GetDeg();
 
 
 
