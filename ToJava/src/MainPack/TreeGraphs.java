@@ -13,7 +13,7 @@ public class TreeGraphs {
 	private boolean[][] E; // The edges themselves.
 	private Vertex max_deg_vrx; // One of the vertexes with the greatest degree.
 	
-	TreeGraphs(int size)
+	public TreeGraphs(int size)
 	{
 		RandomInt rand = new RandomInt();
 		int much_left;
@@ -162,7 +162,7 @@ public class TreeGraphs {
 	}
 	
 	
-	TreeGraphs()
+	public TreeGraphs()
 	{
 		size_v=0;
 		size_e = 0;
@@ -260,4 +260,6 @@ public class TreeGraphs {
 		return true;
 		
 	}
+
+
 }

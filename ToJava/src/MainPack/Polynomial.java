@@ -23,10 +23,7 @@ class Monomial
 
 public class Polynomial
 {
-	Polynomial()
-	{
-		
-	}
+	Polynomial() { this.Poly = new ArrayList<Monomial>(); }
 	
 	
 	
