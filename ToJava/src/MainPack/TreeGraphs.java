@@ -217,9 +217,6 @@ public class TreeGraphs {
 			
 			
 			
-			if(max < newT.V.get(i).GetDeg()) { max = newT.V.get(i).GetDeg();
-			newT.max_deg_vrx = newT.V.get(i);
-			}
 		}
 		
 		
