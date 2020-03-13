@@ -214,7 +214,6 @@ public class TreeGraphs {
 
 
 
-
         }
 
 
@@ -259,5 +258,6 @@ public class TreeGraphs {
 
     }
 
+    public boolean isKn() {  return (this.size_e == this.size_v*(this.size_v-1)/2); }
 
 }
