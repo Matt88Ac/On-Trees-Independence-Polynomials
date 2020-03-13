@@ -268,17 +268,23 @@ public:
 
 			if (no_of_nil != 1 || no_of_e != (size - 1))
 			{
-				(*this).~TreeGraph();
-				this->~TreeGraph();
-		
-				for (i = 0; i < size; i++) { for ( j = 0; j < size; j++) { Edges[i][j] = false; } }
+				V.clear();
+				V.shrink_to_fit();
 
-				no_of_e = 0;  no_of_nil = size;				
+				A.clear();
+				A.shrink_to_fit();
+
+				B.clear();
+				B.shrink_to_fit();
+
+
+				for (i = 0; i < size; i++) { for (j = 0; j < size; j++) { Edges[i][j] = false; } }
+
+				no_of_e = 0;  no_of_nil = size;
 
 			}
 
 			else { return; }
-
 		}
 
 

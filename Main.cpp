@@ -7,7 +7,7 @@
 int main()
 {
 	
-	TreeGraph x(20);
+	TreeGraph x(10);
 	
 	IndeP P(x);
 
