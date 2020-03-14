@@ -58,7 +58,7 @@ public:
 
 	// Tree Generator:
 	
-	TreeGraph(int size) : max_deg_vrx(0), size_v(size), size_E(size-1)
+	TreeGraph(int size) : max_deg_vrx(0), size_v(size), size_E(size-1), degs_arr("[ ")
 	{
 		int no_of_nil = size;
 		int no_of_e = 0;
@@ -284,7 +284,28 @@ public:
 
 			}
 
-			else { return; }
+			else {
+				
+				vector<int> deg_arr_given;
+
+				for (int i = 0; i < (int)V.size(); i++) { deg_arr_given.push_back(V[i].degree); }
+
+				sort(deg_arr_given.begin(), deg_arr_given.end());
+				
+				
+				for (int i = 0; i < (int)deg_arr_given.size() - 1; i++) {
+					this->degs_arr += deg_arr_given[i];
+					this->degs_arr += ", ";
+				}
+
+				this->degs_arr += deg_arr_given[deg_arr_given.size() - 1];
+				this->degs_arr += " ]";
+				
+				
+				
+				return;
+			}
+		
 		}
 
 
@@ -418,6 +439,10 @@ public:
 
 	const vector<vertex>& GetV()const { return V; }
 
+	bool Are_Isomorphic(const TreeGraph&);
+
+	const string& GetDegArr() const { return degs_arr; }
+
 
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
@@ -430,6 +455,8 @@ protected:
 	bool **Edges;
 	vector<vertex> V;
 	int max_deg_vrx;
+
+	string degs_arr;
 
 };
 
@@ -505,4 +532,36 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 
 	free(color);
 
+}
+
+
+
+bool TreeGraph::Are_Isomorphic(const TreeGraph& T)
+{
+	if (T.getsize() != size_v) { return false; }
+
+
+
+	return (T.GetDegArr() == this->GetDegArr());
+
+
+	vector<int> deg_arr_given, deg_arr_T;
+
+	/*for (int i = 0; i < (int)T.V.size(); i++)
+	{
+		deg_arr_given.push_back(V[i].degree);
+
+		deg_arr_T.push_back(T.V[i].degree);
+	}
+
+	sort(deg_arr_given.begin(), deg_arr_given.end());
+	sort(deg_arr_T.begin(), deg_arr_T.end());
+
+
+	for (int i = 0; i < (int)deg_arr_given.size(); i++) { if (deg_arr_given[i] != deg_arr_T[i]) { return false; } }
+
+	deg_arr_given.clear(); deg_arr_T.clear(); deg_arr_T.shrink_to_fit(); deg_arr_given.shrink_to_fit();
+
+	return true;
+}*/
 }
