@@ -55,6 +55,6 @@ int main()
 		//cout << P.Get_Math_Format() << endl;
 	}
 
-	//system("pause");
+	system("pause");
 	return 0;
 }
