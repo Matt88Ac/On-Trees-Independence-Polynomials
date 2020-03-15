@@ -532,7 +532,8 @@ CliquePoly CliquePoly::ComputeTree(const TreeGraph& T, CliquePoly& curr)
 		return tmp;
 	}
 
-	curr = ComputeTree(T.subGraph)
+	curr = ComputeTree(TreeGraph(T, T.getMax(), true, 1), curr) + ComputeTree(TreeGraph(T, T.getMax(), false, 1), curr) * Mono(1, 1);
+	return curr;
 
 }
 

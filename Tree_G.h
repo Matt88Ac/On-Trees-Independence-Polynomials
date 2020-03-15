@@ -428,7 +428,7 @@ public:
 
 	}
 
-	TreeGraph SubTreeForClique(const TreeGraph& T, const int index_to_remove, const bool x_or_nx);
+	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx, int x);
 
 	void BFS(int&, int&);
 
@@ -470,12 +470,47 @@ protected:
 
 
 
-TreeGraph TreeGraph::SubTreeForClique(const TreeGraph& T, const int index_to_remove, const bool x_or_nx)
+TreeGraph::TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx, int x)
 {
 
 	if (x_or_nx)
 	{
+		int i = 0, j = 0;
+		int max = 0;
 
+		size_v = T.size_v - 1;
+		size_E = T.size_E - T.V[index_to_remove].degree;
+
+
+		for (i = 0; i < size_v; i++)
+		{
+
+			V.push_back(vertex(i, 0));
+			if (i == index_to_remove) { j++; }
+
+			if (j >= (int)T.V.size()) { break; }
+
+			for (int k = 0; k < (int)T.V[j].Nindex.size(); k++)
+			{
+				if (T.V[j].Nindex[k] != index_to_remove) {
+					V[i].degree++;  V[i].Nindex.push_back(T.V[j].Nindex[k]);
+
+					if (T.V[j].Nindex[k] > index_to_remove)
+					{
+						V[i].Nindex[V[i].Nindex.size() - 1]--;
+					}
+
+				}
+
+			}
+
+
+			if (max < V[i].degree) { max = V[i].degree; max_deg_vrx = i; }
+			j++;
+
+		}
+
+		return;
 
 	}
 
