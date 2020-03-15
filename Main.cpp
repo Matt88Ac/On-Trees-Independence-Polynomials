@@ -33,7 +33,7 @@ int main()
 		for (int j = 0; j < degsArray.size(); j++) 
 		{  
 			
-			if (x.GetDegArr().compare(degsArray[i]) == 0) { does_ex = true; break; }
+			if (x.GetDegArr().compare(degsArray[j]) == 0) { does_ex = true; break; }
 
 		}
 
