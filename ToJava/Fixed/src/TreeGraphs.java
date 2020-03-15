@@ -57,8 +57,26 @@ public class TreeGraphs {
                     this.V.get(A_index).AddNeigh(i);
                     this.V.get(i).AddNeigh(A_index);
 
+                    this.V.get(i).Neighbors.add(this.V.get(A_index));
+                    this.V.get(A_index).Neighbors.add(this.V.get(i));
+
                     A_index++;
                     much_left--;
+
+
+                    if(this.V.get(i).GetDeg() > max)
+                    {
+                        max =this.V.get(i).GetDeg();
+                        this.max_deg_vrx = this.V.get(i);
+                    }
+
+                    if(this.V.get(A_index).GetDeg() > max)
+                    {
+                        max =this.V.get(A_index).GetDeg();
+                        this.max_deg_vrx = this.V.get(A_index);
+                    }
+
+
                 }
 
 
@@ -76,6 +94,9 @@ public class TreeGraphs {
 
                     this.V.get(x).AddNeigh(A_index);
                     this.V.get(A_index).AddNeigh(x);
+
+                    this.V.get(x).Neighbors.add(this.V.get(A_index));
+                    this.V.get(A_index).Neighbors.add(this.V.get(x));
 
                     if(this.V.get(x).GetDeg() > max)
                     {
@@ -111,8 +132,26 @@ public class TreeGraphs {
                     this.V.get(B_index).AddNeigh(i);
                     this.V.get(i).AddNeigh(B_index);
 
+                    this.V.get(i).Neighbors.add(this.V.get(B_index));
+                    this.V.get(B_index).Neighbors.add(this.V.get(i));
+
                     B_index++;
                     much_left--;
+
+                    if(this.V.get(B_index).GetDeg() > max)
+                    {
+                        max =this.V.get(B_index).GetDeg();
+                        this.max_deg_vrx = this.V.get(B_index);
+                    }
+
+
+                    if(this.V.get(i).GetDeg() > max)
+                    {
+                        max =this.V.get(i).GetDeg();
+                        this.max_deg_vrx = this.V.get(i);
+                    }
+
+
                 }
 
 
@@ -130,6 +169,9 @@ public class TreeGraphs {
 
                     this.V.get(x).AddNeigh(B_index);
                     this.V.get(B_index).AddNeigh(x);
+
+                    this.V.get(x).Neighbors.add(this.V.get(B_index));
+                    this.V.get(B_index).Neighbors.add(this.V.get(x));
 
                     if(this.V.get(x).GetDeg() > max)
                     {
@@ -212,7 +254,10 @@ public class TreeGraphs {
             newT.size_v = this.size_v - 1 - vertex_to_remove.GetDeg();
             newT.size_e = this.size_e;
 
-            
+            for (int i=0;i<vertex_to_remove.GetDeg(); i++) { this.V.remove(vertex_to_remove.Neighbors.get(i)); }
+            this.V.remove(vertex_to_remove);
+
+
 
 
         }
