@@ -127,6 +127,8 @@ public:
 
 	IndeP TimeSaver(const TreeGraph&);
 
+	const int& GetAlphaT() const { return Holder[Holder.size() - 1].deg; }
+
 
 	~IndeP() { Holder.clear(); Holder.shrink_to_fit(); size = 0; };
 

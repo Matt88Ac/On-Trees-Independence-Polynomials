@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <stdbool.h>
 #include <queue>
+#include <string>
 #include <random>
 using namespace std;
 
@@ -294,13 +295,14 @@ public:
 				
 				
 				for (int i = 0; i < (int)deg_arr_given.size() - 1; i++) {
-					this->degs_arr += deg_arr_given[i];
+					this->degs_arr += std::to_string(deg_arr_given[i]);
 					this->degs_arr += ", ";
 				}
 
-				this->degs_arr += deg_arr_given[deg_arr_given.size() - 1];
+				this->degs_arr += std::to_string(deg_arr_given[deg_arr_given.size() - 1]);
 				this->degs_arr += " ]";
 				
+				this->de_arr = deg_arr_given;
 				
 				
 				return;
@@ -443,6 +445,8 @@ public:
 
 	const string& GetDegArr() const { return degs_arr; }
 
+	const int& GetBigDelta() const { return this->de_arr[this->de_arr.size()-1]; }
+
 
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
@@ -457,6 +461,8 @@ protected:
 	int max_deg_vrx;
 
 	string degs_arr;
+	vector<int> de_arr;
+
 
 };
 

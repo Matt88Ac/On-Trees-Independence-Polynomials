@@ -212,6 +212,7 @@ public class TreeGraphs {
             newT.size_v = this.size_v - 1 - vertex_to_remove.GetDeg();
             newT.size_e = this.size_e;
 
+            
 
 
         }
