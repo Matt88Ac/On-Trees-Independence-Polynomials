@@ -21,14 +21,26 @@ int main()
 	file.Add_Row_Category("$");
 	//file.Add_Row_Category("Polynomial");
 	Function temp;
-	TreeGraph x(10);
-	IndeP P(x);
-	temp = Function(P.Get_Math_Format().c_str());
-	
+	vector<string> degsArray;
+
+	bool does_ex = false;
+
 
 	for (int i = 0; i < 500; i++) {
 		TreeGraph x(10);
 		IndeP P(x);
+
+		for (int j = 0; j < degsArray.size(); j++) 
+		{  
+			
+			if (x.GetDegArr().compare(degsArray[i]) == 0) { does_ex = true; break; }
+
+		}
+
+		if (does_ex) { does_ex = false; continue; }
+
+		degsArray.push_back(x.GetDegArr());
+
 		temp = Function(P.Get_Math_Format().c_str());
 		file.Add_Value(10);
 		file.Add_Value(P.GetAlphaT());
@@ -43,6 +55,6 @@ int main()
 		//cout << P.Get_Math_Format() << endl;
 	}
 
-	system("pause");
+	//system("pause");
 	return 0;
 }
