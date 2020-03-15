@@ -1,9 +1,5 @@
 
-/*
-
-For a Tree-Graph object, declare : TreeGraph( integer wanted-number-of-vertexes )
-
-*/
+/* For a Tree-Graph object, declare : TreeGraph( integer wanted-number-of-vertexes ) */
 
 
 
@@ -14,6 +10,7 @@ For a Tree-Graph object, declare : TreeGraph( integer wanted-number-of-vertexes 
 #include <algorithm>
 #include <stdbool.h>
 #include <queue>
+#include <string>
 #include <random>
 using namespace std;
 
@@ -61,49 +58,52 @@ class TreeGraph
 public:
 
 	// Tree Generator:
-	TreeGraph(int size)
+	
+	TreeGraph(int size) : max_deg_vrx(0), size_v(size), size_E(size-1), degs_arr("[ ")
 	{
 		int no_of_nil = size;
 		int no_of_e = 0;
 
+		int much_left = 0, i, sA = 0, sB = 0, j = 0;
+		static random_device sid;
+		static mt19937 rng(sid());
+		Edges = (bool**)malloc(sizeof(bool*) * size);
+		
+		for (i = 0; i < size; i++) { Edges[i] = (bool*)calloc(size, sizeof(bool)); }
+
+		uniform_int_distribution<int> uid(1, size - 1);
+
 		while (no_of_nil != 1 && (no_of_e != size - 1))
-		{
-
-			int much_left = 0, i, sA = 0, sB = 0, j;
-			static random_device sid;
-			static mt19937 rng(sid());
-
-			uniform_int_distribution<int> uid(1, size - 1);
-
+		{	
+			int max = 0;
+			
 			sA = uid(rng);
 			sB = size - sA;
 
-			size_E = size - 1;
-			size_v = size;
-			Edges = new bool*[size];
+			vector<vertex> tmpA, tmpB, tmpV;
 
 			for (i = 0; i < sA; i++)
 			{
-				V.push_back(vertex(i, 0));
-				Edges[i] = (bool*)calloc(size, sizeof(bool));
-				A.push_back(V[i]);
+				tmpV.push_back(vertex(i, 0));
+				tmpA.push_back(tmpV[i]);
 				j = i;
 
 			}
 
+			A = tmpA;
+
 			j++;
 			for (i = 0; i < sB; i++)
 			{
-				V.push_back(vertex(j, 0));
-				Edges[j] = (bool*)calloc(size, sizeof(bool));
-				B.push_back(V[j]);
+				tmpV.push_back(vertex(j, 0));
+				tmpB.push_back(tmpV[j]);
 				j++;
 			}
 
-			j = 0;
+			B = tmpB;
+			V = tmpV;
 
-			max_deg_vrx = 0;
-			int max = 0;
+			j = 0;
 
 			much_left = size_E;
 
@@ -180,9 +180,6 @@ public:
 
 
 				}
-
-
-
 
 
 			}
@@ -272,23 +269,45 @@ public:
 
 			if (no_of_nil != 1 || no_of_e != (size - 1))
 			{
-				(*this).~TreeGraph();
-				this->~TreeGraph();
-				
-				for (i = 0; i < size; i++)
-				{
-					delete Edges[i];
-				}
+				V.clear();
+				V.shrink_to_fit();
 
-				delete Edges;
+				A.clear();
+				A.shrink_to_fit();
 
-				no_of_e = 0;
-				no_of_nil = size;
+				B.clear();
+				B.shrink_to_fit();
+
+
+				for (i = 0; i < size; i++) { for (j = 0; j < size; j++) { Edges[i][j] = false; } }
+
+				no_of_e = 0;  no_of_nil = size;
 
 			}
 
-			else { return; }
+			else {
+				
+				vector<int> deg_arr_given;
 
+				for (int i = 0; i < (int)V.size(); i++) { deg_arr_given.push_back(V[i].degree); }
+
+				sort(deg_arr_given.begin(), deg_arr_given.end());
+				
+				
+				for (int i = 0; i < (int)deg_arr_given.size() - 1; i++) {
+					this->degs_arr += std::to_string(deg_arr_given[i]);
+					this->degs_arr += ", ";
+				}
+
+				this->degs_arr += std::to_string(deg_arr_given[deg_arr_given.size() - 1]);
+				this->degs_arr += " ]";
+				
+				this->de_arr = deg_arr_given;
+				
+				
+				return;
+			}
+		
 		}
 
 
@@ -296,11 +315,11 @@ public:
 
 	}
 
-	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0) {};
+	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0), Edges(NULL) {};
 
 
 	// Used for Independence Polynomial computation;
-	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx) : max_deg_vrx(0)
+	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx) : max_deg_vrx(0), Edges(NULL)
 	{
 
 
@@ -347,7 +366,7 @@ public:
 
 		}
 
-
+		
 
 		//T-N[x], xEV
 		else
@@ -422,6 +441,13 @@ public:
 
 	const vector<vertex>& GetV()const { return V; }
 
+	bool Are_Isomorphic(const TreeGraph&);
+
+	const string& GetDegArr() const { return degs_arr; }
+
+	const int& GetBigDelta() const { return this->de_arr[this->de_arr.size()-1]; }
+
+
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
 
 
@@ -433,6 +459,10 @@ protected:
 	bool **Edges;
 	vector<vertex> V;
 	int max_deg_vrx;
+
+	string degs_arr;
+	vector<int> de_arr;
+
 
 };
 
@@ -479,12 +509,9 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 {
 	queue<vertex> Queue;
-	int *color;
-
-	color = (int*)calloc(size_v, 4); /* white = 0,
-											grey = 1,
-												black = 2 */
-	color[0] = 1;
+	int *color = (int*)calloc(size_v, 4);/* white = 0,	grey = 1,  black = 2 */
+	color[number_of_edges]++;
+	
 	Queue.push(V[0]);
 
 	while (!Queue.empty())
@@ -509,6 +536,38 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 
 	}
 
-	delete color;
+	free(color);
 
+}
+
+
+
+bool TreeGraph::Are_Isomorphic(const TreeGraph& T)
+{
+	if (T.getsize() != size_v) { return false; }
+
+
+
+	return (T.GetDegArr() == this->GetDegArr());
+
+
+	vector<int> deg_arr_given, deg_arr_T;
+
+	/*for (int i = 0; i < (int)T.V.size(); i++)
+	{
+		deg_arr_given.push_back(V[i].degree);
+
+		deg_arr_T.push_back(T.V[i].degree);
+	}
+
+	sort(deg_arr_given.begin(), deg_arr_given.end());
+	sort(deg_arr_T.begin(), deg_arr_T.end());
+
+
+	for (int i = 0; i < (int)deg_arr_given.size(); i++) { if (deg_arr_given[i] != deg_arr_T[i]) { return false; } }
+
+	deg_arr_given.clear(); deg_arr_T.clear(); deg_arr_T.shrink_to_fit(); deg_arr_given.shrink_to_fit();
+
+	return true;
+}*/
 }
