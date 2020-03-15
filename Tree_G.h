@@ -296,7 +296,7 @@ public:
 				
 				for (int i = 0; i < (int)deg_arr_given.size() - 1; i++) {
 					this->degs_arr += std::to_string(deg_arr_given[i]);
-					this->degs_arr += ", ";
+					this->degs_arr += " ";
 				}
 
 				this->degs_arr += std::to_string(deg_arr_given[deg_arr_given.size() - 1]);
