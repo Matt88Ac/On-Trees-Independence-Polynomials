@@ -41,7 +41,7 @@ int main()
 
 		degsArray.push_back(x.GetDegArr());
 
-		temp = Function(P.Get_Math_Format().c_str());
+		temp = Function(P.Get_Math_Format_IndeP().c_str());
 		file.Add_Value(10);
 		file.Add_Value(P.GetAlphaT());
 		file.Add_Value(temp.Get_Roots(0.001).size());

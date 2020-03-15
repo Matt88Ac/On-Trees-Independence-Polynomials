@@ -109,7 +109,9 @@ class IndeP
 {
 	friend ostream& operator <<(ostream&, const IndeP&);
 public:
-	IndeP(const TreeGraph& T) : size(0), gonna_save_some_time(false) { IndeP X;  *this = ComputeTree(T, X); }
+	IndeP(const TreeGraph& T) : size(0), gonna_save_some_time(false) { 
+		IndeP X;  *this = ComputeTree(T, X);
+	}
 
 	IndeP() : size(0), gonna_save_some_time(false) {};
 
@@ -136,13 +138,16 @@ public:
 	const int& GetAlphaT() const { return Holder[Holder.size() - 1].deg; }
 
 
+
 	~IndeP() { Holder.clear(); Holder.shrink_to_fit(); size = 0; };
 
 
-	string Get_Math_Format();
+	string Get_Math_Format_IndeP();
+
 
 protected:
 	vector<Mono> Holder;
+
 
 	int size;
 	bool gonna_save_some_time;
@@ -150,7 +155,7 @@ protected:
 
 };
 
-string IndeP::Get_Math_Format() {
+string IndeP::Get_Math_Format_IndeP() {
 	stringstream ss;
 	for (int i = 0; i < Holder.size(); i++) {
 		if (i + 1 < Holder.size()) {
@@ -467,4 +472,243 @@ IndeP IndeP::ComputeTree(const TreeGraph& T, IndeP& curr)
 
 	return curr;
 
+}
+
+
+
+class CliquePoly
+{
+protected:
+	vector<Mono> Holder;
+	int size;
+
+public:
+
+	CliquePoly(const TreeGraph& T) : size(0) { CliquePoly tmp; *this = ComputeTree(T, tmp); }
+
+	CliquePoly() : size(0) {};
+
+	void operator+=(const Mono&);
+	void operator+=(const CliquePoly&);
+
+	CliquePoly operator+(const Mono&);
+	CliquePoly operator+(const CliquePoly&);
+
+	void operator *=(const Mono&);
+	void operator *=(const CliquePoly&);
+
+	CliquePoly operator*(const Mono&);
+	CliquePoly operator*(const CliquePoly&);
+
+	operator string() const;
+	string Get_Math_Format_Clique();
+
+
+	CliquePoly ComputeTree(const TreeGraph&, CliquePoly&);
+
+
+	~CliquePoly() { Holder.clear(); Holder.shrink_to_fit(); }
+
+
+};
+
+
+CliquePoly CliquePoly::ComputeTree(const TreeGraph& T, CliquePoly& curr)
+{
+	if (T.getsize() == 0)
+	{
+		CliquePoly tmp;
+		tmp += Mono(1, 0);
+		return tmp;
+	}
+
+
+	if (T.isKn())
+	{
+		CliquePoly tmp;
+		tmp += Mono(T.getsize(), 1);
+		tmp += Mono(1, 0);
+
+		return tmp;
+	}
+
+	curr = ComputeTree(T.subGraph)
+
+}
+
+
+
+CliquePoly::operator string() const
+{
+
+	string poly;
+	if (!Holder.size()) { return "0"; }
+
+	for (int i = 0; i < (int)Holder.size() - 1; i++) { poly += (string)Holder[i] + " + "; }
+
+	poly += (string)Holder[(int)Holder.size() - 1];
+
+	return poly;
+}
+
+string CliquePoly::Get_Math_Format_Clique() {
+	stringstream ss;
+	for (int i = 0; i < Holder.size(); i++) {
+		if (i + 1 < Holder.size()) {
+			ss << Holder[i].get_formated_string() << " + ";
+		}
+		else {
+			ss << Holder[i].get_formated_string();
+		}
+	}
+	return ss.str();
+}
+
+
+void CliquePoly::operator+=(const Mono& m)
+{
+	if (size == 0)
+	{
+		this->Holder.push_back(m);
+		this->size++;
+		return;
+	}
+
+
+	for (int i = 0; i < (int)Holder.size(); i++)
+	{
+		if (Holder[i].isAddAble(m))
+		{
+			Holder[i] += m;
+			return;
+		}
+	}
+
+	Holder.push_back(m);
+	size++;
+
+	for (int j = 0; j < (int)Holder.size() - 1; j++)
+	{
+		int p = j + 1;
+		if (Holder[j] >= Holder[p]) { swap(Holder[j], Holder[p]); }
+	}
+
+
+
+}
+
+
+
+
+void CliquePoly::operator+=(const CliquePoly& P)
+{
+	if (size == 0) { size = P.size; Holder = P.Holder; return; }
+	if (P.size == 0) { return; }
+	for (int i = 0; i < (int)P.Holder.size(); i++) { *this += P.Holder[i]; }
+
+
+}
+
+
+
+
+CliquePoly CliquePoly::operator+(const Mono& m)
+{
+	CliquePoly tmp;
+	tmp.size = this->size;
+	tmp.Holder = this->Holder;
+	tmp += m;
+
+	return tmp;
+}
+
+
+
+
+CliquePoly CliquePoly::operator+(const CliquePoly& P)
+{
+	CliquePoly tmp;
+	tmp.size = this->size;
+	tmp.Holder = this->Holder;
+	tmp += P;
+
+	return tmp;
+
+}
+
+
+
+
+void CliquePoly::operator*=(const Mono& m)
+{
+	if (size == 0) { return; }
+
+	if (m == Mono(0, 0)) { Holder.clear(); size = 0; }
+
+	for (int i = 0; i < (int)Holder.size(); i++) { Holder[i] *= m; }
+
+}
+
+
+void CliquePoly::operator*=(const CliquePoly& P)
+{
+
+	if (P.size == 0) { Holder.clear(); size = 0; }
+	if (size == 0) { return; }
+
+	CliquePoly tmpo;
+
+	for (int i = 0; i < (int)P.Holder.size(); i++) { tmpo += *this * P.Holder[i]; }
+
+	*this = tmpo;
+
+	tmpo.~CliquePoly();
+}
+
+
+
+
+CliquePoly CliquePoly::operator*(const Mono& m)
+{
+	CliquePoly tmp;
+	tmp.Holder = this->Holder;
+	tmp.size = size;
+
+	if (size == 0) { return tmp; }
+
+	if (m == Mono(0, 0))
+	{
+		tmp.Holder.clear();
+		tmp.size = 0;
+		return tmp;
+	}
+
+	tmp *= m;
+	return tmp;
+}
+
+
+
+
+
+CliquePoly CliquePoly::operator*(const CliquePoly& P)
+{
+	CliquePoly tmp;
+	tmp.size = size;
+	tmp.Holder = Holder;
+	if (size == 0)
+	{
+		return tmp;
+	}
+
+	if (P.size == 0)
+	{
+		tmp.Holder.clear();
+		tmp.size = 0;
+		return tmp;
+	}
+
+	tmp *= P;
+
+	return tmp;
 }

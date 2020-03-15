@@ -428,6 +428,7 @@ public:
 
 	}
 
+	TreeGraph SubTreeForClique(const TreeGraph& T, const int index_to_remove, const bool x_or_nx);
 
 	void BFS(int&, int&);
 
@@ -468,6 +469,27 @@ protected:
 
 
 
+
+TreeGraph TreeGraph::SubTreeForClique(const TreeGraph& T, const int index_to_remove, const bool x_or_nx)
+{
+
+	if (x_or_nx)
+	{
+
+
+	}
+
+
+
+	else
+	{
+
+
+
+	}
+
+
+}
 
 
 
