@@ -8,6 +8,7 @@
 #include "Tree_G.h"
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using namespace std;
 
@@ -30,7 +31,7 @@ public:
 	Mono operator+(const Mono& m) const { Mono tmp(this->coef + m.coef, deg); return tmp; }
 	void operator *=(const Mono& m) { this->deg += m.deg; this->coef *= m.coef; }
 	Mono operator*(const Mono& m) const { Mono tmp(this->coef*m.coef, deg + m.deg); return tmp; }
-
+	string get_formated_string();
 	operator string() const;
 
 	bool isAddAble(const Mono& m) const { return deg == m.deg; }
@@ -55,8 +56,8 @@ Mono::operator string() const
 	}
 
 	else
-	{	
-		if (deg == 1) { return (string)(to_string(coef)  + "*X"); }
+	{
+		if (deg == 1) { return (string)(to_string(coef) + "*X"); }
 		else if (deg > 1) { return (string)(to_string(coef) + "X^" + to_string(deg)); }
 		return to_string(coef);
 	}
@@ -87,6 +88,11 @@ ostream& operator <<(ostream& os, const Mono& x)
 
 }
 
+string Mono::get_formated_string() {
+	stringstream ss;
+	ss << this->coef << "*" << "x" << "^" << this->deg;
+	return ss.str();
+}
 
 
 void swap(Mono& a, Mono&b)
@@ -120,7 +126,7 @@ public:
 	IndeP operator*(const IndeP&);
 
 	operator string() const;
-	
+
 	bool isUni() const;
 
 	IndeP ComputeTree(const TreeGraph&, IndeP&);
@@ -133,6 +139,8 @@ public:
 	~IndeP() { Holder.clear(); Holder.shrink_to_fit(); size = 0; };
 
 
+	string Get_Math_Format();
+
 protected:
 	vector<Mono> Holder;
 
@@ -142,6 +150,20 @@ protected:
 
 };
 
+string IndeP::Get_Math_Format() {
+	stringstream ss;
+	for (int i = 0; i < Holder.size(); i++) {
+		if (i + 1 < Holder.size()) {
+			ss << Holder[i].get_formated_string() << " + ";
+		}
+		else {
+			ss << Holder[i].get_formated_string();
+		}
+	}
+	return ss.str();
+}
+
+
 
 bool IndeP::isUni() const
 {
@@ -149,13 +171,13 @@ bool IndeP::isUni() const
 	int i, length = (int)Holder.size();
 	bool flag = false;
 
-	for ( i = 0; i < length-1; i++)
+	for (i = 0; i < length - 1; i++)
 	{
 		int p = i + 1;
 		if (Holder[i].coef > Holder[p].coef && !flag) { flag = true; }
-		
+
 		if (Holder[i].coef < Holder[p].coef && flag) { return false; }
-	
+
 	}
 
 	return true;
@@ -440,7 +462,7 @@ IndeP IndeP::ComputeTree(const TreeGraph& T, IndeP& curr)
 	if (gonna_save_some_time) { gonna_save_some_time = false; return x; }
 
 
-									// T-v,v in V							T-N[V], v in V
+	// T-v,v in V							T-N[V], v in V
 	curr = ComputeTree(TreeGraph(T, T.getMax(), true), curr) + ComputeTree(TreeGraph(T, T.getMax(), false), curr)*Mono(1, 1);
 
 	return curr;
