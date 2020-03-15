@@ -441,7 +441,7 @@ public:
 
 	const vector<vertex>& GetV()const { return V; }
 
-	bool Are_Isomorphic(const TreeGraph&);
+	bool Are_Isomorphic(const TreeGraph&) const;
 
 	const string& GetDegArr() const { return degs_arr; }
 
@@ -542,7 +542,7 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 
 
 
-bool TreeGraph::Are_Isomorphic(const TreeGraph& T)
+bool TreeGraph::Are_Isomorphic(const TreeGraph& T) const
 {
 	if (T.getsize() != size_v) { return false; }
 

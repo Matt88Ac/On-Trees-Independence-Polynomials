@@ -9,7 +9,7 @@ using namespace Platfrom;
 using namespace Math;
 int main()
 {
-	CSV file("Test_Two");
+	CSV file("Test_Three");
 	file.Add_Row_Category("Vertices");
 	file.Add_Row_Category("Alpha(g)");
 	file.Add_Row_Category("Number Of Roots");
