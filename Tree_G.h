@@ -441,7 +441,7 @@ public:
 
 	}
 
-	TreeGraph subGraph_for_cl(int index_of_ver) const;
+	//TreeGraph subGraph_for_cl(int index_of_ver) const;
 
     void BFS(int&, int&);
 
@@ -565,23 +565,25 @@ ostream& operator << (ostream& os, const TreeGraph& x)
  }
 
 
- TreeGraph TreeGraph::subGraph_for_cl(int index_of_ver) const
- {
-	 TreeGraph newT;
+ //TreeGraph TreeGraph::subGraph_for_cl(int index_of_ver) const
+ //{
+	// TreeGraph newT;
 
-	 newT.size_v = V[index_of_ver].degree;
-	 newT.size_E = 0;
-	 newT.max_deg_vrx = 0;
-
-
-	 newT.V.reserve(newT.size_v);
-
-	 for (int i = 0; i < (int)newT.V.size(); i++)
-	 {
-		 newT.V.push_back(vertex(i, 0));
-	 }
+	// if (this->size_v == 0) { return newT; }
+	// 
+	// newT.size_v = V[index_of_ver].degree;
+	// newT.size_E = 0;
+	// newT.max_deg_vrx = 0;
 
 
-	 return newT;
+	// newT.V.reserve(newT.size_v);
 
- }
+	// for (int i = 0; i < newT.size_v; i++)
+	// {
+	//	 newT.V.push_back(vertex(i, 0));
+	// }
+
+
+	// return newT;
+
+ //}

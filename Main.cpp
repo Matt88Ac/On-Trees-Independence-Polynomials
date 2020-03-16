@@ -11,23 +11,7 @@ using namespace Math;
 using namespace std;
 
 int main()
-{
-	TreeGraph T(10);
-
-	cout << T << endl;
-
-	CliqueP C(T);
-
-
-	cout << C << endl;
-	
-	
-	
-	
-	
-	
-	return 0;
-	
+{	
 	stringstream ss;
 	ss << "Test_#" << Random_INT(10000);
 	CSV file(ss.str());
