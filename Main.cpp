@@ -20,7 +20,6 @@ int main()
 
 	cout << T.The_Inde_Poly_of_the_Tree << endl << endl;
 
-	cout << T.The_Opps_Poly << endl;
 
 	return 0;
 

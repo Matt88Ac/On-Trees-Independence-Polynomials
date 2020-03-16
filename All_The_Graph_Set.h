@@ -9,7 +9,6 @@ public:
 	 TreeGraph OppositeGraph;
 
 	IndeP The_Inde_Poly_of_the_Tree;
-	IndeP The_Opps_Poly;
 	
 	FullTree(int size) {
 		TheTree = TreeGraph(size);
@@ -17,9 +16,6 @@ public:
 		OppositeGraph = TheTree.GetTOpp();
 
 		The_Inde_Poly_of_the_Tree = IndeP(TheTree);
-
-		The_Opps_Poly = IndeP(OppositeGraph);
-
 
 	}
 
