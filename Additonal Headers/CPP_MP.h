@@ -129,7 +129,32 @@ namespace Math {
 		}
 		return out;
 	}
-
+	template<class p_type> bool operator<(Point<p_type> const &A, Point<p_type> const &B) {
+		if (A.x < B.x || A.y < B.y || A.x < B.x) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	template<class p_type> Point<p_type> Get_Smallest_Point_In_Vector(std::vector<Point<p_type> > const & Points) {
+		Point<p_type> cur_min = Points[0];
+		for (int i = 1; i < Points.size(); i++) {
+			if (Points[i] < cur_min) {
+				cur_min = Points[i];
+			}
+		}
+		return cur_min;
+	}
+	template<class p_type> Point<p_type> Get_Largest_Point_In_Vector(std::vector<Point<p_type> > const & Points) {
+		Point<p_type> cur_max = Points[0];
+		for (int i = 1; i < Points.size(); i++) {
+			if (!(Points[i] < cur_max)) {
+				cur_max = Points[i];
+			}
+		}
+		return cur_max;
+	}
 
 
 	//matirx ops
