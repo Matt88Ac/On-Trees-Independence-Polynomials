@@ -1,7 +1,7 @@
 /*  TEST */
 
 #include <iostream>
-#include "Polynomial.h"
+#include "All_The_Graph_Set.h"
 #include "Additonal Headers/CPP_MP.h"
 #include "Additonal Headers/CSV_Platform.h"
 
@@ -12,6 +12,19 @@ using namespace std;
 
 int main()
 {	
+	FullTree T(10);
+
+	cout << T.TheTree << endl << endl;
+
+	cout << T.OppositeGraph << endl << endl;
+
+	cout << T.The_Inde_Poly_of_the_Tree << endl << endl;
+
+	cout << T.The_Opps_Poly << endl;
+
+	return 0;
+
+
 	stringstream ss;
 	ss << "Test_#" << Random_INT(10000);
 	CSV file(ss.str());

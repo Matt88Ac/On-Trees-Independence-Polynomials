@@ -38,7 +38,7 @@ class vertex
 {
 public:
 	vertex(int index = 0, int deg = 0) { ind = index; degree = deg; }
-	~vertex() { Nindex.clear(); N.clear(); Nindex.shrink_to_fit(); N.shrink_to_fit(); }
+	~vertex() { Nindex.~vector(); N.~vector(); }
 
 	int ind;
 	int degree;
@@ -60,7 +60,7 @@ public:
 
 	// Tree Generator:
 	
-	TreeGraph(int size) : max_deg_vrx(0), size_v(size), size_E(size-1), degs_arr("[ ")
+	TreeGraph(int size) : max_deg_vrx(0), size_v(size), size_E(size-1), degs_arr("[ "), chromatic_num(2)
 	{
 		int no_of_nil = size;
 		int no_of_e = 0;
@@ -327,7 +327,7 @@ public:
 
 	}
 
-	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0), Edges(NULL) {};
+	TreeGraph() : size_v(0), size_E(0), max_deg_vrx(0), Edges(NULL), chromatic_num(2) {};
 
 
 	// Used for Independence Polynomial computation;
@@ -443,11 +443,13 @@ public:
 
 	//TreeGraph subGraph_for_cl(int index_of_ver) const;
 
+	TreeGraph GetTOpp() const;
+
     void BFS(int&, int&);
 
 	inline int getMax() const { return max_deg_vrx; }
 
-	inline int getChromatic() const { return 2; }
+	inline const int& getChromatic() const { return chromatic_num; }
 
 	inline bool isKn() const { return size_E == ((size_v)*(size_v - 1) / 2); }
 
@@ -476,14 +478,13 @@ protected:
 	vector<vertex> V;
 	int max_deg_vrx;
 
+	int chromatic_num;
+
 	string degs_arr;
 	vector<int> de_arr;
 
 
 };
-
-
-
 
 
 ostream& operator << (ostream& os, const TreeGraph& x)
@@ -565,6 +566,64 @@ ostream& operator << (ostream& os, const TreeGraph& x)
  }
 
 
+ TreeGraph TreeGraph::GetTOpp() const
+ {
+	 TreeGraph newT;
+	 int i = 0, max = 0;
+
+	 newT.Edges = new bool*[size_v];
+	 newT.size_v = size_v;
+
+	 newT.max_deg_vrx = 0;
+
+	 newT.size_E = size_v * (size_v - 1) / 2 - size_E;
+
+	 for ( i; i < size_v; i++)
+	 {
+		 newT.V.push_back(vertex(i, 0));
+		 newT.Edges[i] = new bool[size_v];
+
+		 for (int j = 0; j < size_v; j++)
+		 {
+			 if (i != j) { 
+			 
+				 if (this->Edges[i][j] == true) { newT.Edges[i][j] = false; }
+				 else { newT.Edges[i][j] = true; }
+			 
+			 }
+
+			 else { newT.Edges[i][j] = false; }
+		 }
+	 }
+
+	 for ( i = 0; i < size_v; i++)
+	 {
+		 for (int j = i+1; j < size_v; j++)
+		 {
+			 if (newT.Edges[i][j])
+			 {
+				 newT.V[i].degree++;
+				 newT.V[j].degree++;
+
+				 newT.V[i].Nindex.push_back(j);
+				 newT.V[j].Nindex.push_back(i);
+
+			 }
+		 
+		 }
+
+		 if (max < newT.V[i].degree){  
+			 max = newT.V[i].degree;
+			 newT.max_deg_vrx = i;
+		 }
+	 }
+
+
+	 return newT;
+ }
+
+
+ /*
  //TreeGraph TreeGraph::subGraph_for_cl(int index_of_ver) const
  //{
 	// TreeGraph newT;
@@ -586,4 +645,4 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 
 	// return newT;
 
- //}
+ //} */

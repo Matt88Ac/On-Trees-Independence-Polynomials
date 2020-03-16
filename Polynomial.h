@@ -112,7 +112,7 @@ public:
 	IndeP(const TreeGraph& T) : size(0), gonna_save_some_time(false) { 
 		IndeP X;  *this = ComputeTree(T, X);
 
-		this->Get_Math_Format_IndeP = "1*X^0 + " + to_string(T.getsize()) + "*X^1 + " + to_string(T.getsize() - 1) + "*X^2";
+		this->Math_Format_Clique_Poly = "1*X^0 + " + to_string(T.getsize()) + "*X^1 + " + to_string(T.getsize() - 1) + "*X^2";
 
 	}
 
