@@ -612,9 +612,9 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 
 
 
-inline bool TreeGraph::Are_Isomorphic(const TreeGraph& T) const
-{
-	if (T.getsize() != size_v) { return false; }
-	return (T.GetDegArr() == this->GetDegArr());
+ inline bool TreeGraph::Are_Isomorphic(const TreeGraph& T) const
+ {
+	 if (T.getsize() != size_v) { return false; }
+	 return (T.GetDegArr() == this->GetDegArr() && (T.GetBigDelta() == T.getsize() - 1));
 
-}
+ }
