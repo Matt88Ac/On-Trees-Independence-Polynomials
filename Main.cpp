@@ -5,8 +5,10 @@
 #include "Additonal Headers/CPP_MP.h"
 #include "Additonal Headers/CSV_Platform.h"
 
+
 using namespace Platfrom;
 using namespace Math;
+using namespace std;
 
 int main()
 {
@@ -43,13 +45,12 @@ int main()
 
 
 	// generation parameters
-	int iterations =  5000;
-	int amount_of_vertcies = 23;
+	int iterations =  500;
+	int amount_of_vertcies = 15;
 	//
 
 	degsArray.reserve(iterations);
 	timer.Start_Timer();
-
 	for (int i = 0; i < iterations; i++) {
 		TreeGraph x(amount_of_vertcies);
 		IndeP P(x);

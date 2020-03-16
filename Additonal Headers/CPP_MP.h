@@ -1620,6 +1620,7 @@ namespace Math {
 
 		return f_res;
 	}
+
 	std::vector<Point<double> >  Function::Get_Polynomial_Maximum() {
 		Function div = *this;
 		Function Reg = *this;

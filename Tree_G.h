@@ -12,6 +12,7 @@
 #include <queue>
 #include <string>
 #include <random>
+#include <array>
 using namespace std;
 
 
@@ -442,23 +443,23 @@ public:
 
 	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx, int x);
 
-	void BFS(int&, int&);
+    void BFS(int&, int&);
 
-	int getMax() const { return max_deg_vrx; }
+	inline int getMax() const { return max_deg_vrx; }
 
-	bool isKn() const { return size_E == ((size_v)*(size_v - 1) / 2); }
+	inline bool isKn() const { return size_E == ((size_v)*(size_v - 1) / 2); }
 
-	int getsize() const { return size_v; }
+	inline int getsize() const { return size_v; }
 
-	bool ** GetMatrix() const { return Edges; }
+	inline	bool ** GetMatrix() const { return Edges; }
 
-	const vector<vertex>& GetV()const { return V; }
+	inline const vector<vertex>& GetV()const { return V; }
 
-	bool Are_Isomorphic(const TreeGraph&) const;
+	inline bool Are_Isomorphic(const TreeGraph&) const;
 
-	const string& GetDegArr() const { return degs_arr; }
+	inline const string& GetDegArr() const { return degs_arr; }
 
-	const int& GetBigDelta() const { return this->de_arr[this->de_arr.size()-1]; }
+	inline const int& GetBigDelta() const { return this->de_arr[this->de_arr.size()-1]; }
 
 
 	~TreeGraph() { A.clear(); B.clear(); A.shrink_to_fit(); B.shrink_to_fit();  V.clear();  V.shrink_to_fit();  V.~vector(); A.~vector(); B.~vector(); }
@@ -575,7 +576,7 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 }
 
 
-void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
+ void  TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 {
 	queue<vertex> Queue;
 	int *color = (int*)calloc(size_v, 4);/* white = 0,	grey = 1,  black = 2 */
@@ -611,7 +612,7 @@ void TreeGraph::BFS(int& number_of_nil, int& number_of_edges)
 
 
 
-bool TreeGraph::Are_Isomorphic(const TreeGraph& T) const
+inline bool TreeGraph::Are_Isomorphic(const TreeGraph& T) const
 {
 	if (T.getsize() != size_v) { return false; }
 	return (T.GetDegArr() == this->GetDegArr());
