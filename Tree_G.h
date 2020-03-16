@@ -80,12 +80,17 @@ public:
 			sA = uid(rng);
 			sB = size - sA;
 
-			vector<vertex> tmpA, tmpB, tmpV;
+			vector<vertex> tmpA(sA), tmpB(sB), tmpV;
+			//e
+			//tmpA.reserve(sA);
+			//tmpB.reserve(sB);
+			tmpV.reserve(sA + sB);
 
 			for (i = 0; i < sA; i++)
 			{
 				tmpV.push_back(vertex(i, 0));
-				tmpA.push_back(tmpV[i]);
+				//tmpA.push_back(tmpV[i]);
+				tmpA[i] = tmpV[i];
 				j = i;
 
 			}
@@ -96,7 +101,8 @@ public:
 			for (i = 0; i < sB; i++)
 			{
 				tmpV.push_back(vertex(j, 0));
-				tmpB.push_back(tmpV[j]);
+				//tmpB.push_back(tmpV[j]);
+				tmpB[i] = tmpV[j];
 				j++;
 			}
 
@@ -287,9 +293,14 @@ public:
 
 			else {
 				
-				vector<int> deg_arr_given;
+				vector<int> deg_arr_given((int)V.size(),0);
+				//e
+			
 
-				for (int i = 0; i < (int)V.size(); i++) { deg_arr_given.push_back(V[i].degree); }
+				for (int i = 0; i < (int)V.size(); i++) { 
+					//deg_arr_given.push_back(V[i].degree); 
+					deg_arr_given[i] = V[i].degree;
+				}
 
 				sort(deg_arr_given.begin(), deg_arr_given.end());
 				
@@ -322,7 +333,6 @@ public:
 	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx) : max_deg_vrx(0), Edges(NULL)
 	{
 
-
 		// T-x, xEV
 		if (x_or_nx == true)
 		{
@@ -332,7 +342,8 @@ public:
 
 			size_v = T.size_v - 1;
 			size_E = T.size_E - T.V[index_to_remove].degree;
-
+			//e
+			V.reserve(size_v);
 
 			for (i = 0; i < size_v; i++)
 			{
@@ -374,6 +385,7 @@ public:
 
 			int i, j = 0;
 			vector<int> tempo;
+			
 			int max = 0;
 			int size, count = 0;
 
@@ -381,7 +393,7 @@ public:
 			size_E = T.size_E - T.V[index_to_remove].degree;
 
 			size = T.size_v;
-
+			tempo.reserve(size_v);
 
 
 			tempo = T.V[index_to_remove].Nindex;

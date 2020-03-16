@@ -43,12 +43,13 @@ int main()
 
 
 	// generation parameters
-	int iterations =  500;
-	int amount_of_vertcies = 10;
+	int iterations =  5000;
+	int amount_of_vertcies = 23;
 	//
 
-
+	degsArray.reserve(iterations);
 	timer.Start_Timer();
+
 	for (int i = 0; i < iterations; i++) {
 		TreeGraph x(amount_of_vertcies);
 		IndeP P(x);
@@ -58,7 +59,10 @@ int main()
 		for (int j = 0; j < degsArray.size(); j++) 
 		{  
 			
-			if (x.GetDegArr().compare(degsArray[j]) == 0) { does_ex = true; break; }
+			if (x.GetDegArr().compare(degsArray[j]) == 0) { 
+				does_ex = true;
+				break; 
+			}
 
 		}
 
