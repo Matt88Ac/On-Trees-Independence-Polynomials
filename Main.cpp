@@ -12,11 +12,12 @@ using namespace std;
 
 int main()
 {
-	TreeGraph T(6);
+	TreeGraph T(10);
+
+	cout << T << endl;
 
 	CliqueP C(T);
 
-	cout << T << endl;
 
 	cout << C << endl;
 	

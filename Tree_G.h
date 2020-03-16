@@ -89,7 +89,7 @@ public:
 
 			for (i = 0; i < sA; i++)
 			{
-				tmpV[i] = vertex(i, 0);
+				tmpV.push_back(vertex(i, 0));
 				//tmpA.push_back(tmpV[i]);
 				tmpA[i] = tmpV[i];
 				j = i;
@@ -101,7 +101,7 @@ public:
 			j++;
 			for (i = 0; i < sB; i++)
 			{
-				tmpV[i]=vertex(j, 0);
+				tmpV.push_back(vertex(j, 0));
 				//tmpB.push_back(tmpV[j]);
 				tmpB[i] = tmpV[j];
 				j++;
@@ -578,7 +578,7 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 
 	 for (int i = 0; i < (int)newT.V.size(); i++)
 	 {
-		 newT.V[i] = vertex(i, 0);
+		 newT.V.push_back(vertex(i, 0));
 	 }
 
 
