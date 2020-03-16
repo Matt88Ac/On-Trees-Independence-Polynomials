@@ -7,29 +7,49 @@
 
 using namespace Platfrom;
 using namespace Math;
+
 int main()
 {
-	CSV file("Test_Three");
+	stringstream ss;
+	ss << "Test_#" << Random_INT(10000);
+	CSV file(ss.str());
+
+	//CSV Row Definition
 	file.Add_Row_Category("Vertices");
 	file.Add_Row_Category("Alpha(g)");
 	file.Add_Row_Category("Number Of Roots");
+	file.Add_Row_Category("First Root Found");
 	file.Add_Row_Category("Number Of Max Points");
 	file.Add_Row_Category("Number Of Min Points");
 	file.Add_Row_Category("Polynomial");
 	file.Add_Row_Category("Degree Array");
 	file.Add_Row_Category("Max Deg");
 	file.Add_Row_Category("$");
-	//file.Add_Row_Category("Polynomial");
-	Function temp;
-	vector<string> degsArray;
 
+	//
+
+
+
+
+	Function Symbolic_Frame;
+	vector<string> degsArray;
+	Timer timer;
 	bool does_ex = false;
 
 
-	for (int i = 0; i < 500; i++) {
-		TreeGraph x(10);
+	// generation parameters
+	int iterations =  500;
+	int amount_of_vertcies = 10;
+	//
+
+
+	timer.Start_Timer();
+	for (int i = 0; i < iterations; i++) {
+		TreeGraph x(amount_of_vertcies);
 		IndeP P(x);
 
+
+		// isomorphism check
 		for (int j = 0; j < degsArray.size(); j++) 
 		{  
 			
@@ -37,24 +57,55 @@ int main()
 
 		}
 
-		if (does_ex) { does_ex = false; continue; }
+		if (does_ex) { does_ex = false;  		cout << "Iteration [ " << i + 1 << " / " << iterations << " ] , Discarded by Isomorphism After - {" << timer <<"}"<< endl;
+		continue; }
 
 		degsArray.push_back(x.GetDegArr());
 
-		temp = Function(P.Get_Math_Format_IndeP().c_str());
-		file.Add_Value(10);
+
+
+		Symbolic_Frame = Function(P.Get_Math_Format_IndeP().c_str());
+
+
+		// symbolic calculations
+		std::vector<double> roots = Symbolic_Frame.Get_Roots(0.001);
+		std::vector<Point<double> > Maximum_Points = Symbolic_Frame.Get_Polynomial_Maximum();
+		std::vector<Point<double> > Minimum_Points; Symbolic_Frame.Get_Polynomial_Minimum();
+
+
+		//CSV formating
+
+		//number of vertecis
+		file.Add_Value(amount_of_vertcies);
+		//alpha of graph 
 		file.Add_Value(P.GetAlphaT());
-		file.Add_Value(temp.Get_Roots(0.001).size());
-		file.Add_Value(temp.Get_Polynomial_Maximum().size());
-		file.Add_Value(temp.Get_Polynomial_Minimum().size());
+		//number of roots if found at all
+		file.Add_Value(roots.size());
+		//first root found , if no root found a whitespace is added to CSV table
+		roots.size() > 0 ? file.Add_Value(roots[0]) : file.Add_Value(" ");
+		//amount of supremum points
+		file.Add_Value(Maximum_Points.size());
+		//amount of infima points
+		file.Add_Value(Minimum_Points.size());
+		//Unimodaly Polynom
 		file.Add_Value((string)P);
+		//degree array
 		file.Add_Value(x.GetDegArr());
+		//max deg of graph
 		file.Add_Value(x.GetBigDelta());
 		
+		//
 
-		//cout << P.Get_Math_Format() << endl;
+
+
+		//process notification
+
+		cout << "Iteration [ " << i + 1 << " / " << iterations << " ] , Finished After - {" << timer<<"}" << endl;
+
+		//
 	}
 
+	cout << "\n\n[Test Run Saved As: " << ss.str() <<"]\n\n\n";
 	system("pause");
 	return 0;
 }

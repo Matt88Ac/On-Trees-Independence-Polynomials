@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <limits>
 #include <random>
+#include <chrono>
 
 //macros
 
@@ -74,7 +75,7 @@ namespace Math {
 		return out;
 	}
 
-	
+
 
 
 	template<class p_type> class Point {
@@ -95,7 +96,7 @@ namespace Math {
 			this->z = z;
 		}
 		double get_Distance(Point<p_type> const &point_B) {
-			return sqrt(SQUARE_IT((point_B.x - this->x)) + SQUARE_IT((point_B.y - this->y)) + SQUARE_IT((point_B.z-this->z)));
+			return sqrt(SQUARE_IT((point_B.x - this->x)) + SQUARE_IT((point_B.y - this->y)) + SQUARE_IT((point_B.z - this->z)));
 		}
 		double get_Slope(Point<p_type> const &point_B) {
 			return (point_B.y - this->y) / (point_B.x - this->x);
@@ -103,7 +104,7 @@ namespace Math {
 		double get_Magnitude() {
 			return sqrt((SQUARE_IT(this->x)) + (SQUARE_IT(this->y)) + (SQUARE_IT(this->z)));
 		}
-	
+
 	};
 	template<class p_type> double X_Linear_Interpolation(Point<p_type> const &A, Point<p_type> const &B, p_type y_value) {
 		return (((y_value - A.y)*(B.x - A.x)) / (B.y - A.y) + A.x);
@@ -113,13 +114,13 @@ namespace Math {
 	}
 	void Quadratic_Equation(double const &a, double const &b, double const &c, double &result_root_a, double &result_root_b) {
 		result_root_a = (-b + std::sqrt(((SQUARE_IT(b)) - 4 * a*c))) / 2 * a;
-		result_root_b = ((-b - std::sqrt(((SQUARE_IT(b)) - 4 * a*c))) )/ 2 * a;
+		result_root_b = ((-b - std::sqrt(((SQUARE_IT(b)) - 4 * a*c)))) / 2 * a;
 	}
 	template<class p_type> double Point_Dot_Product(Point<p_type> const &A, Point<p_type> const &B) {
 		return A.x*B.x + A.y*B.y + A.z*B.z;
 	}
 	template<class p_type> std::ostream &operator<<(std::ostream &out, Point< p_type> const &body) {
-		out << "[ " << body.x << ", " << body.y<<", "<<body.z<<" ]";
+		out << "[ " << body.x << ", " << body.y << ", " << body.z << " ]";
 		return out;
 	}
 	template<class p_type> std::ostream &operator<<(std::ostream &out, std::vector<Point< p_type> > const &body) {
@@ -131,384 +132,410 @@ namespace Math {
 
 
 
-//matirx ops
+	//matirx ops
 
 
-template<class MType> class Matrix {
+	template<class MType> class Matrix {
 
-public:
-	Matrix(int Rows, int Cols) {
-		Matrix_Body = std::vector<std::vector<MType> >(Rows, std::vector<MType>(Cols));
-		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < Cols; j++) {
-				Matrix_Body[i][j] = 0;
-			}
-		}
-		this->Rows = Rows;
-		this->Cols = Cols;
-	}
-	Matrix(int N, char x = IDENTITY_MATRIX) {
-		Matrix_Body = std::vector<std::vector<MType> >(N, std::vector<MType>(N));
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				Matrix_Body[i][j] = 0;
-				if (i == j) {
-					Matrix_Body[i][j] = 1;
+	public:
+		Matrix(int Rows, int Cols) {
+			Matrix_Body = std::vector<std::vector<MType> >(Rows, std::vector<MType>(Cols));
+			for (int i = 0; i < Rows; i++) {
+				for (int j = 0; j < Cols; j++) {
+					Matrix_Body[i][j] = 0;
 				}
 			}
+			this->Rows = Rows;
+			this->Cols = Cols;
 		}
-		this->Rows = N;
-		this->Cols = N;
-	}
-	Matrix() {
-		this->Rows = 0;
-		this->Cols = 0;
-	}
-	~Matrix() {};
-	int getRows() { return Rows; }
-	int getCols() { return Cols; }
-	void setRows(int &Rows) { this->Rows = Rows; }
-	void setCols(int &Cols) { this->Cols = Cols; }
-	std::vector<MType> &operator[](int a) {
-		return Matrix_Body[a];
-	}
-	void operator=(Matrix<MType> B) {
-		this->Rows = B.getRows();
-		this->Cols = B.getCols();
-		this->Matrix_Body = std::vector<std::vector<MType> >(Rows, std::vector<MType>(Cols));
-		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < Cols; j++) {
-				Matrix_Body[i][j] = B[i][j];
-			}
-		}
-
-	}
-	void operator+(Matrix<MType> &B);
-	void operator-(Matrix<MType> &B);
-	void Dot_Product(Matrix<MType> &B);
-	void Matrix_Transpose();
-	void Multiply_By_Scalar(int const &scalar);
-	Matrix<MType> Hadamard_Product(Matrix<MType> &Mul_By);
-	Matrix<MType> Kronecker_Product(Matrix<MType> &Mul_By);
-	void Horizontal_Matrix_Concatenation(Matrix<MType> &To_HConcat);
-	void Convolve(Matrix<int> &Mask, int mask_h, int mask_w);
-	template<class MType> friend std::ostream &operator<<(std::ostream &out, Matrix<MType> const &mat);
-
-protected:
-	std::vector<std::vector<MType> > Matrix_Body;
-	int Rows, Cols;
-
-};
-template<class MType> std::ostream &operator<<(std::ostream &out, Matrix<MType> const &mat) {
-	for (int i = 0; i < mat.Rows; i++) {
-		for (int j = 0; j < mat.Cols; j++) {
-			out << mat.Matrix_Body[i][j] << " ";
-		}
-		out << "\n";
-	}
-	return out;
-}
-template<class MType> void Matrix<MType>::Matrix_Transpose() {
-
-
-	Matrix<MType> temp(Cols, Rows);
-
-
-
-	for (int i = 0; i < Cols; i++) {
-		for (int j = 0; j < Rows; j++) {
-			temp[i][j] = Matrix_Body[j][i];
-		}
-	}
-	*this = temp;
-}
-
-template<class MType> void Matrix<MType>::Multiply_By_Scalar(int const &scalar) {
-	for (int i = 0; i < Rows; i++) {
-		for (int j = 0; j < Cols; j++) {
-			Matrix_Body[i][j] *= scalar;
-		}
-	}
-}
-
-template<class MType> void Matrix<MType>::operator+(Matrix<MType> &B) {
-	if (Rows != B.getRows() || Cols != B.getCols()) {
-		return;
-	}
-	else {
-		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < Cols; j++) {
-				Matrix_Body[i][j] += B[i][j];
-			}
-		}
-	}
-}
-
-template<class MType> void Matrix<MType>::operator-(Matrix<MType> &B) {
-	if (Rows != B.getRows() || Cols != B.getCols()) {
-		return;
-	}
-	else {
-		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < Cols; j++) {
-				Matrix_Body[i][j] -= B[i][j];
-			}
-		}
-	}
-}
-
-template<class MType> void Matrix<MType>::Dot_Product(Matrix<MType> &B) {
-
-	if (Cols != B.getRows()) {
-		return;
-
-	}
-	else {
-		MType sum = 0;
-		Matrix<MType> temp(Rows, B.getCols());
-		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < B.getCols(); j++) {
-				for (int k = 0; k < Cols; k++) {
-					sum += Matrix_Body[i][k] * B[k][j];
-
+		Matrix(int N, char x = IDENTITY_MATRIX) {
+			Matrix_Body = std::vector<std::vector<MType> >(N, std::vector<MType>(N));
+			for (int i = 0; i < N; i++) {
+				for (int j = 0; j < N; j++) {
+					Matrix_Body[i][j] = 0;
+					if (i == j) {
+						Matrix_Body[i][j] = 1;
+					}
 				}
-				temp[i][j] = sum;
-				sum = 0;
+			}
+			this->Rows = N;
+			this->Cols = N;
+		}
+		Matrix() {
+			this->Rows = 0;
+			this->Cols = 0;
+		}
+		~Matrix() {};
+		int getRows() { return Rows; }
+		int getCols() { return Cols; }
+		void setRows(int &Rows) { this->Rows = Rows; }
+		void setCols(int &Cols) { this->Cols = Cols; }
+		std::vector<MType> &operator[](int a) {
+			return Matrix_Body[a];
+		}
+		void operator=(Matrix<MType> B) {
+			this->Rows = B.getRows();
+			this->Cols = B.getCols();
+			this->Matrix_Body = std::vector<std::vector<MType> >(Rows, std::vector<MType>(Cols));
+			for (int i = 0; i < Rows; i++) {
+				for (int j = 0; j < Cols; j++) {
+					Matrix_Body[i][j] = B[i][j];
+				}
+			}
+
+		}
+		void operator+(Matrix<MType> &B);
+		void operator-(Matrix<MType> &B);
+		void Dot_Product(Matrix<MType> &B);
+		void Matrix_Transpose();
+		void Multiply_By_Scalar(int const &scalar);
+		Matrix<MType> Hadamard_Product(Matrix<MType> &Mul_By);
+		Matrix<MType> Kronecker_Product(Matrix<MType> &Mul_By);
+		void Horizontal_Matrix_Concatenation(Matrix<MType> &To_HConcat);
+		void Convolve(Matrix<int> &Mask, int mask_h, int mask_w);
+		template<class MType> friend std::ostream &operator<<(std::ostream &out, Matrix<MType> const &mat);
+
+	protected:
+		std::vector<std::vector<MType> > Matrix_Body;
+		int Rows, Cols;
+
+	};
+	template<class MType> std::ostream &operator<<(std::ostream &out, Matrix<MType> const &mat) {
+		for (int i = 0; i < mat.Rows; i++) {
+			for (int j = 0; j < mat.Cols; j++) {
+				out << mat.Matrix_Body[i][j] << " ";
+			}
+			out << "\n";
+		}
+		return out;
+	}
+	template<class MType> void Matrix<MType>::Matrix_Transpose() {
+
+
+		Matrix<MType> temp(Cols, Rows);
+
+
+
+		for (int i = 0; i < Cols; i++) {
+			for (int j = 0; j < Rows; j++) {
+				temp[i][j] = Matrix_Body[j][i];
 			}
 		}
 		*this = temp;
 	}
 
-}
-
-template<class MType> Matrix<MType> Matrix<MType>::Hadamard_Product(Matrix<MType> &Mul_By) {
-
-	if (Cols != Mul_By.getRows() || Rows != Mul_By.getRows()) {
-		return;
-
-	}
-	else {
-		Matrix<MType> Result(Rows, Cols);
-		MType sum = 0;
-
+	template<class MType> void Matrix<MType>::Multiply_By_Scalar(int const &scalar) {
 		for (int i = 0; i < Rows; i++) {
-			for (int j = 0; j < Mul_By.getCols(); j++) {
-				Result[i][j] = Matrix_Body[i][j] * Mul_By.mat[i][j];
-			}
-		}
-		return Result;
-
-	}
-}
-
-template<class MType> Matrix<MType> Matrix<MType>::Kronecker_Product(Matrix<MType> &Mul_By) {
-	Matrix<MType> Kronecker(Rows*Mul_By.getRows(), Cols*Mul_By.getCols());
-	int startRow, startCol;
-	for (int i = 0; i < Rows; i++) {
-		for (int j = 0; j < Cols; j++) {
-			startRow = i * Mul_By.getRows();
-			startCol = j * Mul_By.getCols();
-			for (int k = 0; k < Mul_By.getRows(); k++) {
-				for (int l = 0; l < Mul_By.getCols(); l++) {
-					Kronecker[startRow + k][startCol + l] = Matrix_Body[i][j] * Mul_By[k][l];
-				}
+			for (int j = 0; j < Cols; j++) {
+				Matrix_Body[i][j] *= scalar;
 			}
 		}
 	}
-	return Kronecker;
 
-}
-
-template<class MType> void Matrix<MType>::Horizontal_Matrix_Concatenation(Matrix<MType> &To_HConcat) {
-	if (this->Rows != To_HConcat.getRows())
-		return;
-
-	int  i, j, k, l = 0;
-	Matrix<MType> ConcatH(Rows, Cols + To_HConcat.getCols());
-
-	for (i = 0; i < Rows; i++) {
-		for (j = 0; j < Cols; j++) {
-			ConcatH[i][l] = Matrix_Body[i][j];
-			l++;
-		}
-		for (k = 0; k < To_HConcat.getCols(); k++) {
-			ConcatH[i][l] = To_HConcat[i][k];
-			l++;
-		}
-		l = 0;
-	}
-	*this = ConcatH;
-}
-
-
-template<class MType> void Matrix<MType>::Convolve(Matrix<int> &Mask, int mask_h, int mask_w) {
-
-	Matrix<MType> sample(mask_h, mask_w);
-	int accumulator = 0;
-	for (int i = 0; i < this->Rows; i++) {
-		for (int j = 0; j < this->Cols; j++) {
-			for (int k = -(mask_h / 2); k < (mask_h / 2); k++) {
-				for (int m = -(mask_w / 2); m < (mask_w / 2); m++) {
-
-					if (i + k < 0 && j + m < 0) {
-						sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[this->Rows + k][this->Cols + m];
-
-					}
-					else if (i + k < 0 && j + m > 0) {
-						sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[this->Rows + k][j + m];
-
-					}
-					else if (j + m < 0 && i + k > 0) {
-						sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[i + k][this->Cols + m];
-
-					}//till here before
-					else if (i + k >= Rows && j + m >= Cols) {
-						sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[(i + k) - Rows][(j + m) - Cols];
-					}
-					else if (i + k >= Rows && j + m < Cols) {
-						sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[(i + k) - Rows][j + m];
-
-					}
-					else if (i + k < Rows && j + m >= Cols) {
-						sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[i + k][(j + m) - Cols];
-
-					}
-					else {
-						sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[i + k][j + m];
-
-					}
-
-				}
-			}
-			Mask.Matrix_Transpose();
-			for (int k = 0; k < mask_h; k++) {
-				for (int m = 0; m < mask_w; m++) {
-					accumulator = +sample[k][m] * Mask[k][m];
-				}
-			}
-
-			Matrix_Body[i][j] = accumulator;
-			accumulator = 0;
-
-		}
-	}
-
-}
-
-
-class LA_Masks {
-public:
-	LA_Masks() {
-		Roberts_Mask_3x3 = Matrix<int>(3, 3);
-		Sobel_Mask_3x3 = Matrix<int>(3, 3);
-		Identity_3x3 = Matrix<int>(3, 3);
-		Sharpen_3x3 = Matrix<int>(3, 3);
-		Gaussian_Blur_3x3 = Matrix<double>(3, 3);
-
-		Roberts_Mask_3x3[0][0] = 0;
-		Roberts_Mask_3x3[0][1] = 0;
-		Roberts_Mask_3x3[0][2] = 0;
-		Roberts_Mask_3x3[1][0] = 0;
-		Roberts_Mask_3x3[1][1] = 0;
-		Roberts_Mask_3x3[1][2] = 1;
-		Roberts_Mask_3x3[2][0] = 0;
-		Roberts_Mask_3x3[2][1] = -1;
-		Roberts_Mask_3x3[2][2] = 0;
-
-		Sobel_Mask_3x3[0][0] = -1;
-		Sobel_Mask_3x3[0][1] = 0;
-		Sobel_Mask_3x3[0][2] = 1;
-		Sobel_Mask_3x3[1][0] = -2;
-		Sobel_Mask_3x3[1][1] = 0;
-		Sobel_Mask_3x3[1][2] = 2;
-		Sobel_Mask_3x3[2][0] = -1;
-		Sobel_Mask_3x3[2][1] = 0;
-		Sobel_Mask_3x3[2][2] = 1;
-
-		Identity_3x3[0][0] = 0;
-		Identity_3x3[0][1] = 0;
-		Identity_3x3[0][2] = 0;
-		Identity_3x3[1][0] = 0;
-		Identity_3x3[1][1] = 1;
-		Identity_3x3[1][2] = 0;
-		Identity_3x3[2][0] = 0;
-		Identity_3x3[2][1] = 0;
-		Identity_3x3[2][2] = 0;
-
-		Sharpen_3x3[0][0] = 0;
-		Sharpen_3x3[0][1] = -1;
-		Sharpen_3x3[0][2] = 0;
-		Sharpen_3x3[1][0] = -1;
-		Sharpen_3x3[1][1] = 5;
-		Sharpen_3x3[1][2] = -1;
-		Sharpen_3x3[2][0] = 0;
-		Sharpen_3x3[2][1] = -1;
-		Sharpen_3x3[2][2] = 0;
-
-
-		Gaussian_Blur_3x3[0][0] = 1 / 16;
-		Gaussian_Blur_3x3[0][1] = 1 / 8;
-		Gaussian_Blur_3x3[0][2] = 1 / 16;
-		Gaussian_Blur_3x3[1][0] = 1 / 8;
-		Gaussian_Blur_3x3[1][1] = 1 / 4;
-		Gaussian_Blur_3x3[1][2] = 1 / 8;
-		Gaussian_Blur_3x3[2][0] = 1 / 16;
-		Gaussian_Blur_3x3[2][1] = 1 / 8;
-		Gaussian_Blur_3x3[2][2] = 1 / 16;
-
-
-
-	}
-	Matrix<int> Roberts_Mask_3x3;
-	Matrix<int> Sobel_Mask_3x3;
-	Matrix<int> Identity_3x3;
-	Matrix<int> Sharpen_3x3;
-	Matrix<double> Gaussian_Blur_3x3;
-
-};
-
-
-
-
-//symbolic
-
-
-class Monomial {
-public:
-	double Degree;
-	double Coefficient;
-	double Pry;
-	bool is_monom;
-	bool is_cos, is_sin, is_tan, is_lan, is_E;
-
-	Monomial();
-	Monomial(int const &Coeff,int const &Deg);
-	Monomial(int const &Coeff);
-	Monomial(std:: string const &form);
-	friend std::ostream &operator<<(std::ostream &out, Monomial const &source);
-	 int operator+(Monomial const&b);
-	 void operator-(Monomial const&b);
-	 void operator*( Monomial const&b);
-	 void operator^( int const&b);
-	 void operator/(Monomial const &b);
-	 void Derive();
-	 void Derive(int const &mag);
-	 double operator[](double const &x_value);
-	 
-};
-
-
-void get_Cof_Deg(std::string const &to_parse,double &cof, double &deg) {
-	std::stringstream ss, ss2;
-	std::string via, via2;
-	std::size_t pos;
-	pos = to_parse.find("*");
-	if (pos == std::string::npos) {
-		pos = to_parse.find("x");
-		if (pos == std::string::npos) {
+	template<class MType> void Matrix<MType>::operator+(Matrix<MType> &B) {
+		if (Rows != B.getRows() || Cols != B.getCols()) {
 			return;
 		}
 		else {
+			for (int i = 0; i < Rows; i++) {
+				for (int j = 0; j < Cols; j++) {
+					Matrix_Body[i][j] += B[i][j];
+				}
+			}
+		}
+	}
+
+	template<class MType> void Matrix<MType>::operator-(Matrix<MType> &B) {
+		if (Rows != B.getRows() || Cols != B.getCols()) {
+			return;
+		}
+		else {
+			for (int i = 0; i < Rows; i++) {
+				for (int j = 0; j < Cols; j++) {
+					Matrix_Body[i][j] -= B[i][j];
+				}
+			}
+		}
+	}
+
+	template<class MType> void Matrix<MType>::Dot_Product(Matrix<MType> &B) {
+
+		if (Cols != B.getRows()) {
+			return;
+
+		}
+		else {
+			MType sum = 0;
+			Matrix<MType> temp(Rows, B.getCols());
+			for (int i = 0; i < Rows; i++) {
+				for (int j = 0; j < B.getCols(); j++) {
+					for (int k = 0; k < Cols; k++) {
+						sum += Matrix_Body[i][k] * B[k][j];
+
+					}
+					temp[i][j] = sum;
+					sum = 0;
+				}
+			}
+			*this = temp;
+		}
+
+	}
+
+	template<class MType> Matrix<MType> Matrix<MType>::Hadamard_Product(Matrix<MType> &Mul_By) {
+
+		if (Cols != Mul_By.getRows() || Rows != Mul_By.getRows()) {
+			return;
+
+		}
+		else {
+			Matrix<MType> Result(Rows, Cols);
+			MType sum = 0;
+
+			for (int i = 0; i < Rows; i++) {
+				for (int j = 0; j < Mul_By.getCols(); j++) {
+					Result[i][j] = Matrix_Body[i][j] * Mul_By.mat[i][j];
+				}
+			}
+			return Result;
+
+		}
+	}
+
+	template<class MType> Matrix<MType> Matrix<MType>::Kronecker_Product(Matrix<MType> &Mul_By) {
+		Matrix<MType> Kronecker(Rows*Mul_By.getRows(), Cols*Mul_By.getCols());
+		int startRow, startCol;
+		for (int i = 0; i < Rows; i++) {
+			for (int j = 0; j < Cols; j++) {
+				startRow = i * Mul_By.getRows();
+				startCol = j * Mul_By.getCols();
+				for (int k = 0; k < Mul_By.getRows(); k++) {
+					for (int l = 0; l < Mul_By.getCols(); l++) {
+						Kronecker[startRow + k][startCol + l] = Matrix_Body[i][j] * Mul_By[k][l];
+					}
+				}
+			}
+		}
+		return Kronecker;
+
+	}
+
+	template<class MType> void Matrix<MType>::Horizontal_Matrix_Concatenation(Matrix<MType> &To_HConcat) {
+		if (this->Rows != To_HConcat.getRows())
+			return;
+
+		int  i, j, k, l = 0;
+		Matrix<MType> ConcatH(Rows, Cols + To_HConcat.getCols());
+
+		for (i = 0; i < Rows; i++) {
+			for (j = 0; j < Cols; j++) {
+				ConcatH[i][l] = Matrix_Body[i][j];
+				l++;
+			}
+			for (k = 0; k < To_HConcat.getCols(); k++) {
+				ConcatH[i][l] = To_HConcat[i][k];
+				l++;
+			}
+			l = 0;
+		}
+		*this = ConcatH;
+	}
+
+
+	template<class MType> void Matrix<MType>::Convolve(Matrix<int> &Mask, int mask_h, int mask_w) {
+
+		Matrix<MType> sample(mask_h, mask_w);
+		int accumulator = 0;
+		for (int i = 0; i < this->Rows; i++) {
+			for (int j = 0; j < this->Cols; j++) {
+				for (int k = -(mask_h / 2); k < (mask_h / 2); k++) {
+					for (int m = -(mask_w / 2); m < (mask_w / 2); m++) {
+
+						if (i + k < 0 && j + m < 0) {
+							sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[this->Rows + k][this->Cols + m];
+
+						}
+						else if (i + k < 0 && j + m > 0) {
+							sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[this->Rows + k][j + m];
+
+						}
+						else if (j + m < 0 && i + k > 0) {
+							sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[i + k][this->Cols + m];
+
+						}//till here before
+						else if (i + k >= Rows && j + m >= Cols) {
+							sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[(i + k) - Rows][(j + m) - Cols];
+						}
+						else if (i + k >= Rows && j + m < Cols) {
+							sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[(i + k) - Rows][j + m];
+
+						}
+						else if (i + k < Rows && j + m >= Cols) {
+							sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[i + k][(j + m) - Cols];
+
+						}
+						else {
+							sample[k + (mask_h / 2)][m + (mask_h / 2)] = Matrix_Body[i + k][j + m];
+
+						}
+
+					}
+				}
+				Mask.Matrix_Transpose();
+				for (int k = 0; k < mask_h; k++) {
+					for (int m = 0; m < mask_w; m++) {
+						accumulator = +sample[k][m] * Mask[k][m];
+					}
+				}
+
+				Matrix_Body[i][j] = accumulator;
+				accumulator = 0;
+
+			}
+		}
+
+	}
+
+
+	class LA_Masks {
+	public:
+		LA_Masks() {
+			Roberts_Mask_3x3 = Matrix<int>(3, 3);
+			Sobel_Mask_3x3 = Matrix<int>(3, 3);
+			Identity_3x3 = Matrix<int>(3, 3);
+			Sharpen_3x3 = Matrix<int>(3, 3);
+			Gaussian_Blur_3x3 = Matrix<double>(3, 3);
+
+			Roberts_Mask_3x3[0][0] = 0;
+			Roberts_Mask_3x3[0][1] = 0;
+			Roberts_Mask_3x3[0][2] = 0;
+			Roberts_Mask_3x3[1][0] = 0;
+			Roberts_Mask_3x3[1][1] = 0;
+			Roberts_Mask_3x3[1][2] = 1;
+			Roberts_Mask_3x3[2][0] = 0;
+			Roberts_Mask_3x3[2][1] = -1;
+			Roberts_Mask_3x3[2][2] = 0;
+
+			Sobel_Mask_3x3[0][0] = -1;
+			Sobel_Mask_3x3[0][1] = 0;
+			Sobel_Mask_3x3[0][2] = 1;
+			Sobel_Mask_3x3[1][0] = -2;
+			Sobel_Mask_3x3[1][1] = 0;
+			Sobel_Mask_3x3[1][2] = 2;
+			Sobel_Mask_3x3[2][0] = -1;
+			Sobel_Mask_3x3[2][1] = 0;
+			Sobel_Mask_3x3[2][2] = 1;
+
+			Identity_3x3[0][0] = 0;
+			Identity_3x3[0][1] = 0;
+			Identity_3x3[0][2] = 0;
+			Identity_3x3[1][0] = 0;
+			Identity_3x3[1][1] = 1;
+			Identity_3x3[1][2] = 0;
+			Identity_3x3[2][0] = 0;
+			Identity_3x3[2][1] = 0;
+			Identity_3x3[2][2] = 0;
+
+			Sharpen_3x3[0][0] = 0;
+			Sharpen_3x3[0][1] = -1;
+			Sharpen_3x3[0][2] = 0;
+			Sharpen_3x3[1][0] = -1;
+			Sharpen_3x3[1][1] = 5;
+			Sharpen_3x3[1][2] = -1;
+			Sharpen_3x3[2][0] = 0;
+			Sharpen_3x3[2][1] = -1;
+			Sharpen_3x3[2][2] = 0;
+
+
+			Gaussian_Blur_3x3[0][0] = 1 / 16;
+			Gaussian_Blur_3x3[0][1] = 1 / 8;
+			Gaussian_Blur_3x3[0][2] = 1 / 16;
+			Gaussian_Blur_3x3[1][0] = 1 / 8;
+			Gaussian_Blur_3x3[1][1] = 1 / 4;
+			Gaussian_Blur_3x3[1][2] = 1 / 8;
+			Gaussian_Blur_3x3[2][0] = 1 / 16;
+			Gaussian_Blur_3x3[2][1] = 1 / 8;
+			Gaussian_Blur_3x3[2][2] = 1 / 16;
+
+
+
+		}
+		Matrix<int> Roberts_Mask_3x3;
+		Matrix<int> Sobel_Mask_3x3;
+		Matrix<int> Identity_3x3;
+		Matrix<int> Sharpen_3x3;
+		Matrix<double> Gaussian_Blur_3x3;
+
+	};
+
+
+
+
+	//symbolic
+
+
+	class Monomial {
+	public:
+		double Degree;
+		double Coefficient;
+		double Pry;
+		bool is_monom;
+		bool is_cos, is_sin, is_tan, is_lan, is_E;
+
+		Monomial();
+		Monomial(int const &Coeff, int const &Deg);
+		Monomial(int const &Coeff);
+		Monomial(std::string const &form);
+		friend std::ostream &operator<<(std::ostream &out, Monomial const &source);
+		int operator+(Monomial const&b);
+		void operator-(Monomial const&b);
+		void operator*(Monomial const&b);
+		void operator^(int const&b);
+		void operator/(Monomial const &b);
+		void Derive();
+		void Derive(int const &mag);
+		double operator[](double const &x_value);
+
+	};
+
+
+	void get_Cof_Deg(std::string const &to_parse, double &cof, double &deg) {
+		std::stringstream ss, ss2;
+		std::string via, via2;
+		std::size_t pos;
+		pos = to_parse.find("*");
+		if (pos == std::string::npos) {
+			pos = to_parse.find("x");
+			if (pos == std::string::npos) {
+				return;
+			}
+			else {
+				if (to_parse[pos + 1] == '^') {
+					pos += 2;
+					for (std::size_t i = pos; i < to_parse.size(); i++) {
+						ss << to_parse[i];
+					}
+					via = ss.str();
+					ss.str(std::string());
+					deg = std::stod(via.c_str());
+
+					cof = 1;
+					return;
+				}
+				else {
+					cof = 1;
+					deg = 1;
+				}
+			}
+		}
+		else {
+			for (std::size_t i = 0; i < pos; i++) {
+				ss << to_parse[i];
+			}
+			via = ss.str();
+			ss.str(std::string());
+			cof = atoi(via.c_str());
+			pos = to_parse.find("x");
 			if (to_parse[pos + 1] == '^') {
 				pos += 2;
 				for (std::size_t i = pos; i < to_parse.size(); i++) {
@@ -516,1223 +543,1198 @@ void get_Cof_Deg(std::string const &to_parse,double &cof, double &deg) {
 				}
 				via = ss.str();
 				ss.str(std::string());
-				deg = std::stod(via.c_str());
-				
-				cof = 1;
+				std::string::size_type sz;
+				deg = std::stod(via, &sz);
 				return;
 			}
 			else {
-				cof = 1;
 				deg = 1;
+				return;
 			}
 		}
 	}
-	else {
-		for (std::size_t i = 0; i < pos; i++) {
-			ss << to_parse[i];
-		}
-		via = ss.str();
-		ss.str(std::string());
-		cof = atoi(via.c_str());
-		pos = to_parse.find("x");
-		if (to_parse[pos + 1] == '^') {
-			pos += 2;
-			for (std::size_t i = pos; i < to_parse.size(); i++) {
-				ss << to_parse[i];
-			}
-			via = ss.str();
-			ss.str(std::string());
-			std::string::size_type sz;
-			deg = std::stod(via,&sz);
-			return;
-		}
-		else {
-			deg = 1;
-			return;
-		}
-	}
-}
-Monomial::Monomial() {
-	this->Degree = 0;
-	this->Coefficient = 0;
-	is_cos = is_sin = is_tan = is_lan = is_E = false;
-	is_monom = false;
-}
-Monomial::Monomial(int const &Coeff, int const &Deg) {
-	this->Coefficient = Coeff;
-	this->Degree = Deg;
-	is_cos = is_sin = is_tan = is_lan = is_E = false;
-	is_monom = true;
-	this->Pry = 1;
-}
-Monomial::Monomial(int const &Coeff) {
-	this->Degree = 1;
-	this->Coefficient = Coeff;
-	is_cos = is_sin = is_tan = is_lan = is_E = false;
-	is_monom = true;
-	this->Pry = 1;
-}
-Monomial::Monomial(std::string const &form) {
-	is_cos = is_sin = is_tan = is_lan = is_E = false;
-	is_monom = false;
-	this->Pry = 1;
-	std::size_t pos, endp;
-	std::stringstream ss, ss2;
-	std::string via, via2,subs;
-	double DEG,i=0;
-	double COF;
-	if (form.find("cos(") != std::string::npos) {
-		this->is_cos = true;
-		pos = form.find("cos(");
-		if (pos > 0) {
-			if (form[pos - 1] == '*') {
-				for (std::size_t i = 0; i < pos - 1; i++) {
-					ss << form[i];
-				}
-				via = ss.str();
-				this->Pry = atoi(via.c_str());
-
-				pos += 3;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-			else {
-				pos += 3;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-		}
-		else {
-			pos += 3;
-			endp = form.find(")", pos);
-			subs = form.substr(pos + 1, endp - 1);
-			get_Cof_Deg(subs, COF, DEG);
-			this->Degree = DEG;
-			this->Coefficient = COF;
-		}
-
-	}
-	else if (form.find("sin(") != std::string::npos) {
-		this->is_sin = true;
-		pos = form.find("sin(");
-		if (pos > 0) {
-			if (form[pos - 1] == '*') {
-				for (std::size_t i = 0; i < pos - 1; i++) {
-					ss << form[i];
-				}
-				via = ss.str();
-				this->Pry = atoi(via.c_str());
-
-				pos += 3;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-			else {
-				pos += 3;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-		}
-		else {
-			pos += 3;
-			endp = form.find(")", pos);
-			subs = form.substr(pos + 1, endp - 1);
-			get_Cof_Deg(subs, COF, DEG);
-			this->Degree = DEG;
-			this->Coefficient = COF;
-		}
-	}
-	else if (form.find("tan(") != std::string::npos) {
-		this->is_tan = true;
-		pos = form.find("tan(");
-		if (pos > 0) {
-			if (form[pos - 1] == '*') {
-				for (std::size_t i = 0; i < pos - 1; i++) {
-					ss << form[i];
-				}
-				via = ss.str();
-				this->Pry = atoi(via.c_str());
-
-				pos += 3;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-			else {
-				pos += 3;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-		}
-		else {
-			pos += 3;
-			endp = form.find(")", pos);
-			subs = form.substr(pos + 1, endp - 1);
-			get_Cof_Deg(subs, COF, DEG);
-			this->Degree = DEG;
-			this->Coefficient = COF;
-		}
-	}
-	else if (form.find("ln(") != std::string::npos) {
-		this->is_lan = true;
-		pos = form.find("ln(");
-		if (pos > 0) {
-			if (form[pos - 1] == '*') {
-				for (std::size_t i = 0; i < pos - 1; i++) {
-					ss << form[i];
-				}
-				via = ss.str();
-				this->Pry = atoi(via.c_str());
-
-				pos += 2;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-			else {
-				pos += 3;
-				endp = form.find(")", pos);
-				subs = form.substr(pos + 1, endp - 1);
-				get_Cof_Deg(subs, COF, DEG);
-				this->Degree = DEG;
-				this->Coefficient = COF;
-			}
-		}
-		else {
-			pos += 3;
-			endp = form.find(")", pos);
-			subs = form.substr(pos + 1, endp - 1);
-			get_Cof_Deg(subs, COF, DEG);
-			this->Degree = DEG;
-			this->Coefficient = COF;
-		}
-	}
-	else {
-		this->is_monom = true;
-		get_Cof_Deg(form, COF, DEG);
-		this->Degree = DEG;
-		this->Coefficient = COF;
-	}
-
-
-}
-
-std::ostream &operator<<(std::ostream &out, Monomial const &source) {
-	if (source.is_cos == true) {
-		if (source.Pry > 1) {
-			std::cout <<source.Pry <<"*cos(";
-
-		}
-		else {
-			std::cout << "cos(";
-		}
-		if (source.Degree == 0) {
-			out << source.Coefficient;
-			std::cout << ")";
-
-			return out;
-
-		}
-		else if (source.Degree == 1) {
-			if (source.Coefficient == 1) {
-				out << "X";
-				std::cout << ")";
-
-				return out;
-			}
-			else {
-				out << source.Coefficient << "*X";
-				std::cout << ")";
-
-				return out;
-			}
-
-
-		}
-		else {
-			out << source.Coefficient << "*X^" << source.Degree;
-			std::cout << ")";
-
-			return out;
-		}
-	}
-	else if (source.is_sin == true) {
-		if (source.Pry == 1) {
-			std::cout << "sin(";
-		}
-		else {
-			std::cout <<source.Pry << "*sin(";
-
-		}
-		if (source.Degree == 0) {
-			out << source.Coefficient;
-			std::cout << ")";
-
-			return out;
-
-		}
-		else if (source.Degree == 1) {
-			if (source.Coefficient == 1) {
-				out << "X";
-				std::cout << ")";
-
-				return out;
-			}
-			else {
-				out << source.Coefficient << "*X";
-				std::cout << ")";
-
-				return out;
-			}
-
-
-		}
-		else {
-			out << source.Coefficient << "*X^" << source.Degree;
-			std::cout << ")";
-
-			return out;
-		}
-	}
-	else if (source.is_tan == true) {
-		if (source.Pry == 1) {
-			std::cout << "tan(";
-		}
-		else {
-			std::cout<<source.Pry << "*tan(";
-
-		}
-		if (source.Degree == 0) {
-			out << source.Coefficient;
-			std::cout << ")";
-
-			return out;
-
-		}
-		else if (source.Degree == 1) {
-			if (source.Coefficient == 1) {
-				out << "X";
-				std::cout << ")";
-
-				return out;
-			}
-			else {
-				out << source.Coefficient << "*X";
-				std::cout << ")";
-
-				return out;
-			}
-
-
-		}
-		else {
-			out << source.Coefficient << "*X^" << source.Degree;
-			std::cout << ")";
-
-			return out;
-		}
-	}
-	else if (source.is_monom == true) {
-		if (source.Degree == 0) {
-			out << source.Coefficient;
-
-			return out;
-
-		}
-		else if (source.Degree == 1) {
-			if (source.Coefficient == 1) {
-				out << "X";
-
-				return out;
-			}
-			else {
-				out << source.Coefficient << "*X";
-
-				return out;
-			}
-
-
-		}
-		else {
-			out << source.Coefficient << "*X^" << source.Degree;
-
-			return out;
-		}
-	}
-	else if (source.is_lan == true) {
-		if (source.Pry == 1) {
-			std::cout << "ln(";
-		}
-		else {
-			std::cout << source.Pry << "*ln(";
-
-		}
-		if (source.Degree == 0) {
-			out << source.Coefficient;
-			std::cout << ")";
-
-			return out;
-
-		}
-		else if (source.Degree == 1) {
-			if (source.Coefficient == 1) {
-				out << "X";
-				std::cout << ")";
-
-				return out;
-			}
-			else {
-				out << source.Coefficient << "*X";
-				std::cout << ")";
-
-				return out;
-			}
-
-		}
-		else {
-			out << source.Coefficient << "*X^" << source.Degree;
-			std::cout << ")";
-
-			return out;
-		}
-	}
-	else {
-	return out;
-}
-
-
-
-	
-	
-}
-int Monomial::operator+(Monomial const&b) {
-	if (this->is_monom == true) {
-		if (this->Degree == b.Degree) {
-			this->Coefficient += b.Coefficient;
-			return 1;
-		}
-		else {
-			return 0;
-		}
-	}
-	else {
-		if (this->Coefficient == b.Coefficient && this->Degree == this->Degree) {
-			this->Pry++;
-			return 1;
-		}
-		else {
-			return 0;
-		}
-	}
-}
-void Monomial::operator-( Monomial const&b) {
-	if (this->Degree == b.Degree) {
-		this->Coefficient -= b.Coefficient;
-	}
-	else {
-		return;
-	}
-}
-void Monomial::operator*(Monomial const&b) {
-	if (b.Degree == 0) {
-		this->Coefficient *= b.Coefficient;
-	}
-	else {
-		this->Coefficient *= b.Coefficient;
-		this->Degree += b.Degree;
-	}
-}
-void  Monomial::operator^(int const&b) {
-	if (b == 0) {
+	Monomial::Monomial() {
+		this->Degree = 0;
 		this->Coefficient = 0;
+		is_cos = is_sin = is_tan = is_lan = is_E = false;
+		is_monom = false;
+	}
+	Monomial::Monomial(int const &Coeff, int const &Deg) {
+		this->Coefficient = Coeff;
+		this->Degree = Deg;
+		is_cos = is_sin = is_tan = is_lan = is_E = false;
+		is_monom = true;
+		this->Pry = 1;
+	}
+	Monomial::Monomial(int const &Coeff) {
 		this->Degree = 1;
+		this->Coefficient = Coeff;
+		is_cos = is_sin = is_tan = is_lan = is_E = false;
+		is_monom = true;
+		this->Pry = 1;
 	}
-	else {
-		this->Degree *= b;
-		double p = this->Coefficient;
-		for (int i = 1; i < b; i++) {
-			this->Coefficient *= p;
+	Monomial::Monomial(std::string const &form) {
+		is_cos = is_sin = is_tan = is_lan = is_E = false;
+		is_monom = false;
+		this->Pry = 1;
+		std::size_t pos, endp;
+		std::stringstream ss, ss2;
+		std::string via, via2, subs;
+		double DEG, i = 0;
+		double COF;
+		if (form.find("cos(") != std::string::npos) {
+			this->is_cos = true;
+			pos = form.find("cos(");
+			if (pos > 0) {
+				if (form[pos - 1] == '*') {
+					for (std::size_t i = 0; i < pos - 1; i++) {
+						ss << form[i];
+					}
+					via = ss.str();
+					this->Pry = atoi(via.c_str());
+
+					pos += 3;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+				else {
+					pos += 3;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+			}
+			else {
+				pos += 3;
+				endp = form.find(")", pos);
+				subs = form.substr(pos + 1, endp - 1);
+				get_Cof_Deg(subs, COF, DEG);
+				this->Degree = DEG;
+				this->Coefficient = COF;
+			}
+
+		}
+		else if (form.find("sin(") != std::string::npos) {
+			this->is_sin = true;
+			pos = form.find("sin(");
+			if (pos > 0) {
+				if (form[pos - 1] == '*') {
+					for (std::size_t i = 0; i < pos - 1; i++) {
+						ss << form[i];
+					}
+					via = ss.str();
+					this->Pry = atoi(via.c_str());
+
+					pos += 3;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+				else {
+					pos += 3;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+			}
+			else {
+				pos += 3;
+				endp = form.find(")", pos);
+				subs = form.substr(pos + 1, endp - 1);
+				get_Cof_Deg(subs, COF, DEG);
+				this->Degree = DEG;
+				this->Coefficient = COF;
+			}
+		}
+		else if (form.find("tan(") != std::string::npos) {
+			this->is_tan = true;
+			pos = form.find("tan(");
+			if (pos > 0) {
+				if (form[pos - 1] == '*') {
+					for (std::size_t i = 0; i < pos - 1; i++) {
+						ss << form[i];
+					}
+					via = ss.str();
+					this->Pry = atoi(via.c_str());
+
+					pos += 3;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+				else {
+					pos += 3;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+			}
+			else {
+				pos += 3;
+				endp = form.find(")", pos);
+				subs = form.substr(pos + 1, endp - 1);
+				get_Cof_Deg(subs, COF, DEG);
+				this->Degree = DEG;
+				this->Coefficient = COF;
+			}
+		}
+		else if (form.find("ln(") != std::string::npos) {
+			this->is_lan = true;
+			pos = form.find("ln(");
+			if (pos > 0) {
+				if (form[pos - 1] == '*') {
+					for (std::size_t i = 0; i < pos - 1; i++) {
+						ss << form[i];
+					}
+					via = ss.str();
+					this->Pry = atoi(via.c_str());
+
+					pos += 2;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+				else {
+					pos += 3;
+					endp = form.find(")", pos);
+					subs = form.substr(pos + 1, endp - 1);
+					get_Cof_Deg(subs, COF, DEG);
+					this->Degree = DEG;
+					this->Coefficient = COF;
+				}
+			}
+			else {
+				pos += 3;
+				endp = form.find(")", pos);
+				subs = form.substr(pos + 1, endp - 1);
+				get_Cof_Deg(subs, COF, DEG);
+				this->Degree = DEG;
+				this->Coefficient = COF;
+			}
+		}
+		else {
+			this->is_monom = true;
+			get_Cof_Deg(form, COF, DEG);
+			this->Degree = DEG;
+			this->Coefficient = COF;
+		}
+
+
+	}
+
+	std::ostream &operator<<(std::ostream &out, Monomial const &source) {
+		if (source.is_cos == true) {
+			if (source.Pry > 1) {
+				std::cout << source.Pry << "*cos(";
+
+			}
+			else {
+				std::cout << "cos(";
+			}
+			if (source.Degree == 0) {
+				out << source.Coefficient;
+				std::cout << ")";
+
+				return out;
+
+			}
+			else if (source.Degree == 1) {
+				if (source.Coefficient == 1) {
+					out << "X";
+					std::cout << ")";
+
+					return out;
+				}
+				else {
+					out << source.Coefficient << "*X";
+					std::cout << ")";
+
+					return out;
+				}
+
+
+			}
+			else {
+				out << source.Coefficient << "*X^" << source.Degree;
+				std::cout << ")";
+
+				return out;
+			}
+		}
+		else if (source.is_sin == true) {
+			if (source.Pry == 1) {
+				std::cout << "sin(";
+			}
+			else {
+				std::cout << source.Pry << "*sin(";
+
+			}
+			if (source.Degree == 0) {
+				out << source.Coefficient;
+				std::cout << ")";
+
+				return out;
+
+			}
+			else if (source.Degree == 1) {
+				if (source.Coefficient == 1) {
+					out << "X";
+					std::cout << ")";
+
+					return out;
+				}
+				else {
+					out << source.Coefficient << "*X";
+					std::cout << ")";
+
+					return out;
+				}
+
+
+			}
+			else {
+				out << source.Coefficient << "*X^" << source.Degree;
+				std::cout << ")";
+
+				return out;
+			}
+		}
+		else if (source.is_tan == true) {
+			if (source.Pry == 1) {
+				std::cout << "tan(";
+			}
+			else {
+				std::cout << source.Pry << "*tan(";
+
+			}
+			if (source.Degree == 0) {
+				out << source.Coefficient;
+				std::cout << ")";
+
+				return out;
+
+			}
+			else if (source.Degree == 1) {
+				if (source.Coefficient == 1) {
+					out << "X";
+					std::cout << ")";
+
+					return out;
+				}
+				else {
+					out << source.Coefficient << "*X";
+					std::cout << ")";
+
+					return out;
+				}
+
+
+			}
+			else {
+				out << source.Coefficient << "*X^" << source.Degree;
+				std::cout << ")";
+
+				return out;
+			}
+		}
+		else if (source.is_monom == true) {
+			if (source.Degree == 0) {
+				out << source.Coefficient;
+
+				return out;
+
+			}
+			else if (source.Degree == 1) {
+				if (source.Coefficient == 1) {
+					out << "X";
+
+					return out;
+				}
+				else {
+					out << source.Coefficient << "*X";
+
+					return out;
+				}
+
+
+			}
+			else {
+				out << source.Coefficient << "*X^" << source.Degree;
+
+				return out;
+			}
+		}
+		else if (source.is_lan == true) {
+			if (source.Pry == 1) {
+				std::cout << "ln(";
+			}
+			else {
+				std::cout << source.Pry << "*ln(";
+
+			}
+			if (source.Degree == 0) {
+				out << source.Coefficient;
+				std::cout << ")";
+
+				return out;
+
+			}
+			else if (source.Degree == 1) {
+				if (source.Coefficient == 1) {
+					out << "X";
+					std::cout << ")";
+
+					return out;
+				}
+				else {
+					out << source.Coefficient << "*X";
+					std::cout << ")";
+
+					return out;
+				}
+
+			}
+			else {
+				out << source.Coefficient << "*X^" << source.Degree;
+				std::cout << ")";
+
+				return out;
+			}
+		}
+		else {
+			return out;
+		}
+
+
+
+
+
+	}
+	int Monomial::operator+(Monomial const&b) {
+		if (this->is_monom == true) {
+			if (this->Degree == b.Degree) {
+				this->Coefficient += b.Coefficient;
+				return 1;
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			if (this->Coefficient == b.Coefficient && this->Degree == this->Degree) {
+				this->Pry++;
+				return 1;
+			}
+			else {
+				return 0;
+			}
 		}
 	}
-}
-void Monomial::operator/(Monomial const &b) {
-	this->Coefficient /= b.Coefficient;
-	this->Degree -= b.Degree;
-}
-void Monomial::Derive() {
-	if (is_cos == true) {
-		is_cos = false;
-		is_sin = true;
-		
-		if (Degree == 1) {
-			Pry *= -Coefficient;
+	void Monomial::operator-(Monomial const&b) {
+		if (this->Degree == b.Degree) {
+			this->Coefficient -= b.Coefficient;
+		}
+		else {
 			return;
 		}
-		else if (Degree == 0) {
-			Coefficient = 0;
+	}
+	void Monomial::operator*(Monomial const&b) {
+		if (b.Degree == 0) {
+			this->Coefficient *= b.Coefficient;
 		}
 		else {
-	
+			this->Coefficient *= b.Coefficient;
+			this->Degree += b.Degree;
 		}
 	}
-	else if (is_sin == true) {
-		is_cos = true;
-		is_sin = false;
+	void  Monomial::operator^(int const&b) {
+		if (b == 0) {
+			this->Coefficient = 0;
+			this->Degree = 1;
+		}
+		else {
+			this->Degree *= b;
+			double p = this->Coefficient;
+			for (int i = 1; i < b; i++) {
+				this->Coefficient *= p;
+			}
+		}
+	}
+	void Monomial::operator/(Monomial const &b) {
+		this->Coefficient /= b.Coefficient;
+		this->Degree -= b.Degree;
+	}
+	void Monomial::Derive() {
+		if (is_cos == true) {
+			is_cos = false;
+			is_sin = true;
 
-		if (Degree == 1) {
-			Pry *= Coefficient;
+			if (Degree == 1) {
+				Pry *= -Coefficient;
+				return;
+			}
+			else if (Degree == 0) {
+				Coefficient = 0;
+			}
+			else {
+
+			}
+		}
+		else if (is_sin == true) {
+			is_cos = true;
+			is_sin = false;
+
+			if (Degree == 1) {
+				Pry *= Coefficient;
+				return;
+			}
+			else if (Degree == 0) {
+				Coefficient = 0;
+			}
+			else {
+
+			}
+		}
+		else if (is_tan == true) {
+			is_tan = false;
+			is_cos = true;
+
+			if (Degree == 1) {
+				Pry *= Coefficient;
+				Degree = -2;
+
+				return;
+			}
+			else if (Degree == 0) {
+				Coefficient = 0;
+			}
+			else {
+
+			}
+		}
+		else if (is_lan == true) {
+
+
+			if (Degree == 1) {
+				Pry *= Coefficient;
+				Degree = -1;
+				return;
+			}
+			else if (Degree == 0) {
+				Coefficient = 0;
+			}
+			else {
+
+			}
+		}
+		else if (is_monom == true) {
+			if (Degree == 1) {
+				Degree = 0;
+				return;
+			}
+			else if (Degree == 0) {
+				Coefficient = 0;
+			}
+			else {
+				this->Coefficient *= Degree;
+				this->Degree--;
+			}
+		}
+		else {
 			return;
 		}
-		else if (Degree == 0) {
-			Coefficient = 0;
-		}
-		else {
-
+	}
+	void Monomial::Derive(int const &mag) {
+		for (int i = 0; i < mag; i++) {
+			Derive();
 		}
 	}
-	else if (is_tan==true) {
-		is_tan = false;
-		is_cos = true;
+	double Monomial::operator[](double const &x_value) {
+		if (this->is_cos == true) {
+			if (Degree == 0) {
+				if (Pry == 1) {
+					return cos(Coefficient);
+				}
+				else {
+					return Pry * cos(Coefficient);
 
-		if (Degree == 1) {
-			Pry *= Coefficient;
-			Degree = -2;
+				}
+			}
+			else if (Degree == 1) {
+				if (Pry == 1) {
+					return cos(Coefficient * x_value);
+				}
+				else {
+					return Pry * cos(Coefficient * x_value);
 
-			return;
-		}
-		else if (Degree == 0) {
-			Coefficient = 0;
-		}
-		else {
-
-		}
-	}
-	else if (is_lan == true) {
-			
-
-		if (Degree == 1) {
-			Pry *= Coefficient;
-			Degree = -1;
-			return;
-		}
-		else if (Degree == 0) {
-			Coefficient = 0;
-		}
-		else {
-
-		}
-	}
-	else if (is_monom == true) {
-		if (Degree == 1) {
-			Degree = 0;
-			return;
-		}
-		else if (Degree == 0) {
-			Coefficient = 0;
-		}
-		else {
-			this->Coefficient *= Degree;
-			this->Degree--;
-		}
-	}
-	else {
-		return;
-	}
-}
-void Monomial::Derive(int const &mag) {
-	for (int i = 0; i < mag; i++) {
-		Derive();
-	}
-}
-double Monomial::operator[](double const &x_value) {
-	if (this->is_cos == true) {
-		if (Degree == 0) {
-			if (Pry == 1) {
-				return cos(Coefficient);
+				}
 			}
 			else {
-				return Pry * cos(Coefficient);
+				double t_valv = x_value;
 
+				for (int i = 1; i < Degree; i++) {
+					t_valv *= x_value;
+				}
+				t_valv *= Coefficient;
+				if (Pry == 1) {
+					return cos(t_valv);
+				}
+				else {
+					return Pry * cos(t_valv);
+
+				}
 			}
 		}
-		else if (Degree == 1) {
-			if (Pry == 1) {
-				return cos(Coefficient * x_value);
+		else if (this->is_monom == true) {
+
+			if (Degree == 0) {
+				return Coefficient;
+			}
+			else if (Degree == 1) {
+				return Coefficient * x_value;
 			}
 			else {
-				return Pry * cos(Coefficient * x_value);
+				double t_valv = x_value;
 
+				for (int i = 1; i < Degree; i++) {
+					t_valv *= x_value;
+				}
+				t_valv *= Coefficient;
+				return t_valv;
 			}
 		}
-		else {
-			double t_valv = x_value;
+		else if (this->is_tan == true) {
+			if (Degree == 0) {
+				if (Pry == 1) {
+					return std::tan(Coefficient);
+				}
+				else {
+					return Pry * std::tan(Coefficient);
 
-			for (int i = 1; i < Degree; i++) {
-				t_valv *= x_value;
+				}
+
 			}
-			t_valv *= Coefficient;
-			if (Pry == 1) {
-				return cos(t_valv);
+			else if (Degree == 1) {
+				if (Pry == 1) {
+					return std::tan(Coefficient * x_value);
+				}
+				else {
+					return Pry * std::tan(Coefficient * x_value);
+
+				}
 			}
 			else {
-				return Pry * cos(t_valv);
+				double t_valv = x_value;
 
+				for (int i = 1; i < Degree; i++) {
+					t_valv *= x_value;
+				}
+				t_valv *= Coefficient;
+				if (Pry == 1) {
+					return std::tan(t_valv);
+				}
+				else {
+					return Pry * std::tan(t_valv);
+
+				}
 			}
 		}
-	}
-	else if (this->is_monom == true) {
+		else if (this->is_lan == true) {
+			if (Degree == 0) {
+				if (Pry == 1) {
+					return std::log(Coefficient);
+				}
+				else {
+					return Pry * std::log(Coefficient);
 
-		if (Degree == 0) {
-			return Coefficient;
-		}
-		else if (Degree == 1) {
-			return Coefficient * x_value;
-		}
-		else {
-			double t_valv = x_value;
+				}
 
-			for (int i = 1; i < Degree; i++) {
-				t_valv *= x_value;
 			}
-			t_valv *= Coefficient;
-			return t_valv;
-		}
-	}
-	else if (this->is_tan == true) {
-		if (Degree == 0) {
-			if (Pry == 1) {
-				return std::tan(Coefficient);
+			else if (Degree == 1) {
+				if (Pry == 1) {
+					return std::log(Coefficient * x_value);
+				}
+				else {
+					return Pry * std::log(Coefficient * x_value);
+
+				}
 			}
 			else {
-				return Pry * std::tan(Coefficient);
+				double t_valv = x_value;
 
-			}
+				for (int i = 1; i < Degree; i++) {
+					t_valv *= x_value;
+				}
+				t_valv *= Coefficient;
+				if (Pry == 1) {
+					return std::log(t_valv);
+				}
+				else {
+					return Pry * std::log(t_valv);
 
-		}
-		else if (Degree == 1) {
-			if (Pry == 1) {
-				return std::tan(Coefficient * x_value);
-			}
-			else {
-				return Pry *  std::tan(Coefficient * x_value);
-
-			}
-		}
-		else {
-			double t_valv = x_value;
-
-			for (int i = 1; i < Degree; i++) {
-				t_valv *= x_value;
-			}
-			t_valv *= Coefficient;
-			if (Pry == 1) {
-				return std::tan(t_valv);
-			}
-			else {
-				return Pry * std::tan(t_valv);
-
+				}
 			}
 		}
-	}
-	else if (this->is_lan == true) {
-		if (Degree == 0) {
-			if (Pry == 1) {
-				return std::log(Coefficient);
+		else if (this->is_sin == true) {
+			if (Degree == 0) {
+				if (Pry == 1) {
+					return std::sin(Coefficient);
+				}
+				else {
+					return Pry * std::sin(Coefficient);
+
+				}
+
+			}
+			else if (Degree == 1) {
+				if (Pry == 1) {
+					return std::sin((Coefficient)* x_value);
+				}
+				else {
+					return Pry * std::sin(Coefficient * x_value);
+
+				}
 			}
 			else {
-				return Pry * std::log(Coefficient);
+				double t_valv = x_value;
 
-			}
+				for (int i = 1; i < Degree; i++) {
+					t_valv *= x_value;
+				}
+				t_valv *= Coefficient;
+				if (Pry == 1) {
+					return std::sin(t_valv);
+				}
+				else {
+					return Pry * std::sin(t_valv);
 
-		}
-		else if (Degree == 1) {
-			if (Pry == 1) {
-				return std::log(Coefficient * x_value);
-			}
-			else {
-				return Pry * std::log(Coefficient * x_value);
-
+				}
 			}
 		}
 		else {
-			double t_valv = x_value;
+			return 0;
+		}
 
-			for (int i = 1; i < Degree; i++) {
-				t_valv *= x_value;
-			}
-			t_valv *= Coefficient;
-			if (Pry == 1) {
-				return std::log(t_valv);
-			}
-			else {
-				return Pry *  std::log(t_valv);
+	}
 
-			}
+
+
+
+
+
+
+	class Function {
+	protected:
+
+	public:
+		std::string input;
+		std::vector<Monomial> Body;
+		std::vector<char> signs;
+
+		std::stack<char> operations;
+		std::stack<Monomial> operands;
+		Function();
+		Function(const char *function);
+		void operator=(Function const &B);
+		double operator[](double const &x_value);
+		friend std::ostream &operator<<(std::ostream &out, Function const &func);
+		void Derive();
+		void Derive(int const &mag);
+		double Get_Highest_Degree();
+		double Newton_Raphson_Method(double const &guess, double const &deg_of_accuracy, double const &check_slope);
+		Function Taylor_Polynomial(int const &derivative_n);
+		void operator+(Function const &B);
+		double Bisection(double const &a, double const &b, double const &EPSILON);
+		std::vector<double> Get_Roots(double const &EPSILON);
+		std::vector<Point<double> > Get_Polynomial_Maximum();
+		std::vector<Point<double> > Get_Polynomial_Minimum();
+		void Remove_Zero();
+
+	};
+
+	double commit_operation(char const &op, double const &a, double const &b) {
+		double sum = 0;
+		switch (op)
+		{
+		case '+':
+			sum = a + b;
+			return sum;
+			break;
+		case '-':
+			sum = a - b;
+			return sum;
+			break;
+
+		case '*':
+			sum = a * b;
+			return sum;
+			break;
+
+		case '/':
+
+			sum = a / b;
+			return sum;
+			break;
+
+		case '^':
+			sum = pow(a, b);
+			return sum;
+			break;
+
+
+
+		default:
+			return 0;
+			break;
 		}
 	}
-	else if (this->is_sin == true) {
-		if (Degree == 0) {
-			if (Pry == 1) {
-				return std::sin(Coefficient);
-			}
-			else {
-				return Pry * std::sin(Coefficient);
+	int sign_pt(char const &op) {
+		switch (op)
+		{
+		case '+':
+			return 1;
+			break;
+		case '-':
+			return 1;
+			break;
 
-			}
-			
+		case '*':
+			return 2;
+			break;
+
+		case '/':
+
+			return 2;
+			break;
+
+		case '^':
+			return 3;
+			break;
+
+
+
+		default:
+			return 0;
+			break;
 		}
-		else if (Degree == 1) {
-			if (Pry == 1) {
-				return std::sin((Coefficient) * x_value);
-			}
-			else {
-				return Pry * std::sin(Coefficient * x_value);
+	}
+	Function::Function() {
+	}
+	Function::Function(const char *function) {
+		this->input = std::string(function);
+		std::stringstream ss;
+		std::string via;
+		std::size_t pos, endp;
+		if (input.find(' ') == std::string::npos) {
 
-			}
+			operands.push(Monomial(input));
+			Body.push_back(Monomial(input));
+
 		}
 		else {
-			double t_valv = x_value;
-
-			for (int i = 1; i < Degree; i++) {
-				t_valv *= x_value;
-			}
-			t_valv *= Coefficient;
-			if (Pry == 1) {
-				return std::sin(t_valv);
-			}
-			else {
-				return Pry * std::sin(t_valv);
-
-			}
-		}
-	}
-	else {
-		return 0;
-	}
-
-}
-
-
-
-
-
-
-
-class Function {
-protected:
-
-public:
-	std::string input;
-	std::vector<Monomial> Body;
-	std::vector<char> signs;
-
-	std::stack<char> operations;
-	std::stack<Monomial> operands;
-	Function();
-	Function(const char *function);
-	void operator=(Function const &B);
-	double operator[](double const &x_value);
-	friend std::ostream &operator<<(std::ostream &out, Function const &func);
-	void Derive();
-	void Derive(int const &mag);
-	double Get_Highest_Degree();
-	double Newton_Raphson_Method(double const &guess,double const &deg_of_accuracy,double const &check_slope);
-	Function Taylor_Polynomial(int const &derivative_n);
-	void operator+(Function const &B);
-	double Bisection(double const &a, double const &b, double const &EPSILON);
-	std::vector<double> Get_Roots(double const &EPSILON);
-	std::vector<Point<double> > Get_Polynomial_Maximum();
-	std::vector<Point<double> > Get_Polynomial_Minimum();
-	void Remove_Zero();
-
-};
-
-double commit_operation(char const &op, double const &a, double const &b) {
-	double sum = 0;
-	switch (op)
-	{
-	case '+':
-		sum = a + b;
-		return sum;
-		break;
-	case '-':
-		sum = a - b;
-		return sum;
-		break;
-
-	case '*':
-		sum = a * b;
-		return sum;
-		break;
-
-	case '/':
-
-		sum = a / b;
-		return sum;
-		break;
-
-	case '^':
-		sum = pow(a, b);
-		return sum;
-		break;
-
-
-
-	default:
-		return 0;
-		break;
-	}
-}
-int sign_pt(char const &op) {
-	switch (op)
-	{
-	case '+':
-		return 1;
-		break;
-	case '-':
-		return 1;
-		break;
-
-	case '*':
-		return 2;
-		break;
-
-	case '/':
-
-		return 2;
-		break;
-
-	case '^':
-		return 3;
-		break;
-
-
-
-	default:
-		return 0;
-		break;
-	}
-}
-Function::Function() {
-}
-Function::Function(const char *function) {
-	this->input = std::string(function);
-	std::stringstream ss;
-	std::string via;
-	std::size_t pos, endp;
-	if (input.find(' ') == std::string::npos) {
-
-		operands.push(Monomial(input));
-		Body.push_back(Monomial(input));
-
-	}
-	else {
-		endp = input.find(' ');
-		pos = 0;
-		while (true) {
-			for (std::size_t i = pos; i < endp; i++) {
-				ss << input[i];
-			}
-			via = ss.str();
-			ss.str(std::string());
-			operands.push(Monomial(via));
-			Body.push_back(Monomial(via));
-			operations.push(input[endp + 1]);
-			signs.push_back(input[endp + 1]);
-			pos = endp +2;
-		
-			if (input.find(' ', pos+1) == std::string::npos) {
-				for (std::size_t i = pos + 1; i < input.size(); i++) {
+			endp = input.find(' ');
+			pos = 0;
+			while (true) {
+				for (std::size_t i = pos; i < endp; i++) {
 					ss << input[i];
 				}
 				via = ss.str();
 				ss.str(std::string());
 				operands.push(Monomial(via));
 				Body.push_back(Monomial(via));
-				break;
-			}
-			endp = input.find(' ', pos+1);
-			
-		}
-	}
+				operations.push(input[endp + 1]);
+				signs.push_back(input[endp + 1]);
+				pos = endp + 2;
 
-}
-double Function::operator[](double const &x_value) {
-	std::vector<double> infix;
-	std::stack<char> opts;
-	std::stack<double> oprnds;
-	char temp;
-	double a, b, sum;
-	unsigned k = 0;
-	for (unsigned i = 0; i < Body.size(); i++) {
-		oprnds.push(Body[i][x_value]);
-		if (k < signs.size()) {
-			if (opts.empty()) {
-				opts.push(signs[k]);
+				if (input.find(' ', pos + 1) == std::string::npos) {
+					for (std::size_t i = pos + 1; i < input.size(); i++) {
+						ss << input[i];
+					}
+					via = ss.str();
+					ss.str(std::string());
+					operands.push(Monomial(via));
+					Body.push_back(Monomial(via));
+					break;
+				}
+				endp = input.find(' ', pos + 1);
+
 			}
-			else {
-				if (sign_pt(opts.top()) < sign_pt(signs[k])) {
+		}
+
+	}
+	double Function::operator[](double const &x_value) {
+		std::vector<double> infix;
+		std::stack<char> opts;
+		std::stack<double> oprnds;
+		char temp;
+		double a, b, sum;
+		unsigned k = 0;
+		for (unsigned i = 0; i < Body.size(); i++) {
+			oprnds.push(Body[i][x_value]);
+			if (k < signs.size()) {
+				if (opts.empty()) {
 					opts.push(signs[k]);
 				}
 				else {
-					temp = opts.top();
-					opts.pop();
-					a = oprnds.top();
-					oprnds.pop();
-					b = oprnds.top();
-					oprnds.pop();
-					sum = commit_operation(temp, b, a);
-					oprnds.push(sum);
-					opts.push(signs[k]);
+					if (sign_pt(opts.top()) < sign_pt(signs[k])) {
+						opts.push(signs[k]);
+					}
+					else {
+						temp = opts.top();
+						opts.pop();
+						a = oprnds.top();
+						oprnds.pop();
+						b = oprnds.top();
+						oprnds.pop();
+						sum = commit_operation(temp, b, a);
+						oprnds.push(sum);
+						opts.push(signs[k]);
+					}
 				}
+				k++;
 			}
-			k++;
+
 		}
 
-	}
-
-	while (!opts.empty()) {
-		a = oprnds.top();
-		oprnds.pop();
-		b = oprnds.top();
-		oprnds.pop();
-		temp = opts.top();
-		opts.pop();
-		sum = commit_operation(temp, b, a);
-		oprnds.push(sum);
-	}
-	return oprnds.top();
-
-}
-void Function::operator=(Function const &B) {
-	this->Body = B.Body;
-	this->signs = B.signs;
-	this->input = B.input;
-}
-std::ostream &operator<<(std::ostream &out, Function const &func) {
-	unsigned k = 0;
-	for (unsigned i = 0; i < func.Body.size(); i++) {
-
-		out << func.Body[i] << " ";
-		if (k < func.signs.size()) {
-			out << func.signs[k] << " ";
-			k++;
+		while (!opts.empty()) {
+			a = oprnds.top();
+			oprnds.pop();
+			b = oprnds.top();
+			oprnds.pop();
+			temp = opts.top();
+			opts.pop();
+			sum = commit_operation(temp, b, a);
+			oprnds.push(sum);
 		}
-
+		return oprnds.top();
 
 	}
-	for (unsigned i = 0; i < func.Body.size(); i++) {
+	void Function::operator=(Function const &B) {
+		this->Body = B.Body;
+		this->signs = B.signs;
+		this->input = B.input;
 	}
-	return out;
-}
-void  Function::Derive() {
-	for (unsigned i = 0; i < Body.size(); i++) {
-		Body[i].Derive();
-	}
-	std::vector<Monomial>::iterator it;
-	it = Body.end();
-	it--;
-	if ((*it).Coefficient == 0 && (*it).Degree == 0) {
-		Remove_Zero();
-	}
+	std::ostream &operator<<(std::ostream &out, Function const &func) {
+		unsigned k = 0;
+		for (unsigned i = 0; i < func.Body.size(); i++) {
 
-}
-void Function::Derive(int const &mag) {
-	for (int i = 0; i < mag; i++) {
-		this->Derive();
-	}
-}
-double Function::Get_Highest_Degree() {
-	double max = 0;
-	for (auto i : Body) {
-		max < i.Degree ? max = i.Degree : max = max;
-	}
-	return max;
-}
-double Function::Newton_Raphson_Method(double const &guess, double const &deg_of_accuracy, double const &check_slope=0.5) {
-	Function f, f1;
-	double fv,f1v,x = guess,x1 = 0;
-	int critical = 100, counter = 0;
-	while(critical > counter){
-		f = *this;
-		f.Derive();
-		f1 = f;
-		f = *this;
-
-
-		fv = f[x];
-		f1v = f1[x];
-
-		if (abs(f1[x]) < check_slope) {
-		//	std::cout << "Slope is too small" << std::endl;
-			break;
-		}
-
-		x1 = x - (fv / f1v);
-
-		if ( std::abs((x1-x)/x1)< deg_of_accuracy) {
-			return  x1;
-		}
-		x = x1;
-		counter++;
-	}
-//	std::cout << "Method does not converge due to oscillation" << std::endl;
-	return 666;
-}
-
-void  Function::operator+(Function const &B) {
-	unsigned i = 0;
-	unsigned j = 0;
-	while (j <B.Body.size())
-	{
-		if (Body.size() == 0) {
-			Body.push_back(B.Body[j]);
-			return;
-		}
-		else {
-			for (i; i < this->Body.size(); i++) {
-				if ((Body[i] + B.Body[j]) == 1) {
-					j++;
-					break;
-				}
-
+			out << func.Body[i] << " ";
+			if (k < func.signs.size()) {
+				out << func.signs[k] << " ";
+				k++;
 			}
-			if (i == Body.size()) {
-				Body.push_back(B.Body[j]);
-				signs.push_back('+');
-				j++;
-			}
+
+
+		}
+		for (unsigned i = 0; i < func.Body.size(); i++) {
+		}
+		return out;
+	}
+	void  Function::Derive() {
+		for (unsigned i = 0; i < Body.size(); i++) {
+			Body[i].Derive();
+		}
+		std::vector<Monomial>::iterator it;
+		it = Body.end();
+		it--;
+		if ((*it).Coefficient == 0 && (*it).Degree == 0) {
+			Remove_Zero();
+		}
+
+	}
+	void Function::Derive(int const &mag) {
+		for (int i = 0; i < mag; i++) {
+			this->Derive();
 		}
 	}
-}
-Function Function::Taylor_Polynomial(int const &derivative_n) {
-	Function TP;
-	Function Temp = *this;
-	for (int i = 0; i < derivative_n; i++) {
-		TP + Temp;
-		Temp.Derive();
+	double Function::Get_Highest_Degree() {
+		double max = 0;
+		for (auto i : Body) {
+			max < i.Degree ? max = i.Degree : max = max;
+		}
+		return max;
 	}
-	return TP;
-}
-double Function::Bisection(double const &a, double const &b,double const &EPSILON) {
-	Function temp = *this;
-	double aa = a;
-	double bb = b;
-	if (temp[aa] * temp[bb] >= 0)
-	{
-		//std::cout << "You have not assumed right a and b\n";
+	double Function::Newton_Raphson_Method(double const &guess, double const &deg_of_accuracy, double const &check_slope = 0.5) {
+		Function f, f1;
+		double fv, f1v, x = guess, x1 = 0;
+		int critical = 100, counter = 0;
+		while (critical > counter) {
+			f = *this;
+			f.Derive();
+			f1 = f;
+			f = *this;
+
+
+			fv = f[x];
+			f1v = f1[x];
+
+			if (abs(f1[x]) < check_slope) {
+				//	std::cout << "Slope is too small" << std::endl;
+				break;
+			}
+
+			x1 = x - (fv / f1v);
+
+			if (std::abs((x1 - x) / x1) < deg_of_accuracy) {
+				return  x1;
+			}
+			x = x1;
+			counter++;
+		}
+		//	std::cout << "Method does not converge due to oscillation" << std::endl;
 		return 666;
 	}
 
-	double c = aa;
-	while ((bb - aa) >= EPSILON)
-	{
-		c = (aa + bb) / 2;
+	void  Function::operator+(Function const &B) {
+		unsigned i = 0;
+		unsigned j = 0;
+		while (j < B.Body.size())
+		{
+			if (Body.size() == 0) {
+				Body.push_back(B.Body[j]);
+				return;
+			}
+			else {
+				for (i; i < this->Body.size(); i++) {
+					if ((Body[i] + B.Body[j]) == 1) {
+						j++;
+						break;
+					}
 
-		if (temp[c] == 0.0)
-			break;
-
-		else if (temp[c]*temp[aa] < 0)
-			bb = c;
-		else
-			aa = c;
-	}
-	return c;
-
-}
-std::vector<double> Function::Get_Roots(double const &EPSILON) {
-	std::vector<double> result,f_res;
-	Function temp = *this;
-	Function Reg = *this;
-	for (double i = -50; i < 30; i += 1) {
-		result.push_back(this->Bisection(i, 20, EPSILON));
-		if (temp[i] == 0) {
-			result.push_back(i);
+				}
+				if (i == Body.size()) {
+					Body.push_back(B.Body[j]);
+					signs.push_back('+');
+					j++;
+				}
+			}
 		}
 	}
-	for (double i = -30; i < 20; i += 0.05) {
-		result.push_back(this->Newton_Raphson_Method(i, EPSILON));
+	Function Function::Taylor_Polynomial(int const &derivative_n) {
+		Function TP;
+		Function Temp = *this;
+		for (int i = 0; i < derivative_n; i++) {
+			TP + Temp;
+			Temp.Derive();
+		}
+		return TP;
 	}
+	double Function::Bisection(double const &a, double const &b, double const &EPSILON) {
+		Function temp = *this;
+		double aa = a;
+		double bb = b;
+		if (temp[aa] * temp[bb] >= 0)
+		{
+			//std::cout << "You have not assumed right a and b\n";
+			return 666;
+		}
 
-	sort(result.begin(), result.end());
+		double c = aa;
+		while ((bb - aa) >= EPSILON)
+		{
+			c = (aa + bb) / 2;
 
-	for (unsigned i = 0; i < result.size()-1; i++) {
-			if(std::abs(result[i] - result[i+1])<EPSILON)
-			{
-				result[i]=666;
+			if (temp[c] == 0.0)
+				break;
+
+			else if (temp[c] * temp[aa] < 0)
+				bb = c;
+			else
+				aa = c;
+		}
+		return c;
+
+	}
+	std::vector<double> Function::Get_Roots(double const &EPSILON) {
+		std::vector<double> result, f_res;
+		Function temp = *this;
+		Function Reg = *this;
+		for (double i = -50; i < 30; i += 1) {
+			result.push_back(this->Bisection(i, 20, EPSILON));
+			if (temp[i] == 0) {
+				result.push_back(i);
 			}
+		}
+		for (double i = -30; i < 20; i += 0.05) {
+			result.push_back(this->Newton_Raphson_Method(i, EPSILON));
+		}
+
+		sort(result.begin(), result.end());
+
+		for (unsigned i = 0; i < result.size() - 1; i++) {
+			if (std::abs(result[i] - result[i + 1]) < EPSILON)
+			{
+				result[i] = 666;
+			}
+		}
+		sort(result.begin(), result.end());
+		for (unsigned i = 0; i < result.size(); i++) {
+			if (result[i] == 666) {
+				break;
+			}
+			else {
+				f_res.push_back(result[i]);
+			}
+		}
+
+
+		return f_res;
 	}
-	sort(result.begin(), result.end());
-	for (unsigned i = 0; i < result.size(); i++) {
-		if (result[i] == 666) {
-			break;
+	std::vector<Point<double> >  Function::Get_Polynomial_Maximum() {
+		Function div = *this;
+		Function Reg = *this;
+		std::vector<Point<double> > Result;
+		div.Derive();
+		std::vector<double> roots = div.Get_Roots(0.001);
+		std::vector<double> max_points_x;
+		div.Derive(); //seconed diverative
+		for (unsigned i = 0; i < roots.size(); i++) {
+			if (div[roots[i]] < 0)
+				max_points_x.push_back(roots[i]);
+		}
+
+		for (unsigned i = 0; i < max_points_x.size(); i++) {
+			Result.push_back(Point<double>(max_points_x[i], Reg[max_points_x[i]]));
+		}
+
+		return Result;
+	}
+	std::vector<Point<double> > Function::Get_Polynomial_Minimum() {
+		Function div = *this;
+		Function Reg = *this;
+		std::vector<Point<double> > Result;
+		div.Derive();
+		std::vector<double> roots = div.Get_Roots(0.00001);
+		std::vector<double> max_points_x;
+		div.Derive(); //seconed diverative
+		for (unsigned i = 0; i < roots.size(); i++) {
+			if (div[roots[i]] > 0)
+				max_points_x.push_back(roots[i]);
+		}
+
+		for (unsigned i = 0; i < max_points_x.size(); i++) {
+			Result.push_back(Point<double>(max_points_x[i], Reg[max_points_x[i]]));
+		}
+
+		return Result;
+	}
+	void Function::Remove_Zero() {
+		std::vector<Monomial>::iterator it;
+		it = Body.end();
+		it--;
+		this->signs.pop_back();
+		Body.erase(it);
+	}
+
+
+
+
+
+
+	//complex
+
+	class Complex {
+	public:
+		double a;
+		double bi;
+		Complex();
+		Complex(double const &real, double const &imaginary);
+		void Conjugate();
+		void operator+(Complex const &B);
+		void operator-(Complex const &B);
+		void operator*(Complex const &B);
+		void operator/(Complex const &B);
+		void operator^(int const &B);
+		friend std::ostream &operator<<(std::ostream &out, Complex const &source);
+		friend std::istream &operator>>(std::istream &in, Complex &source);
+		void operator=(Complex const &source);
+
+
+	};
+	Complex::Complex() {
+		this->a = 0;
+		this->bi = 0;
+	}
+	Complex::Complex(double const &real, double const &imaginary) {
+		this->a = real;
+		this->bi = imaginary;
+	}
+	void Complex::operator=(Complex const &source) {
+		this->a = source.a;
+		this->bi = source.bi;
+	}
+	void Complex::operator+(Complex const &B) {
+		this->a += B.a;
+		this->bi += B.bi;
+	}
+	void Complex::operator-(Complex const &B) {
+		this->a -= B.a;
+		this->bi -= B.bi;
+	}
+	void Complex::operator*(Complex const &B) {
+		double aa = this->a*B.a - (this->bi*B.bi);
+		double bb = this->a *B.bi + this->bi * B.a;
+		this->a = aa;
+		this->bi = bb;
+	}
+	void Complex::operator^(int const &B) {
+		for (int i = 1; i < B; i++) {
+			*this * *this;
+		}
+	}
+	void Complex::operator/(Complex const &B) {
+		double divisor = SQUARE_IT(B.a) + SQUARE_IT(B.bi);
+		Complex t = B;
+		t.Conjugate();
+		*this * t;
+		this->a /= divisor;
+		this->bi /= divisor;
+	}
+	std::ostream &operator<<(std::ostream &out, Complex const &source) {
+		if (source.bi > 0.0 && source.a > 0.0) {
+			out << source.a << "+" << source.bi << "i";
+			return out;
+		}
+		else if (source.bi == 0.0) {
+			out << source.a;
+			return out;
+		}
+		else if (source.bi > 0.0 && source.a == 0.0) {
+			out << source.bi << "i";
+			return out;
+		}
+		else if (source.bi > 0.0 && source.a < 0.0) {
+			out << source.a << "+" << source.bi << "i";
+			return out;
 		}
 		else {
-			f_res.push_back(result[i]);
+			out << source.a << source.bi << "i";
+			return out;
 		}
 	}
-
-
-	return f_res;
-}
-std::vector<Point<double> >  Function::Get_Polynomial_Maximum() {
-	Function div = *this;
-	Function Reg = *this;
-	std::vector<Point<double> > Result;
-	div.Derive();
-	std::vector<double> roots = div.Get_Roots(0.001);
-	std::vector<double> max_points_x;
-	div.Derive(); //seconed diverative
-	for (unsigned i = 0; i < roots.size(); i++) {
-		if(div[roots[i]] < 0)
-			max_points_x.push_back(roots[i]);
+	std::istream &operator>>(std::istream &in, Complex &source) {
+		in >> source.a >> source.bi;
+		return in;
+	}
+	void Complex::Conjugate() {
+		this->bi *= -1;
 	}
 
-	for (unsigned i = 0; i < max_points_x.size(); i++) {
-		Result.push_back(Point<double>(max_points_x[i],Reg[max_points_x[i]]));
-	}
-
-	return Result;
-}
-std::vector<Point<double> > Function::Get_Polynomial_Minimum() {
-	Function div = *this;
-	Function Reg = *this;
-	std::vector<Point<double> > Result;
-	div.Derive();
-	std::vector<double> roots = div.Get_Roots(0.00001);
-	std::vector<double> max_points_x;
-	div.Derive(); //seconed diverative
-	for (unsigned i = 0; i < roots.size(); i++) {
-		if (div[roots[i]] > 0)
-			max_points_x.push_back(roots[i]);
-	}
-
-	for (unsigned i = 0; i < max_points_x.size(); i++) {
-		Result.push_back(Point<double>(max_points_x[i], Reg[max_points_x[i]]));
-	}
-
-	return Result;
-}
-void Function::Remove_Zero() {
-	std::vector<Monomial>::iterator it;
-	it = Body.end();
-	it--;
-	this->signs.pop_back();
-	Body.erase(it);
-}
-
-
-
-
-
-
-//complex
-
-class Complex {
-public:
-	double a;
-	double bi;
-	Complex();
-	Complex(double const &real, double const &imaginary);
-	void Conjugate();
-	void operator+(Complex const &B);
-	void operator-(Complex const &B);
-	void operator*(Complex const &B);
-	void operator/(Complex const &B);
-	void operator^(int const &B);
-	friend std::ostream &operator<<(std::ostream &out, Complex const &source);
-	friend std::istream &operator>>(std::istream &in, Complex &source);
-	void operator=(Complex const &source);
-
-
-};
-Complex::Complex() {
-	this->a = 0;
-	this->bi = 0;
-}
-Complex::Complex(double const &real, double const &imaginary) {
-	this->a = real;
-	this->bi = imaginary;
-}
-void Complex::operator=(Complex const &source) {
-	this->a = source.a;
-	this->bi = source.bi;
-}
-void Complex::operator+(Complex const &B) {
-	this->a += B.a;
-	this->bi += B.bi;
-}
-void Complex::operator-(Complex const &B) {
-	this->a -= B.a;
-	this->bi -= B.bi;
-}
-void Complex::operator*(Complex const &B) {
-	double aa = this->a*B.a - (this->bi*B.bi);
-	double bb = this->a *B.bi + this->bi * B.a;
-	this->a = aa;
-	this->bi = bb;
-}
-void Complex::operator^(int const &B) {
-	for (int i = 1; i < B; i++) {
-		*this * *this;
-	}
-}
-void Complex::operator/(Complex const &B) {
-	double divisor = SQUARE_IT(B.a) + SQUARE_IT(B.bi);
-	Complex t = B;
-	t.Conjugate();
-	*this * t;
-	this->a /= divisor;
-	this->bi /= divisor;
-}
-std::ostream &operator<<(std::ostream &out, Complex const &source) {
-	if (source.bi > 0.0 && source.a > 0.0) {
-		out << source.a << "+" << source.bi<<"i";
-		return out;
-	}
-	else if (source.bi == 0.0) {
-		out << source.a;
-		return out;
-	}
-	else if (source.bi >0.0 && source.a ==0.0) {
-		out << source.bi << "i";
-		return out;
-	}
-	else if (source.bi > 0.0 && source.a < 0.0) {
-		out << source.a << "+" << source.bi << "i";
-		return out;
-	}
-	else {
-		out << source.a << source.bi<<"i";
-		return out;
-	}
-}
-std::istream &operator>>(std::istream &in, Complex &source) {
-	in >> source.a >> source.bi;
-	return in;
-}
-void Complex::Conjugate() {
-	this->bi *= -1;
-}
 
 
 
@@ -1740,8 +1742,7 @@ void Complex::Conjugate() {
 
 
 
-
-//vecs
+	//vecs
 
 
 
@@ -2001,7 +2002,7 @@ void Complex::Conjugate() {
 			covr += (x[i] - x_tag)*(y[i] - y_tag);
 		}
 		return covr / x.size();
-		
+
 	}
 	double Get_Covariance(std::vector<double> const &x, std::vector<double> const &y) {
 		if (x.size() != y.size()) {
@@ -2038,7 +2039,7 @@ void Complex::Conjugate() {
 		std::vector<int> rank_x;
 		std::vector<int> rank_y;
 		std::vector<int> XX = x;
-		std::vector<int> YY=y;
+		std::vector<int> YY = y;
 
 		sort(XX.begin(), XX.end());
 		sort(YY.begin(), YY.end());
@@ -2240,7 +2241,7 @@ void Complex::Conjugate() {
 	}
 
 
-	class Counter{
+	class Counter {
 	protected:
 		int value;
 		int step_size;
@@ -2249,7 +2250,7 @@ void Complex::Conjugate() {
 			value = 0;
 			step_size = 1;
 		}
-		
+
 		void operator()(int &b) {
 			value += step_size;
 			b = value;
@@ -2286,15 +2287,15 @@ void Complex::Conjugate() {
 		}
 	};
 
-	template<class p_type> void Print_Permutations(std::vector< p_type> sample,int start =0)
+	template<class p_type> void Print_Permutations(std::vector< p_type> sample, int start = 0)
 	{
-		if (start == sample.size()-1)
+		if (start == sample.size() - 1)
 			std::cout << sample << std::endl;
 		else
 		{
-			for (int i = start; i <= sample.size()-1; i++)
+			for (int i = start; i <= sample.size() - 1; i++)
 			{
-				
+
 				std::swap(sample[start], sample[i]);
 
 				Math::Print_Permutations(sample, start + 1);
@@ -2316,7 +2317,7 @@ void Complex::Conjugate() {
 
 				std::swap(sample[start], sample[i]);
 
-				Math::Get_Permutations(sample, output,start + 1);
+				Math::Get_Permutations(sample, output, start + 1);
 
 				std::swap(sample[start], sample[i]);
 			}
@@ -2435,7 +2436,42 @@ void Complex::Conjugate() {
 	}
 
 
+	//Time handlaing
 
+	class Timer {
+	protected:
+		//std::chrono::time_point<std::chrono::system_clock> start;
+		std::chrono::steady_clock::time_point start;
+		std::chrono::steady_clock::time_point finish;
+		bool running;
+	public:
+		Timer() {
+			running = false;
+		}
+		void Start_Timer() {
+			start = std::chrono::high_resolution_clock::now();
+			running = true;
+		}
+		double End_Timer() {
+			finish = std::chrono::high_resolution_clock::now();
+			running = false;
+			std::chrono::duration<double> dif = finish - start;
+			start = std::chrono::steady_clock::now();
+			return dif.count();
+
+		}
+
+		double Tik() {
+			std::chrono::duration<double> dif = std::chrono::high_resolution_clock::now() - start;
+			return dif.count();
+		}
+
+		friend std::ostream &operator<<(std::ostream &out, Timer &tt);
+	};
+	std::ostream &operator<<(std::ostream &out, Timer &tt) {
+		out << tt.Tik() << " seconds";
+		return out;
+	}
 
 
 }
