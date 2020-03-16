@@ -85,7 +85,7 @@ public:
 			//e
 			//tmpA.reserve(sA);
 			//tmpB.reserve(sB);
-			tmpV.reserve(sA + sB);
+			tmpV.reserve(size);
 
 			for (i = 0; i < sA; i++)
 			{
@@ -441,8 +441,6 @@ public:
 
 	}
 
-	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx, int x);
-
 	TreeGraph subGraph_for_cl(int index_of_ver) const;
 
     void BFS(int&, int&);
@@ -485,63 +483,6 @@ protected:
 };
 
 
-
-
-TreeGraph::TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx, int x)
-{
-
-	if (x_or_nx)
-	{
-		int i = 0, j = 0;
-		int max = 0;
-
-		size_v = T.size_v - 1;
-		size_E = T.size_E - T.V[index_to_remove].degree;
-
-
-		for (i = 0; i < size_v; i++)
-		{
-
-			V.push_back(vertex(i, 0));
-			if (i == index_to_remove) { j++; }
-
-			if (j >= (int)T.V.size()) { break; }
-
-			for (int k = 0; k < (int)T.V[j].Nindex.size(); k++)
-			{
-				if (T.V[j].Nindex[k] != index_to_remove) {
-					V[i].degree++;  V[i].Nindex.push_back(T.V[j].Nindex[k]);
-
-					if (T.V[j].Nindex[k] > index_to_remove)
-					{
-						V[i].Nindex[V[i].Nindex.size() - 1]--;
-					}
-
-				}
-
-			}
-
-
-			if (max < V[i].degree) { max = V[i].degree; max_deg_vrx = i; }
-			j++;
-
-		}
-
-		return;
-
-	}
-
-
-
-	else
-	{
-
-
-
-	}
-
-
-}
 
 
 
@@ -626,6 +567,21 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 
  TreeGraph TreeGraph::subGraph_for_cl(int index_of_ver) const
  {
+	 TreeGraph newT;
 
+	 newT.size_v = V[index_of_ver].degree;
+	 newT.size_E = 0;
+	 newT.max_deg_vrx = 0;
+
+
+	 newT.V.reserve(newT.size_v);
+
+	 for (int i = 0; i < (int)newT.V.size(); i++)
+	 {
+		 newT.V[i] = vertex(i, 0);
+	 }
+
+
+	 return newT;
 
  }

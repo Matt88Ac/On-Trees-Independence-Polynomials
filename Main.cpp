@@ -12,6 +12,21 @@ using namespace std;
 
 int main()
 {
+	TreeGraph T(6);
+
+	CliqueP C(T);
+
+	cout << T << endl;
+
+	cout << C << endl;
+	
+	
+	
+	
+	
+	
+	return 0;
+	
 	stringstream ss;
 	ss << "Test_#" << Random_INT(10000);
 	CSV file(ss.str());
@@ -57,10 +72,10 @@ int main()
 
 
 		// isomorphism check
-		for (int j = 0; j < degsArray.size(); j++) 
+		for (int j = 0; j < Trees.size(); j++) 
 		{  
 			
-			if (x.GetDegArr().compare(degsArray[j]) == 0) { 
+			if (x.Are_Isomorphic(Trees[j])) { 
 				does_ex = true;
 				break; 
 			}
@@ -74,7 +89,7 @@ int main()
 #endif // TIMER_ON
 		continue; }
 
-		degsArray.push_back(x.GetDegArr());
+		Trees.push_back(x);
 
 
 
