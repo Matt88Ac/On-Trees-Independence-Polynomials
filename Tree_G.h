@@ -83,13 +83,13 @@ public:
 
 			vector<vertex> tmpA(sA), tmpB(sB), tmpV;
 			//e
-			//tmpA.reserve(sA);
-			//tmpB.reserve(sB);
+			tmpA.reserve(sA);
+			tmpB.reserve(sB);
 			tmpV.reserve(size);
 
 			for (i = 0; i < sA; i++)
 			{
-				tmpV.push_back(vertex(i, 0));
+				tmpV[i] = vertex(i, 0);
 				//tmpA.push_back(tmpV[i]);
 				tmpA[i] = tmpV[i];
 				j = i;
@@ -101,7 +101,7 @@ public:
 			j++;
 			for (i = 0; i < sB; i++)
 			{
-				tmpV.push_back(vertex(j, 0));
+				tmpV[i]=vertex(j, 0);
 				//tmpB.push_back(tmpV[j]);
 				tmpB[i] = tmpV[j];
 				j++;
