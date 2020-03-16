@@ -39,7 +39,7 @@ int main()
 
 
 	Function Symbolic_Frame;
-	vector<string> degsArray;
+	vector<TreeGraph> Trees;
 	Timer timer;
 	bool does_ex = false;
 
@@ -49,7 +49,7 @@ int main()
 	int amount_of_vertcies = 15;
 	//
 
-	degsArray.reserve(iterations);
+	Trees.reserve(iterations);
 	timer.Start_Timer();
 	for (int i = 0; i < iterations; i++) {
 		TreeGraph x(amount_of_vertcies);

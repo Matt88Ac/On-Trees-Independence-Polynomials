@@ -476,102 +476,108 @@ IndeP IndeP::ComputeTree(const TreeGraph& T, IndeP& curr)
 
 
 
-class CliquePoly
+
+
+
+class CliqueP : public IndeP
 {
-protected:
-	vector<Mono> Holder;
-	int size;
+
+	friend std::ostream& operator <<(std::ostream&, const CliqueP&);
 
 public:
+	CliqueP(const TreeGraph& T) { IndeP::size = 0; CliqueP tmp; *this = ComputePoly(T, tmp); }
 
-	CliquePoly(const TreeGraph& T) : size(0) { CliquePoly tmp; *this = ComputeTree(T, tmp); }
-
-	CliquePoly() : size(0) {};
+	CliqueP() { IndeP::size = 0; };
 
 	void operator+=(const Mono&);
-	void operator+=(const CliquePoly&);
+	void operator+=(const CliqueP&);
 
-	CliquePoly operator+(const Mono&);
-	CliquePoly operator+(const CliquePoly&);
+	CliqueP operator+(const Mono&);
+	CliqueP operator+(const CliqueP&);
+
+
+	CliqueP operator*(const Mono&);
+	CliqueP operator*(const CliqueP&);
 
 	void operator *=(const Mono&);
-	void operator *=(const CliquePoly&);
+	void operator *=(const CliqueP&);
 
-	CliquePoly operator*(const Mono&);
-	CliquePoly operator*(const CliquePoly&);
+	CliqueP ComputePoly(const TreeGraph&, CliqueP&);
 
-	operator string() const;
-	string Get_Math_Format_Clique();
+	~CliqueP() { this->Holder.~vector(); }
 
-
-	CliquePoly ComputeTree(const TreeGraph&, CliquePoly&);
-
-
-	~CliquePoly() { Holder.clear(); Holder.shrink_to_fit(); }
+protected:
 
 
 };
 
 
-CliquePoly CliquePoly::ComputeTree(const TreeGraph& T, CliquePoly& curr)
+CliqueP CliqueP::ComputePoly(const TreeGraph& G, CliqueP& curr)
 {
-	if (T.getsize() == 0)
+
+	if (G.getsize() == 0)
 	{
-		CliquePoly tmp;
+		CliqueP tmp;
 		tmp += Mono(1, 0);
 		return tmp;
 	}
 
-
-	if (T.isKn())
+	if (G.isKn())
 	{
-		CliquePoly tmp;
-		tmp += Mono(T.getsize(), 1);
+		int i;
+		CliqueP tmp;
+		tmp += Mono(1, 1);
 		tmp += Mono(1, 0);
+
+		for (i = 1; i < G.getsize(); i++)
+		{
+			CliqueP tmp2;
+			tmp2 += Mono(1, 1);
+			tmp2 += Mono(1, 0);
+
+			tmp *= tmp2;
+		}
 
 		return tmp;
 	}
 
-	curr = ComputeTree(TreeGraph(T, T.getMax(), true, 1), curr) + ComputeTree(TreeGraph(T, T.getMax(), false, 1), curr) * Mono(1, 1);
+
+	//                G-v, vEV                                                 G[N[v]], vEV
+	curr = ComputePoly(TreeGraph(G,G.getMax(), true), curr) + ComputePoly(G.subGraph_for_cl(G.getMax()), curr) * Mono(1, 1);
+
 	return curr;
-
 }
 
 
-
-CliquePoly::operator string() const
+std::ostream& operator <<(std::ostream& os, const CliqueP& P)
 {
+	os << "C(G;X) = ";
 
-	string poly;
-	if (!Holder.size()) { return "0"; }
-
-	for (int i = 0; i < (int)Holder.size() - 1; i++) { poly += (string)Holder[i] + " + "; }
-
-	poly += (string)Holder[(int)Holder.size() - 1];
-
-	return poly;
-}
-
-string CliquePoly::Get_Math_Format_Clique() {
-	stringstream ss;
-	for (int i = 0; i < Holder.size(); i++) {
-		if (i + 1 < Holder.size()) {
-			ss << Holder[i].get_formated_string() << " + ";
-		}
-		else {
-			ss << Holder[i].get_formated_string();
-		}
+	if (P.size == 0)
+	{
+		os << std::endl;
+		return os;
 	}
-	return ss.str();
+
+	for (int i = 0; i < (int)P.Holder.size() - 1; i++)
+	{
+		os << P.Holder[i] << " + ";
+	}
+
+	int l = P.size - 1;
+	os << P.Holder[l];
+	return os;
+
 }
 
 
-void CliquePoly::operator+=(const Mono& m)
+
+void CliqueP::operator+=(const Mono& m)
 {
 	if (size == 0)
 	{
 		this->Holder.push_back(m);
-		this->size++;
+		this->IndeP::size++;
 		return;
 	}
 
@@ -586,37 +592,28 @@ void CliquePoly::operator+=(const Mono& m)
 	}
 
 	Holder.push_back(m);
-	size++;
+	IndeP::size++;
 
 	for (int j = 0; j < (int)Holder.size() - 1; j++)
 	{
 		int p = j + 1;
 		if (Holder[j] >= Holder[p]) { swap(Holder[j], Holder[p]); }
 	}
-
-
-
 }
 
-
-
-
-void CliquePoly::operator+=(const CliquePoly& P)
+void CliqueP::operator+=(const CliqueP& P)
 {
-	if (size == 0) { size = P.size; Holder = P.Holder; return; }
-	if (P.size == 0) { return; }
+	if (IndeP::size == 0) { IndeP::size = P.size; Holder = P.Holder; return; }
+	if (P.IndeP::size == 0) { return; }
 	for (int i = 0; i < (int)P.Holder.size(); i++) { *this += P.Holder[i]; }
 
-
 }
 
 
-
-
-CliquePoly CliquePoly::operator+(const Mono& m)
+CliqueP CliqueP::operator+(const Mono& m)
 {
-	CliquePoly tmp;
-	tmp.size = this->size;
+	CliqueP tmp;
+	tmp.IndeP::size = this->IndeP::size;
 	tmp.Holder = this->Holder;
 	tmp += m;
 
@@ -624,11 +621,9 @@ CliquePoly CliquePoly::operator+(const Mono& m)
 }
 
 
-
-
-CliquePoly CliquePoly::operator+(const CliquePoly& P)
+CliqueP CliqueP::operator+(const CliqueP& P)
 {
-	CliquePoly tmp;
+	CliqueP tmp;
 	tmp.size = this->size;
 	tmp.Holder = this->Holder;
 	tmp += P;
@@ -638,49 +633,44 @@ CliquePoly CliquePoly::operator+(const CliquePoly& P)
 }
 
 
-
-
-void CliquePoly::operator*=(const Mono& m)
+void CliqueP::operator*=(const Mono& m)
 {
-	if (size == 0) { return; }
+	if (IndeP::size == 0) { return; }
 
-	if (m == Mono(0, 0)) { Holder.clear(); size = 0; }
+	if (m == Mono(0, 0)) { Holder.clear(); IndeP::size = 0; }
 
 	for (int i = 0; i < (int)Holder.size(); i++) { Holder[i] *= m; }
 
 }
 
 
-void CliquePoly::operator*=(const CliquePoly& P)
+void CliqueP::operator*=(const CliqueP& P)
 {
 
-	if (P.size == 0) { Holder.clear(); size = 0; }
-	if (size == 0) { return; }
+	if (P.IndeP::size == 0) { Holder.clear(); IndeP::size = 0; }
+	if (IndeP::size == 0) { return; }
 
-	CliquePoly tmpo;
+	CliqueP tmpo;
 
 	for (int i = 0; i < (int)P.Holder.size(); i++) { tmpo += *this * P.Holder[i]; }
 
 	*this = tmpo;
 
-	tmpo.~CliquePoly();
+	tmpo.~CliqueP();
 }
 
-
-
-
-CliquePoly CliquePoly::operator*(const Mono& m)
+CliqueP CliqueP::operator*(const Mono& m)
 {
-	CliquePoly tmp;
+	CliqueP tmp;
 	tmp.Holder = this->Holder;
-	tmp.size = size;
+	tmp.IndeP::size = IndeP::size;
 
-	if (size == 0) { return tmp; }
+	if (IndeP::size == 0) { return tmp; }
 
 	if (m == Mono(0, 0))
 	{
 		tmp.Holder.clear();
-		tmp.size = 0;
+		tmp.IndeP::size = 0;
 		return tmp;
 	}
 
@@ -688,14 +678,10 @@ CliquePoly CliquePoly::operator*(const Mono& m)
 	return tmp;
 }
 
-
-
-
-
-CliquePoly CliquePoly::operator*(const CliquePoly& P)
+CliqueP CliqueP::operator*(const CliqueP& P)
 {
-	CliquePoly tmp;
-	tmp.size = size;
+	CliqueP tmp;
+	tmp.IndeP::size = IndeP::size;
 	tmp.Holder = Holder;
 	if (size == 0)
 	{
@@ -705,7 +691,7 @@ CliquePoly CliquePoly::operator*(const CliquePoly& P)
 	if (P.size == 0)
 	{
 		tmp.Holder.clear();
-		tmp.size = 0;
+		tmp.IndeP::size = 0;
 		return tmp;
 	}
 

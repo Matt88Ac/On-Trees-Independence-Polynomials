@@ -443,9 +443,13 @@ public:
 
 	TreeGraph(const TreeGraph& T, const int index_to_remove, const bool x_or_nx, int x);
 
+	TreeGraph subGraph_for_cl(int index_of_ver) const;
+
     void BFS(int&, int&);
 
 	inline int getMax() const { return max_deg_vrx; }
+
+	inline int getChromatic() const { return 2; }
 
 	inline bool isKn() const { return size_E == ((size_v)*(size_v - 1) / 2); }
 
@@ -616,5 +620,12 @@ ostream& operator << (ostream& os, const TreeGraph& x)
  {
 	 if (T.getsize() != size_v) { return false; }
 	 return (T.GetDegArr() == this->GetDegArr() && (T.GetBigDelta() == T.getsize() - 1));
+
+ }
+
+
+ TreeGraph TreeGraph::subGraph_for_cl(int index_of_ver) const
+ {
+
 
  }
