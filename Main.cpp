@@ -49,7 +49,7 @@ int main()
 
 
 	Function Symbolic_Frame;
-	vector<TreeGraph> Trees;
+	vector<IndeP> Polys;
 	Timer timer;
 	bool does_ex = false;
 
@@ -59,7 +59,7 @@ int main()
 	int amount_of_vertcies = 15;
 	//
 
-	Trees.reserve(iterations);
+	Polys.reserve(iterations);
 	timer.Start_Timer();
 	for (int i = 0; i < iterations; i++) {
 		TreeGraph x(amount_of_vertcies);
@@ -67,10 +67,10 @@ int main()
 
 
 		// isomorphism check
-		for (int j = 0; j < Trees.size(); j++) 
+		for (int j = 0; j < Polys.size(); j++) 
 		{  
 			
-			if (x.Are_Isomorphic(Trees[j])) { 
+			if ((string)P == (string)Polys[j]) {
 				does_ex = true;
 				break; 
 			}
@@ -84,7 +84,7 @@ int main()
 #endif // TIMER_ON
 		continue; }
 
-		Trees.push_back(x);
+		Polys.push_back(P);
 
 
 
