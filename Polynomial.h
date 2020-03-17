@@ -6,6 +6,7 @@
 
 
 #include "Tree_G.h"
+#include "IntGraphs.h"
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -111,8 +112,13 @@ class IndeP
 public:
 	IndeP(const TreeGraph& T) : size(0), gonna_save_some_time(false) { 
 		IndeP X;  *this = ComputeTree(T, X);
-
 		this->Math_Format_Clique_Poly = "1*X^0 + " + to_string(T.getsize()) + "*X^1 + " + to_string(T.getsize() - 1) + "*X^2";
+
+	}
+
+
+	IndeP(const RandomIntGraph& T) : size(0) {
+		IndeP X;  *this = ComputePoly(T, X);
 
 	}
 
@@ -149,6 +155,8 @@ public:
 
 	string Get_Math_Format_IndeP();
 
+	IndeP ComputePoly(const RandomIntGraph&, IndeP&);
+
 
 protected:
 	vector<Mono> Holder;
@@ -173,6 +181,35 @@ string IndeP::Get_Math_Format_IndeP() {
 	return ss.str();
 }
 
+
+IndeP IndeP::ComputePoly(const RandomIntGraph& T, IndeP& curr)
+{
+
+	if (T.getsize() == 0)
+	{
+		IndeP tmp;
+		tmp += Mono(1, 0);
+		return tmp;
+	}
+
+
+	if (T.isKn())
+	{
+		IndeP tmp;
+		tmp += Mono(T.getsize(), 1);
+		tmp += Mono(1, 0);
+
+		return tmp;
+	}
+
+
+
+	// G-v,v in V							G-N[V], v in V
+	curr = ComputePoly(T.subGraph(T.GetMax(), true), curr) + ComputePoly(T.subGraph(T.GetMax(), false), curr) * Mono(1, 1);
+
+	return curr;
+
+}
 
 
 bool IndeP::isUni() const
@@ -229,8 +266,8 @@ ostream& operator <<(ostream& os, const IndeP& P)
 		os << P.Holder[i] << " + ";
 	}
 
-	int ll = P.size - 1;
-	os << P.Holder[ll];
+	int ip = P.size - 1;
+	os << P.Holder[ip];
 	return os;
 
 }
@@ -481,225 +518,237 @@ IndeP IndeP::ComputeTree(const TreeGraph& T, IndeP& curr)
 
 
 
+/* -------------------------------------------- ------------------------- ------------------*/
+/*   The class below will hold and compute the Clique Polynomial for Interval Graphs: */
+
+
+class CliqueP : public IndeP
+{
+
+	friend std::ostream& operator <<(std::ostream&, const CliqueP&);
+
+public:
+	CliqueP(const RandomIntGraph& T) { IndeP::size = 0; CliqueP tmp; *this = ComputePoly(T, tmp); }
+
+	CliqueP() { IndeP::size = 0; };
+
+	void operator+=(const Mono&);
+	void operator+=(const CliqueP&);
+
+	CliqueP operator+(const Mono&);
+	CliqueP operator+(const CliqueP&);
+
+
+	CliqueP operator*(const Mono&);
+	CliqueP operator*(const CliqueP&);
+
+	void operator *=(const Mono&);
+	void operator *=(const CliqueP&);
+
+	CliqueP ComputePoly(const RandomIntGraph&, CliqueP&);
+
+	~CliqueP() { this->Holder.~vector(); }
+
+protected:
+
+
+};
+
+
+CliqueP CliqueP::ComputePoly(const RandomIntGraph& G, CliqueP& curr)
+{
+	std::vector<Interval> tmpo;
+
+	if (G.getsize() == 0)
+	{
+		CliqueP tmp;
+		tmp += Mono(1, 0);
+		return tmp;
+	}
+
+	if (G.isKn())
+	{
+		int i;
+		CliqueP tmp;
+		tmp += Mono(1, 1);
+		tmp += Mono(1, 0);
+
+		for (i = 1; i < G.getsize(); i++)
+		{
+			CliqueP tmp2;
+			tmp2 += Mono(1, 1);
+			tmp2 += Mono(1, 0);
+
+			tmp *= tmp2;
+		}
+
+		return tmp;
+	}
+
+
+	// Finding N[v]
+	for (int i = 0; i < (int)G.GetV().size(); i++)
+	{
+		if (i != G.GetMax() && G.ConnectionCheck(i, G.GetMax())) { tmpo.push_back(G.GetSpecificInt(i)); }
+	}
+
+	//                G-v, vEV                                                 G[N[v]], vEV
+	curr = ComputePoly(G.subGraph(G.GetMax(), true), curr) + ComputePoly(RandomIntGraph(tmpo, true), curr) * Mono(1, 1);
+
+
+	tmpo.~vector();
+	return curr;
+}
 
 
 
-//class CliqueP : public IndeP
-//{
-//
-//	friend std::ostream& operator <<(std::ostream&, const CliqueP&);
-//
-//public:
-//	CliqueP(const TreeGraph& T) { IndeP::size = 0; CliqueP tmp; *this = ComputePoly(T, tmp); }
-//
-//	CliqueP() { IndeP::size = 0; };
-//
-//	void operator+=(const Mono&);
-//	void operator+=(const CliqueP&);
-//
-//	CliqueP operator+(const Mono&);
-//	CliqueP operator+(const CliqueP&);
-//
-//
-//	CliqueP operator*(const Mono&);
-//	CliqueP operator*(const CliqueP&);
-//
-//	void operator *=(const Mono&);
-//	void operator *=(const CliqueP&);
-//
-//	CliqueP ComputePoly(const TreeGraph&, CliqueP&);
-//
-//	~CliqueP() { this->Holder.~vector(); }
-//
-//protected:
-//
-//
-//};
-//
-//
-//CliqueP CliqueP::ComputePoly(const TreeGraph& G, CliqueP& curr)
-//{
-//
-//	if (G.getsize() == 0)
-//	{
-//		CliqueP tmp;
-//		tmp += Mono(1, 0);
-//		return tmp;
-//	}
-//
-//	if (G.isKn())
-//	{
-//		int i;
-//		CliqueP tmp;
-//		tmp += Mono(1, 1);
-//		tmp += Mono(1, 0);
-//
-//		for (i = 1; i < G.getsize(); i++)
-//		{
-//			CliqueP tmp2;
-//			tmp2 += Mono(1, 1);
-//			tmp2 += Mono(1, 0);
-//
-//			tmp *= tmp2;
-//		}
-//
-//		return tmp;
-//	}
-//
-//	//                G-v, vEV                                                 G[N[v]], vEV
-//	curr = ComputePoly(TreeGraph(G,G.getMax(), true), curr) + ComputePoly(G.subGraph_for_cl(G.getMax()), curr) * Mono(1, 1);
-//
-//	return curr;
-//}
-//
-//
-//std::ostream& operator <<(std::ostream& os, const CliqueP& P)
-//{
-//	os << "C(G;X) = ";
-//
-//	if (P.size == 0)
-//	{
-//		os << std::endl;
-//		return os;
-//	}
-//
-//	for (int i = 0; i < (int)P.Holder.size() - 1; i++)
-//	{
-//		os << P.Holder[i] << " + ";
-//	}
-//
-//	int l = P.size - 1;
-//	os << P.Holder[l];
-//	return os;
-//
-//}
-//
-//
-//
-//void CliqueP::operator+=(const Mono& m)
-//{
-//	if (size == 0)
-//	{
-//		this->Holder.push_back(m);
-//		this->IndeP::size++;
-//		return;
-//	}
-//
-//
-//	for (int i = 0; i < (int)Holder.size(); i++)
-//	{
-//		if (Holder[i].isAddAble(m))
-//		{
-//			Holder[i] += m;
-//			return;
-//		}
-//	}
-//
-//	Holder.push_back(m);
-//	IndeP::size++;
-//
-//	for (int j = 0; j < (int)Holder.size() - 1; j++)
-//	{
-//		int p = j + 1;
-//		if (Holder[j] >= Holder[p]) { swap(Holder[j], Holder[p]); }
-//	}
-//}
-//
-//void CliqueP::operator+=(const CliqueP& P)
-//{
-//	if (IndeP::size == 0) { IndeP::size = P.size; Holder = P.Holder; return; }
-//	if (P.IndeP::size == 0) { return; }
-//	for (int i = 0; i < (int)P.Holder.size(); i++) { *this += P.Holder[i]; }
-//
-//}
-//
-//
-//CliqueP CliqueP::operator+(const Mono& m)
-//{
-//	CliqueP tmp;
-//	tmp.IndeP::size = this->IndeP::size;
-//	tmp.Holder = this->Holder;
-//	tmp += m;
-//
-//	return tmp;
-//}
-//
-//
-//CliqueP CliqueP::operator+(const CliqueP& P)
-//{
-//	CliqueP tmp;
-//	tmp.size = this->size;
-//	tmp.Holder = this->Holder;
-//	tmp += P;
-//
-//	return tmp;
-//
-//}
-//
-//
-//void CliqueP::operator*=(const Mono& m)
-//{
-//	if (IndeP::size == 0) { return; }
-//
-//	if (m == Mono(0, 0)) { Holder.clear(); IndeP::size = 0; }
-//
-//	for (int i = 0; i < (int)Holder.size(); i++) { Holder[i] *= m; }
-//
-//}
-//
-//
-//void CliqueP::operator*=(const CliqueP& P)
-//{
-//
-//	if (P.IndeP::size == 0) { Holder.clear(); IndeP::size = 0; }
-//	if (IndeP::size == 0) { return; }
-//
-//	CliqueP tmpo;
-//
-//	for (int i = 0; i < (int)P.Holder.size(); i++) { tmpo += *this * P.Holder[i]; }
-//
-//	*this = tmpo;
-//
-//	tmpo.~CliqueP();
-//}
-//
-//CliqueP CliqueP::operator*(const Mono& m)
-//{
-//	CliqueP tmp;
-//	tmp.Holder = this->Holder;
-//	tmp.IndeP::size = IndeP::size;
-//
-//	if (IndeP::size == 0) { return tmp; }
-//
-//	if (m == Mono(0, 0))
-//	{
-//		tmp.Holder.clear();
-//		tmp.IndeP::size = 0;
-//		return tmp;
-//	}
-//
-//	tmp *= m;
-//	return tmp;
-//}
-//
-//CliqueP CliqueP::operator*(const CliqueP& P)
-//{
-//	CliqueP tmp;
-//	tmp.IndeP::size = IndeP::size;
-//	tmp.Holder = Holder;
-//	if (size == 0)
-//	{
-//		return tmp;
-//	}
-//
-//	if (P.size == 0)
-//	{
-//		tmp.Holder.clear();
-//		tmp.IndeP::size = 0;
-//		return tmp;
-//	}
-//
-//	tmp *= P;
-//
-//	return tmp;
-//}
+std::ostream& operator <<(std::ostream& os, const CliqueP& P)
+{
+	os << "C(G;X) = ";
+
+	if (P.size == 0)
+	{
+		os << std::endl;
+		return os;
+	}
+
+	for (int i = 0; i < (int)P.Holder.size() - 1; i++)
+	{
+		os << P.Holder[i] << " + ";
+	}
+
+	int l = P.size - 1;
+	os << P.Holder[l];
+	return os;
+
+}
+
+
+
+void CliqueP::operator+=(const Mono& m)
+{
+	if (size == 0)
+	{
+		this->Holder.push_back(m);
+		this->IndeP::size++;
+		return;
+	}
+
+
+	for (int i = 0; i < (int)Holder.size(); i++)
+	{
+		if (Holder[i].isAddAble(m))
+		{
+			Holder[i] += m;
+			return;
+		}
+	}
+
+	Holder.push_back(m);
+	IndeP::size++;
+
+	for (int j = 0; j < (int)Holder.size() - 1; j++)
+	{
+		int p = j + 1;
+		if (Holder[j] >= Holder[p]) { swap(Holder[j], Holder[p]); }
+	}
+}
+
+void CliqueP::operator+=(const CliqueP& P)
+{
+	if (IndeP::size == 0) { IndeP::size = P.size; Holder = P.Holder; return; }
+	if (P.IndeP::size == 0) { return; }
+	for (int i = 0; i < (int)P.Holder.size(); i++) { *this += P.Holder[i]; }
+
+}
+
+
+CliqueP CliqueP::operator+(const Mono& m)
+{
+	CliqueP tmp;
+	tmp.IndeP::size = this->IndeP::size;
+	tmp.Holder = this->Holder;
+	tmp += m;
+
+	return tmp;
+}
+
+
+CliqueP CliqueP::operator+(const CliqueP& P)
+{
+	CliqueP tmp;
+	tmp.size = this->size;
+	tmp.Holder = this->Holder;
+	tmp += P;
+
+	return tmp;
+
+}
+
+
+void CliqueP::operator*=(const Mono& m)
+{
+	if (IndeP::size == 0) { return; }
+
+	if (m == Mono(0, 0)) { Holder.clear(); IndeP::size = 0; }
+
+	for (int i = 0; i < (int)Holder.size(); i++) { Holder[i] *= m; }
+
+}
+
+
+void CliqueP::operator*=(const CliqueP& P)
+{
+
+	if (P.IndeP::size == 0) { Holder.clear(); IndeP::size = 0; }
+	if (IndeP::size == 0) { return; }
+
+	CliqueP tmpo;
+
+	for (int i = 0; i < (int)P.Holder.size(); i++) { tmpo += *this * P.Holder[i]; }
+
+	*this = tmpo;
+
+	tmpo.~CliqueP();
+}
+
+CliqueP CliqueP::operator*(const Mono& m)
+{
+	CliqueP tmp;
+	tmp.Holder = this->Holder;
+	tmp.IndeP::size = IndeP::size;
+
+	if (IndeP::size == 0) { return tmp; }
+
+	if (m == Mono(0, 0))
+	{
+		tmp.Holder.clear();
+		tmp.IndeP::size = 0;
+		return tmp;
+	}
+
+	tmp *= m;
+	return tmp;
+}
+
+CliqueP CliqueP::operator*(const CliqueP& P)
+{
+	CliqueP tmp;
+	tmp.IndeP::size = IndeP::size;
+	tmp.Holder = Holder;
+	if (size == 0)
+	{
+		return tmp;
+	}
+
+	if (P.size == 0)
+	{
+		tmp.Holder.clear();
+		tmp.IndeP::size = 0;
+		return tmp;
+	}
+
+	tmp *= P;
+
+	return tmp;
+}
