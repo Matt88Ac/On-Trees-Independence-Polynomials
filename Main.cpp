@@ -21,8 +21,6 @@ int main()
 	cout << T.The_Inde_Poly_of_the_Tree << endl << endl;
 
 
-	return 0;
-
 
 	stringstream ss;
 	ss << "Test_#" << Random_INT(10000);
