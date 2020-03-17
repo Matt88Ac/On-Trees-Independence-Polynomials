@@ -40,7 +40,7 @@ int main() {
 #define TIMER_ON
 
 	//mode
-#define USER_INPUT
+ //#define USER_INPUT
 	
 
 	Function Symbolic_Frame;
@@ -51,8 +51,7 @@ int main() {
 
 	// generation parameters
 	int iterations = 100;
-	int amount_of_vertcies_in_Trees = 10;
-	int amount_of_vertcies_in_Intgraphs = 10;
+	int amount_of_vertcies = 10;
 	int type_flag = 0;
 	//
 
@@ -62,23 +61,20 @@ int main() {
 #ifdef USER_INPUT
 	cout << "Iterations: ";
 	cin >> iterations;
-	cout << "\nVertecies In Trees: ";
-	cin >> amount_of_vertcies_in_Trees;
-	cout << "\nVertecies In Interval Graphs: ";
-	cin >> amount_of_vertcies_in_Intgraphs;
+	cout << "\nVertecies: ";
+	cin >> amount_of_vertcies;
 #endif // USER_INPUT
 
 
 	for (int i = 0; i < iterations; i++) {
 #ifdef RANDOM_AMOUNTS
-		amount_of_vertcies_in_Trees = 5 + Random_INT(20);
-		amount_of_vertcies_in_Intgraphs = 15 + Random_INT(25);
+		amount_of_vertcies = 5 + Random_INT(20);
 #endif // RANDOM_AMOUNTS
 
 		
 
 		if (type_flag == 0) {
-			RandomIntGraph x(amount_of_vertcies_in_Intgraphs, 100000);
+			RandomIntGraph x(amount_of_vertcies, 100000);
 			IndeP P(x);
 
 
@@ -95,7 +91,7 @@ int main() {
 			file.Add_Value("Interval Graph");
 
 			//number of vertecis
-			file.Add_Value(amount_of_vertcies_in_Intgraphs);
+			file.Add_Value(amount_of_vertcies);
 			//alpha of graph 
 			file.Add_Value(P.GetAlphaT());
 			//number of roots if found at all
@@ -143,7 +139,7 @@ int main() {
 
 
 			if (type_flag = 1) {
-				TreeGraph x(amount_of_vertcies_in_Trees);
+				TreeGraph x(amount_of_vertcies);
 				IndeP P(x);
 
 
@@ -184,7 +180,7 @@ int main() {
 				file.Add_Value("Tree");
 
 				//number of vertecis
-				file.Add_Value(amount_of_vertcies_in_Trees);
+				file.Add_Value(amount_of_vertcies);
 				//alpha of graph 
 				file.Add_Value(P.GetAlphaT());
 				//number of roots if found at all
