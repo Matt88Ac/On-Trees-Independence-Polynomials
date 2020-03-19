@@ -2,7 +2,6 @@
 import random
 import Vertex
 import numpy as np
-import Queue
 
 
 
@@ -18,6 +17,9 @@ class Tree:
     #Random Tree Generator:
     def __init__(self, size):
 
+        if not size:
+            return
+        
         self.size_of_v = size
         self.size_of_e = size-1
 
@@ -140,11 +142,18 @@ class Tree:
 #  ************************************ End of __init__ ***************************************
 
     def SubGraph(self, index_to_remove : int, x_or_nx : bool):
-        newT: Tree = self
-
+        
+        newT = Tree(0)
+        newT.size_of_v = self.size_of_v
+        newT.V = self.V
+        
+        newT.size_of_e = self.size_of_e
+        
         maxi = 0
 
         if x_or_nx:  # T - x, xEV
+            newT.size_of_v-=1
+            newT.size_of_e -= self.Get_Max_Deg_Vert().GetDegree()
 
          
 
@@ -156,12 +165,12 @@ class Tree:
 
 
 
-        if not x_or_nx: # T - N[x], xEV
-          
+        else: # T - N[x], xEV
+          pass
 
 
 
-
+        return newT
 
     def BFS(self,size):
         
@@ -201,14 +210,12 @@ class Tree:
 
 # ***************************** End Of BFS *************************************
 
-
-
-
-
-
-
-
-
+    def Get_Max_Deg_Vert(self):
+        return self.V[self.max_deg_v]
+        
+    
+    def isKn(self):
+        return self.size_of_e==self.size_of_v*(self.size_of_v-1)/2
 
 
 
