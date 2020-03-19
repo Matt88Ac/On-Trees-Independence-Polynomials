@@ -146,10 +146,7 @@ class Tree:
 
         if x_or_nx:  # T - x, xEV
 
-          newT.size_of_v -= 1
-          newT.size_of_e -= 1 + self.V[index_to_remove].degree
-          newT.V.remove(index_to_remove)
-
+         
 
 
 
@@ -160,8 +157,7 @@ class Tree:
 
 
         if not x_or_nx: # T - N[x], xEV
-            newT.size_of_v -= (1+self.V[index_to_remove].degree)
-            newT.size_of_e = newT.size_of_v-1
+          
 
 
 
@@ -182,16 +178,20 @@ class Tree:
         
         while len(Que)!=0:
             
-            for bol in self.E[Que[Q_index]]:
-                
-                if bol == True and 
+            for vert in self.V[Que[Q_index]].GetNeib():
+                if color[vert.GetIndex()] == 0:
+                    Que.append(vert.GetIndex())
+                    color[vert.GetIndex()] = 1
+                    num_of_e+=1
+                    num_of_nil-=1
             
-            
-        
-
-        
+            color[Que[Q_index]] = 2
+            Que.remove(Que[Q_index])
+          
+           
                 
 
+        Que.__delitem__()
         if num_of_nil!=1 or num_of_e!=self.size_of_e:
             return False
         return True
