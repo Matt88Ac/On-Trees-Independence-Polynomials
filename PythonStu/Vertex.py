@@ -22,7 +22,7 @@ class Vertex:
     
     def RemoveNeigh(self, vert):
         np.delete(self.neighbors,vert)
-        self.degree-=1
+        self.degree-=1    
 
     def GetNeib(self):
         return self.neighbors

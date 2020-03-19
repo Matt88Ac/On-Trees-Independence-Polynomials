@@ -4,14 +4,14 @@ import Vertex
 import numpy as np
 
 
-
 class Tree:
 
     size_of_v = 0
     size_of_e = 0
     V = np.array([], Vertex)
     E = None
-
+    origin = 0
+    
     max_deg_v = 0
 
     #Random Tree Generator:
@@ -22,6 +22,8 @@ class Tree:
         
         self.size_of_v = size
         self.size_of_e = size-1
+        
+        self.origin = size
 
         self.E = np.zeros((size,size))
 
@@ -146,6 +148,9 @@ class Tree:
         newT = Tree(0)
         newT.size_of_v = self.size_of_v
         newT.V = self.V
+        newT.E = self.E
+        
+        newT.origin = self.origin
         
         newT.size_of_e = self.size_of_e
         
@@ -154,12 +159,18 @@ class Tree:
         if x_or_nx:  # T - x, xEV
             newT.size_of_v-=1
             newT.size_of_e -= self.Get_Max_Deg_Vert().GetDegree()
-
-         
-
-
-
-
+            newT.E[index_to_remove] = np.repeat(False,self.origin)
+            newT.max_deg_v = 0
+            
+            np.delete(newT.V,newT.V[index_to_remove])
+            
+            for i in range(0,self.origin):
+                if self.E[index_to_remove][i] == True:
+                    newT.V[i].RemoveNeigh(self.V[index_to_remove])
+            
+                if newT.V[i].GetDegree() > maxi:
+                    maxi = newT.V[i].GetDegree()
+                    newT.max_deg_v = i
 
 
 
