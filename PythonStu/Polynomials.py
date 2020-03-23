@@ -39,7 +39,14 @@ class Polynomial:
 
 
     def __mul__(self, other):
-        pass
+        leng = self.degree() + other.degree()
+        res = np.repeat(0,leng)
+        
+        for i in range(0, self.degree()):
+            for j in range(0, other.degree()):
+                res[i+j] += self.coefficients[i]*other.coefficients[j]
+            
+        return Polynomial(res)
         
 
     def derivative(self):

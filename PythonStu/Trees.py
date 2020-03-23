@@ -12,12 +12,12 @@ class Tree:
     E = None
     origin = 0
     
-    max_deg_v = 0
+    max_deg_v = None
 
     #Random Tree Generator:
     def __init__(self, size):
 
-        if not size:
+        if size == 0:
             return
         
         self.size_of_v = size
@@ -53,12 +53,21 @@ class Tree:
                    self.E[A_index][i] = True
                    self.E[i][A_index] = True
 
-                   self.V[i].AddNei(A_index)
-                   self.V[A_index].AddNei(i)
+                   self.V[i].AddNei(self.V[A_index])
+                   self.V[A_index].AddNei(self.V[i])
 
-                   A_index+=1
+                  
                    much_left-=1
-
+                   
+                   if self.V[A_index].degree > maximum_degree:
+                        maximum_degree = self.V[A_index].degree
+                        self.max_deg_v = self.V[A_index]
+                      
+                   if self.V[i].degree > maximum_degree:
+                        maximum_degree = self.V[i].degree
+                        self.max_deg_v = self.V[i]
+                  
+                   A_index+=1
 
                 while much_left!=0 :
 
@@ -75,16 +84,16 @@ class Tree:
                     self.E[A_index][x] = True
                     self.E[x][A_index] = True
 
-                    self.V[x].AddNei(A_index)
-                    self.V[A_index].AddNei(x)
+                    self.V[x].AddNei(self.V[A_index])
+                    self.V[A_index].AddNei(self.V[x])
 
                     if self.V[x].degree > maximum_degree:
                         maximum_degree = self.V[x].degree
-                        self.max_deg_v = x
+                        self.max_deg_v = self.V[x]
 
                     if self.V[A_index].degree > maximum_degree:
                         maximum_degree = self.V[A_index].degree
-                        self.max_deg_v = A_index
+                        self.max_deg_v = self.V[A_index]
 
                     A_index+=1
 
@@ -98,9 +107,17 @@ class Tree:
                    self.E[B_index][i] = True
                    self.E[i][B_index] = True
 
-                   self.V[i].AddNei(B_index)
-                   self.V[B_index].AddNei(i)
-
+                   self.V[i].AddNei(self.V[B_index])
+                   self.V[B_index].AddNei(self.V[i])
+                   
+                   if self.V[B_index].degree > maximum_degree:
+                        maximum_degree = self.V[B_index].degree
+                        self.max_deg_v = self.V[B_index]
+                        
+                   if self.V[i].degree > maximum_degree:
+                        maximum_degree = self.V[i].degree
+                        self.max_deg_v = self.V[i]
+                  
                    B_index+=1
                    much_left-=1
 
@@ -120,16 +137,16 @@ class Tree:
                     self.E[B_index][x] = True
                     self.E[x][B_index] = True
 
-                    self.V[x].AddNei(B_index)
-                    self.V[B_index].AddNei(x)
+                    self.V[x].AddNei(self.V[B_index])
+                    self.V[B_index].AddNei(self.V[x])
 
                     if self.V[x].degree > maximum_degree:
                         maximum_degree = self.V[x].degree
-                        self.max_deg_v = x
+                        self.max_deg_v = self.V[x]
 
                     if self.V[B_index].degree > maximum_degree:
-                        maximum_degree = self.V[A_index].degree
-                        self.max_deg_v = B_index
+                        maximum_degree = self.V[B_index].degree
+                        self.max_deg_v = self.V[B_index]
 
                     B_index+=1
 
@@ -143,7 +160,7 @@ class Tree:
 
 #  ************************************ End of __init__ ***************************************
 
-    def SubGraph(self, index_to_remove : int, x_or_nx : bool):
+    def SubGraph(self, index_to_remove : Vertex.Vertex, x_or_nx : bool):
         
         newT = Tree(0)
         newT.size_of_v = self.size_of_v
@@ -156,44 +173,43 @@ class Tree:
         maxi = 0
 
         if x_or_nx:  # T - x, xEV
-            newT.size_of_v-=1
-            newT.size_of_e -= self.Get_Max_Deg_Vert().GetDegree()
-            newT.max_deg_v = 0
             
-            for i in range(0,self.size_of_v):
-                if newT.V[i].AreNeighbors(self.V[index_to_remove]) == True:
-                    newT.V[i].RemoveNeigh(self.V[index_to_remove])
+            newT.max_deg_v = None
+            
+            for v in newT.V:
+                if v.AreNeighbors(index_to_remove) == True:
+                    v.RemoveNeigh(index_to_remove)
                     
-                if newT.V[i].GetDegree() > maxi:
-                    maxi = newT.V[i].GetDegree()
-                    newT.max_deg_v = i
+                if v.GetDegree() > maxi:
+                    maxi = v.GetDegree()
+                    newT.max_deg_v = v
             
-            newT.V = newT.V[newT.V != self.V[index_to_remove]]
-            
+            newT.V = newT.V[newT.V != index_to_remove]
+            newT.size_of_v-=1
             
 
 
         else: # T - N[x], xEV
-            newT.size_of_v -= 1 + self.V[index_to_remove].GetDegree()
+            newT.size_of_v -= 1 + index_to_remove.degree
             
             tmpo_to_remove = []
                 
-            for i in range(0,self.origin):
-                if newT.V[i].AreNeighbors(self.V[index_to_remove]) == True:
-                    tmpo_to_remove.append(i)
-                    newT.V = newT.V[newT.V != newT.V[i]]
+            for v in newT.V:
+                if Vertex.AreNeighbors(v,index_to_remove) == True:
+                    tmpo_to_remove.append(v)
+                    newT.V = newT.V[newT.V != v]
+                    newT.size_of_e -=1
             
                                 
-            i=0
             for v in newT.V:
                 for index in tmpo_to_remove:
-                    if v.AreNeighbors(self.V[index]) == True:
-                        v.RemoveNeigh(self.V[index])
+                    if Vertex.AreNeighbors(v,index) == True:
+                        v.RemoveNeigh(index)
+                        newT.size_of_e -=1
                 
                 if v.GetDegree() > maxi:
                     maxi = v.GetDegree()
-                    newT.max_deg_v = i
-                i+=1
+                    newT.max_deg_v = v
                         
 
         return newT
@@ -232,9 +248,6 @@ class Tree:
 
 
 # ***************************** End Of BFS *************************************
-
-    def Get_Max_Deg_Vert(self):
-        return self.V[self.max_deg_v]
         
     
     def isKn(self):

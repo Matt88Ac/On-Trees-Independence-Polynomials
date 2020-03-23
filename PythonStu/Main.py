@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 
-import Polynomials as Poly
-import Trees
+import Independence_Polys as IP
+import Trees as tr
+import sys
 
-T = Trees.Tree(10)
+T = tr.Tree(20)
 T.print_rel()
+
+
 
 
 

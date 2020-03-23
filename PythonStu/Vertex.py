@@ -4,14 +4,14 @@ import numpy as np
 class Vertex:
     ind = 0
     degree = 0
+    neighbors = []
 
     def __init__(self, index=0, deg=0):
         self.ind = index
         self.degree = deg
-        self.neighbors = np.array([], Vertex)
 
     def AddNei (self, vert):
-        self.neighbors =  np.insert(self.neighbors,0,vert)   
+        self.neighbors.append(vert)   
         self.degree += 1
 
     def GetDegree(self):
@@ -27,15 +27,22 @@ class Vertex:
     def GetNeib(self):
         return self.neighbors
     
-    def AreNeighbors(self, vert):
-        for v in self.neighbors:
-            if v == vert:
-                return True
-        return False
+
         
 
 
-
+def AreNeighbors(v1: Vertex, vert: Vertex):     
+   
+    
+    for v in v1.neighbors:
+        if v.ind == vert.ind:
+            return True
+   
+    for v in vert.neighbors:
+         if v.ind == v1.ind:
+             return True 
+    
+    return False
 
 
 
