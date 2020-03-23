@@ -6,10 +6,12 @@ from itertools import zip_longest
 
 class Polynomial:
     
-    def __init__(self, *coefficients):
+    coefficients = np.array([], int)
+    
+    def __init__(self, coef):
         """ input: coefficients are in the form a_n, ...a_1, a_0 
         """
-        self.coefficients = list(coefficients) # tuple is turned into a list
+        self.coefficients = np.array(coef, int) # tuple is turned into a list
      
     def __repr__(self):
         """
@@ -32,14 +34,14 @@ class Polynomial:
         c1 = self.coefficients[::-1]
         c2 = other.coefficients[::-1]
         res = [sum(t) for t in zip_longest(c1, c2, fillvalue=0)]
-        return Polynomial(*res[::-1])
+        return Polynomial(res[::-1])
     
     def __sub__(self, other):
         c1 = self.coefficients[::-1]
         c2 = other.coefficients[::-1]
         
         res = [t1-t2 for t1, t2 in zip_longest(c1, c2, fillvalue=0)]
-        return Polynomial(*res[::-1])
+        return Polynomial(res[::-1])
 
     def derivative(self):
         derived_coeffs = []
@@ -47,7 +49,7 @@ class Polynomial:
         for i in range(len(self.coefficients)-1):
             derived_coeffs.append(self.coefficients[i] * exponent)
             exponent -= 1
-        return Polynomial(*derived_coeffs)
+        return Polynomial(derived_coeffs)
     
     def __str__(self):
         res = ""
@@ -66,4 +68,26 @@ class Polynomial:
             res += " + " + str(self.coefficients[-1])
 
         return res
+    
+    def show_graph(self, beg, end):
+        X = np.linspace(beg,end)
+        F = self(X)
+        plt.plot(X,F)
+        plt.show()
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
     

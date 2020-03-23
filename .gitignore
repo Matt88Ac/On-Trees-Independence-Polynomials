@@ -264,3 +264,4 @@ __pycache__/
 .vscode/c_cpp_properties.json
 .vscode/settings.json
 TreesDB.sql
+PythonStu/Main.py
