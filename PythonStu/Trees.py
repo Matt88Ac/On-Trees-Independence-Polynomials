@@ -8,7 +8,7 @@ class Tree:
 
     size_of_v = 0
     size_of_e = 0
-    V = np.array([], Vertex)
+    V = np.array([], Vertex.Vertex)
     E = None
     origin = 0
     
@@ -39,8 +39,8 @@ class Tree:
         while not is_good:
 
             for i in range(0,size):
-               np.insert(self.V,Vertex(i,0))
-
+              self.V =  np.insert(self.V,0,Vertex.Vertex(i,0))
+           
             A_index = 0
             B_index = size_A
 
@@ -136,7 +136,7 @@ class Tree:
 # ************************ End of 2nd Condition ******************************
             is_good = self.BFS(size)
             if not is_good:
-                self.V = np.array([], Vertex)
+                self.V = np.array([], Vertex.Vertex)
                 self.E = np.zeros((size, size))
                 maximum_degree = 0
 
@@ -162,7 +162,7 @@ class Tree:
             newT.E[index_to_remove] = np.repeat(False,self.origin)
             newT.max_deg_v = 0
             
-            np.delete(newT.V,newT.V[index_to_remove])
+            newT.V = newT.V[newT.V != self.V[index_to_remove]]
             
             for i in range(0,self.origin):
                 if self.E[index_to_remove][i] == True:

@@ -11,7 +11,7 @@ class Vertex:
         self.neighbors = np.array([], Vertex)
 
     def AddNei (self, vert):
-        np.insert(self.neighbors,vert)   
+        self.neighbors =  np.insert(self.neighbors,0,vert)   
         self.degree += 1
 
     def GetDegree(self):
@@ -21,7 +21,7 @@ class Vertex:
         return self.ind
     
     def RemoveNeigh(self, vert):
-        np.delete(self.neighbors,vert)
+        self.neighbors =  self.neighbors[self.neighbors != vert]
         self.degree-=1    
 
     def GetNeib(self):
