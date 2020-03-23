@@ -148,7 +148,6 @@ class Tree:
         newT = Tree(0)
         newT.size_of_v = self.size_of_v
         newT.V = self.V
-        newT.E = self.E
         
         newT.origin = self.origin
         
@@ -159,27 +158,43 @@ class Tree:
         if x_or_nx:  # T - x, xEV
             newT.size_of_v-=1
             newT.size_of_e -= self.Get_Max_Deg_Vert().GetDegree()
-            newT.E[index_to_remove] = np.repeat(False,self.origin)
             newT.max_deg_v = 0
             
-            newT.V = newT.V[newT.V != self.V[index_to_remove]]
-            
-            for i in range(0,self.origin):
-                if self.E[index_to_remove][i] == True:
+            for i in range(0,self.size_of_v):
+                if newT.V[i].AreNeighbors(self.V[index_to_remove]) == True:
                     newT.V[i].RemoveNeigh(self.V[index_to_remove])
-            
+                    
                 if newT.V[i].GetDegree() > maxi:
                     maxi = newT.V[i].GetDegree()
                     newT.max_deg_v = i
-
-
-
+            
+            newT.V = newT.V[newT.V != self.V[index_to_remove]]
+            
+            
 
 
         else: # T - N[x], xEV
             newT.size_of_v -= 1 + self.V[index_to_remove].GetDegree()
             
-
+            tmpo_to_remove = []
+                
+            for i in range(0,self.origin):
+                if newT.V[i].AreNeighbors(self.V[index_to_remove]) == True:
+                    tmpo_to_remove.append(i)
+                    newT.V = newT.V[newT.V != newT.V[i]]
+            
+                                
+            i=0
+            for v in newT.V:
+                for index in tmpo_to_remove:
+                    if v.AreNeighbors(self.V[index]) == True:
+                        v.RemoveNeigh(self.V[index])
+                
+                if v.GetDegree() > maxi:
+                    maxi = v.GetDegree()
+                    newT.max_deg_v = i
+                i+=1
+                        
 
         return newT
 
@@ -192,22 +207,21 @@ class Tree:
         num_of_e = 0
         color[0] = 1
         
-        Q_index=0
         
         Que = []
         Que.append(0)
         
-        while len(Que)!=0:
+        while len(Que)!=0: 
+            for i in range(0,self.size_of_v):
+               if self.E[i][Que[0]] == True:
+                   if color[i] == 0:
+                       Que.append(i)
+                       color[i] = 1
+                       num_of_e+=1
+                       num_of_nil-=1
             
-            for vert in self.V[Que[Q_index]].GetNeib():
-                if color[vert.GetIndex()] == 0:
-                    Que.append(vert.GetIndex())
-                    color[vert.GetIndex()] = 1
-                    num_of_e+=1
-                    num_of_nil-=1
-            
-            color[Que[Q_index]] = 2
-            Que.remove(Que[Q_index])
+            color[Que[0]] = 2
+            Que.remove(Que[0])
           
 
         if num_of_nil!=1 or num_of_e!=self.size_of_e:
@@ -225,8 +239,16 @@ class Tree:
     
     def isKn(self):
         return self.size_of_e==self.size_of_v*(self.size_of_v-1)/2
-
-
-
+    
+    def print_rel(self):
+        print("|V| =".format(self.size_of_v))
+        print("E = ")
+        for i in range(0, self.size_of_v):
+            for j in range(i, self.size_of_v):
+                if self.E[i][j] == True:
+                    print('[ V{0}, V{1} ], '.format(i,j))
+                    
+        
+        
 
 

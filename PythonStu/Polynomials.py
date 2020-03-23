@@ -30,11 +30,11 @@ class Polynomial:
         return Polynomial(res)
     
     def __sub__(self, other):
-        c1 = self.coefficients[::-1]
-        c2 = other.coefficients[::-1]
+        c1 = self.coefficients
+        c2 = other.coefficients
         
         res = [t1-t2 for t1, t2 in zip_longest(c1, c2, fillvalue=0)]
-        return Polynomial(res[::-1])
+        return Polynomial(res)
 
 
 

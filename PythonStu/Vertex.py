@@ -26,10 +26,14 @@ class Vertex:
 
     def GetNeib(self):
         return self.neighbors
+    
+    def AreNeighbors(self, vert):
+        for v in self.neighbors:
+            if v == vert:
+                return True
+        return False
+        
 
-    def __del__(self):
-        self.degree = 0
-        self.neighbors.clear()
 
 
 
