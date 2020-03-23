@@ -177,11 +177,12 @@ class Tree:
 
 
         else: # T - N[x], xEV
-          pass
-
+            newT.size_of_v -= 1 + self.V[index_to_remove].GetDegree()
+            
 
 
         return newT
+
 
     def BFS(self,size):
         
@@ -208,10 +209,7 @@ class Tree:
             color[Que[Q_index]] = 2
             Que.remove(Que[Q_index])
           
-           
-                
 
-        Que.__delitem__()
         if num_of_nil!=1 or num_of_e!=self.size_of_e:
             return False
         return True
