@@ -35,10 +35,10 @@ class Polynomial:
 
     def derivative(self):
         derived_coeffs = []
-        exponent = len(self.coefficients) - 1
-        for i in range(len(self.coefficients)-1):
+        exponent = 1
+        for i in range(1, len(self.coefficients)):
             derived_coeffs.append(self.coefficients[i] * exponent)
-            exponent -= 1
+            exponent += 1
         return Polynomial(derived_coeffs)
     
     def __str__(self):
