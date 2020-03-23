@@ -5,7 +5,7 @@ import Polynomials as Poly
 import numpy as np
 
 
-arr = np.array([])
-arr = np.insert(arr,0,6)
+P = Poly.Polynomial([1,2,3,4])
 
+print(P)
 

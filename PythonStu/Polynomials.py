@@ -40,3 +40,30 @@ class Polynomial:
         
         res = [t1-t2 for t1, t2 in zip_longest(c1, c2, fillvalue=0)]
         return Polynomial(*res[::-1])
+
+    def derivative(self):
+        derived_coeffs = []
+        exponent = len(self.coefficients) - 1
+        for i in range(len(self.coefficients)-1):
+            derived_coeffs.append(self.coefficients[i] * exponent)
+            exponent -= 1
+        return Polynomial(*derived_coeffs)
+    
+    def __str__(self):
+        res = ""
+        degree = len(self.coefficients) - 1
+        res += str(self.coefficients[0]) + "x^" + str(degree)
+        for i in range(1, len(self.coefficients)-1):
+            coeff = self.coefficients[i]
+            if coeff < 0:
+                res += " - " +  str(-coeff) + "x^" + str(degree - i)
+            else:
+                res += " + " +  str(coeff) + "x^" + str(degree - i)
+                
+        if self.coefficients[-1] < 0:
+            res += " - " + str(-self.coefficients[-1])
+        else:
+            res += " + " + str(self.coefficients[-1])
+
+        return res
+    
