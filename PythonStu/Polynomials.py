@@ -9,18 +9,8 @@ class Polynomial:
     coefficients = np.array([], int)
     
     def __init__(self, coef):
-        """ input: coefficients are in the form a_n, ...a_1, a_0 
-        """
         self.coefficients = np.array(coef, int) # tuple is turned into a list
-     
-    def __repr__(self):
-        """
-        method to return the canonical string representation 
-        of a polynomial.
-   
-        """
-        return "Polynomial" + str(self.coefficients)
-            
+    
     def __call__(self, x):    
         res = 0
         for coeff in self.coefficients:
@@ -53,19 +43,39 @@ class Polynomial:
     
     def __str__(self):
         res = ""
-        degree = len(self.coefficients) - 1
-        res += str(self.coefficients[0]) + "x^" + str(degree)
-        for i in range(1, len(self.coefficients)-1):
+        #degree = len(self.coefficients) - 1
+        #res += str(self.coefficients[0]) + "X^" + str(degree)
+     
+        for i in range(0, len(self.coefficients)):
             coeff = self.coefficients[i]
-            if coeff < 0:
-                res += " - " +  str(-coeff) + "x^" + str(degree - i)
-            else:
-                res += " + " +  str(coeff) + "x^" + str(degree - i)
+            if coeff == 0:
+                continue
+           
+            if i == 0: 
+                if coeff < 0:
+                    res += " - " +  str(coeff)
+                else:
+                    res +=  str(coeff)
+            
                 
-        if self.coefficients[-1] < 0:
-            res += " - " + str(-self.coefficients[-1])
-        else:
-            res += " + " + str(self.coefficients[-1])
+            elif i == 1:   
+                if coeff == 1:
+                    res+= " + X"
+                
+                elif coeff < 0:
+                    res += " - " +  str(-coeff) + "X" 
+                else:
+                    res += " + " +  str(coeff) + "X"
+            
+         
+            else:
+                if coeff == 1:
+                    res+= " + X^" + str(i) 
+                
+                elif coeff < 0:
+                    res += " - " +  str(-coeff) + "X^" + str(i)
+                else:
+                    res += " + " +  str(coeff) + "X^" + str(i)
 
         return res
     
