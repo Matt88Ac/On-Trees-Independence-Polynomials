@@ -9,7 +9,10 @@ class Polynomial:
     coefficients = np.array([], int)
     
     def __init__(self, coef):
-        self.coefficients = np.array(coef, int) # tuple is turned into a list
+        self.coefficients = np.array(coef, int)
+    
+    def __repr__(self):
+        return self.__str__(self)
     
     def __call__(self, x):    
         res = 0
@@ -21,10 +24,10 @@ class Polynomial:
         return len(self.coefficients)   
             
     def __add__(self, other):
-        c1 = self.coefficients[::-1]
-        c2 = other.coefficients[::-1]
+        c1 = self.coefficients
+        c2 = other.coefficients
         res = [sum(t) for t in zip_longest(c1, c2, fillvalue=0)]
-        return Polynomial(res[::-1])
+        return Polynomial(res)
     
     def __sub__(self, other):
         c1 = self.coefficients[::-1]
@@ -32,6 +35,12 @@ class Polynomial:
         
         res = [t1-t2 for t1, t2 in zip_longest(c1, c2, fillvalue=0)]
         return Polynomial(res[::-1])
+
+
+
+    def __mul__(self, other):
+        pass
+        
 
     def derivative(self):
         derived_coeffs = []
@@ -42,10 +51,7 @@ class Polynomial:
         return Polynomial(derived_coeffs)
     
     def __str__(self):
-        res = ""
-        #degree = len(self.coefficients) - 1
-        #res += str(self.coefficients[0]) + "X^" + str(degree)
-     
+        res = ""     
         for i in range(0, len(self.coefficients)):
             coeff = self.coefficients[i]
             if coeff == 0:
@@ -84,7 +90,6 @@ class Polynomial:
         F = self(X)
         plt.plot(X,F)
         plt.show()
-        
         
         
         

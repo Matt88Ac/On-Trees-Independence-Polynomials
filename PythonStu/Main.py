@@ -1,11 +1,24 @@
 # -*- coding: utf-8 -*-
-import Trees
-import Vertex
+
 import Polynomials as Poly
 import numpy as np
 
-P = Poly.Polynomial([3,2,6,1,0,7,8])
-print(P)
+p = Poly.Polynomial([1,1,1,0,7,8])
+t = p.derivative()
+
+print("P = ")
+print(p)
+print("T =")
+print(t)
+
+print("T+P = "); print(t+p)
 
 
-print(P.derivative())
+
+
+
+arr = np.array([5,7,2,4,6], int)
+
+yy = arr[::-1]
+
+
