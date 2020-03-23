@@ -39,7 +39,7 @@ class Tree:
         while not is_good:
 
             for i in range(0,size):
-              self.V =  np.insert(self.V,0,Vertex.Vertex(i,0))
+              self.V =  np.insert(self.V,i,Vertex.Vertex(i,0))
            
             A_index = 0
             B_index = size_A
