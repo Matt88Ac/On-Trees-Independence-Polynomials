@@ -241,7 +241,7 @@ class Tree:
         return self.size_of_e==self.size_of_v*(self.size_of_v-1)/2
     
     def print_rel(self):
-        print("|V| =".format(self.size_of_v))
+        print("|V| = {0}".format(self.size_of_v))
         print("E = ")
         for i in range(0, self.size_of_v):
             for j in range(i, self.size_of_v):
