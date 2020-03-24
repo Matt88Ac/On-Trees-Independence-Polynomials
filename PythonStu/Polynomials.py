@@ -94,3 +94,6 @@ class Polynomial:
         F = self(X)
         plt.plot(X, F)
         plt.show()
+
+    def roots(self):
+        return np.roots(self.coefficients)
