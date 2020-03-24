@@ -222,7 +222,7 @@ TreeGraph$methods(
         
       }
       
-      
+      returnValue(subt)
     }
     
     else{
@@ -252,10 +252,9 @@ TreeGraph$methods(
         
          }
       
+        returnValue(subt)
       }
     
-    
-    returnValue(subt)
   
   },
   

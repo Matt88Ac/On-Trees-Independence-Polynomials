@@ -53,8 +53,8 @@ class Tree:
                    self.E[A_index][i] = True
                    self.E[i][A_index] = True
 
-                   self.V[i].AddNei(self.V[A_index])
-                   self.V[A_index].AddNei(self.V[i])
+                   self.V[i].AddNei(A_index)
+                   self.V[A_index].AddNei(i)
 
                   
                    much_left-=1
@@ -84,8 +84,8 @@ class Tree:
                     self.E[A_index][x] = True
                     self.E[x][A_index] = True
 
-                    self.V[x].AddNei(self.V[A_index])
-                    self.V[A_index].AddNei(self.V[x])
+                    self.V[x].AddNei(A_index)
+                    self.V[A_index].AddNei(x)
 
                     if self.V[x].degree > maximum_degree:
                         maximum_degree = self.V[x].degree
@@ -107,8 +107,8 @@ class Tree:
                    self.E[B_index][i] = True
                    self.E[i][B_index] = True
 
-                   self.V[i].AddNei(self.V[B_index])
-                   self.V[B_index].AddNei(self.V[i])
+                   self.V[i].AddNei(B_index)
+                   self.V[B_index].AddNei(i)
                    
                    if self.V[B_index].degree > maximum_degree:
                         maximum_degree = self.V[B_index].degree
@@ -137,8 +137,8 @@ class Tree:
                     self.E[B_index][x] = True
                     self.E[x][B_index] = True
 
-                    self.V[x].AddNei(self.V[B_index])
-                    self.V[B_index].AddNei(self.V[x])
+                    self.V[x].AddNei(B_index)
+                    self.V[B_index].AddNei(x)
 
                     if self.V[x].degree > maximum_degree:
                         maximum_degree = self.V[x].degree
@@ -156,29 +156,30 @@ class Tree:
                 self.V = np.array([], Vertex.Vertex)
                 self.E = np.zeros((size, size))
                 maximum_degree = 0
+                
 
 
 #  ************************************ End of __init__ ***************************************
 
-    def SubGraph(self, index_to_remove : Vertex.Vertex, x_or_nx : bool):
+    def SubGraph(self, index_to_remove : Vertex.Vertex, x_or_nx : bool): 
         
         newT = Tree(0)
         newT.size_of_v = self.size_of_v
-        newT.V = self.V
-        
+      
+        newT.V = np.array(self.V,Vertex.Vertex)
+        #newT.V = self.V
         newT.origin = self.origin
-        
         newT.size_of_e = self.size_of_e
+        newT.max_deg_v = newT.V[0]
         
         maxi = 0
 
         if x_or_nx:  # T - x, xEV
             
-            newT.max_deg_v = None
-            
             for v in newT.V:
-                if v.AreNeighbors(index_to_remove) == True:
-                    v.RemoveNeigh(index_to_remove)
+                if v.AreNeighbors(index_to_remove.ind) == True:
+                    v.RemoveNeigh(index_to_remove.ind)
+                    newT.size_of_e-=1
                     
                 if v.GetDegree() > maxi:
                     maxi = v.GetDegree()
@@ -190,20 +191,21 @@ class Tree:
 
 
         else: # T - N[x], xEV
-            newT.size_of_v -= 1 + index_to_remove.degree
+            newT.size_of_v -= 1
             
             tmpo_to_remove = []
                 
             for v in newT.V:
-                if Vertex.AreNeighbors(v,index_to_remove) == True:
-                    tmpo_to_remove.append(v)
+                if v.AreNeighbors(index_to_remove.ind) == True:
+                    tmpo_to_remove.append(v.ind)
                     newT.V = newT.V[newT.V != v]
-                    newT.size_of_e -=1
+                    newT.size_of_v -= 1
             
-                                
+            
+            newT.V = newT.V[newT.V != index_to_remove.ind]                    
             for v in newT.V:
                 for index in tmpo_to_remove:
-                    if Vertex.AreNeighbors(v,index) == True:
+                    if v.AreNeighbors(index) == True:
                         v.RemoveNeigh(index)
                         newT.size_of_e -=1
                 
@@ -216,9 +218,7 @@ class Tree:
 
 
     def BFS(self,size):
-        
-        
-        color = np.zeros(size,int)
+        color = np.repeat(0,self.size_of_v)
         num_of_nil = size
         num_of_e = 0
         color[0] = 1
@@ -226,20 +226,19 @@ class Tree:
         
         Que = []
         Que.append(0)
+        Q_index = 0
         
-        while len(Que)!=0: 
+        while Q_index<self.size_of_v and Q_index < len(Que): 
             for i in range(0,self.size_of_v):
-               if self.E[i][Que[0]] == True:
-                   if color[i] == 0:
-                       Que.append(i)
-                       color[i] = 1
-                       num_of_e+=1
-                       num_of_nil-=1
+               if self.E[i][Que[Q_index]] == True and color[i] == 0:
+                   Que.append(i)
+                   color[i] = 1
+                   num_of_e+=1
+                   num_of_nil-=1
             
-            color[Que[0]] = 2
-            Que.remove(Que[0])
+            color[Que[Q_index]] = 2
+            Q_index+=1
           
-
         if num_of_nil!=1 or num_of_e!=self.size_of_e:
             return False
         return True

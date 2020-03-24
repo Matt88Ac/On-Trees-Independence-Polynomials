@@ -22,7 +22,9 @@ Indepen_Polynomial$methods(
       returnValue(polynomial(coef = c(1,Tt$size_v)))
     }
     
-    tmp <- calc_tree_pol(Tt$subTreeforIndep(Tt$max_deg_index, TRUE)) + polynomial(coef = c(0,1))*calc_tree_pol(Tt$subTreeforIndep(Tt$max_deg_index, FALSE))
+    tmp <- calc_tree_pol(Tt$subTreeforIndep(Tt$max_deg_index, TRUE))
+    
+    tmp <- tmp + polynomial(coef = c(0,1))*calc_tree_pol(Tt$subTreeforIndep(Tt$max_deg_index, FALSE))
     
     print(tmp)
     returnValue(tmp)

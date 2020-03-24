@@ -14,22 +14,17 @@ class IndeP:
 
     def ComputePOL(self, tree = trs.Tree):
         
-        if tree.max_deg_v == 0:
+        if tree.size_of_v == 0:
             return poly.Polynomial([1])
         
         elif tree.isKn() == True:
-            res = trs.np.repeat(0,2)
-            res[0] = 1
-            res[1] = tree.size_of_v
-            
+            res = [1,tree.size_of_v]            
             return poly.Polynomial(res)
         
         
         temp=self.ComputePOL( tree.SubGraph(tree.max_deg_v, False))*poly.Polynomial([1,1])
         temp += self.ComputePOL(tree.SubGraph( tree.max_deg_v, True ))
-        
-        print(temp)
-        
+               
         return temp
 
         
