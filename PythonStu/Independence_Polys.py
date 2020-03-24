@@ -22,7 +22,6 @@ class IndeP:
             res = [1, tree.size_of_v]
             return poly.Polynomial(res)
 
-        temp = self.ComputePOL(tree.SubGraph(tree.max_deg_v, False)) * poly.Polynomial([0, 1])
-        temp += self.ComputePOL(tree.SubGraph(tree.max_deg_v, True))
+        temp = self.ComputePOL(tree.SubGraph(tree.max_deg_v, False)) * poly.Polynomial([0, 1]) + self.ComputePOL(tree.SubGraph(tree.max_deg_v, True))
 
         return temp

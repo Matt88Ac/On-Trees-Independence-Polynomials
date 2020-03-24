@@ -169,13 +169,13 @@ class Tree:
         maxi = 0
 
         if x_or_nx:  # T - x, xEV
-
+           # print(' Visiting {0}, for T - x, when |V| = {1}'.format(index_to_remove.GetIndex(), self.size_of_v))
             for v in newT.V:
-                if v.AreNeighbors(index_to_remove.ind) == True:
+                if v.AreNeighbors(index_to_remove.ind):
                     v.RemoveNeigh(index_to_remove.ind)
                     newT.size_of_e -= 1
 
-                if v.GetDegree() > maxi:
+                if v.GetDegree() > maxi and v.ind != index_to_remove.ind:
                     maxi = v.GetDegree()
                     newT.max_deg_v = v
 
@@ -186,7 +186,7 @@ class Tree:
 
         else:  # T - N[x], xEV
             newT.size_of_v -= 1
-
+           # print(' Visiting {0}, for T - N[x], when |V| = {1}'.format(index_to_remove.GetIndex(), self.size_of_v))
             tmpo_to_remove = []
 
             for v in newT.V:
@@ -202,7 +202,7 @@ class Tree:
                         v.RemoveNeigh(index)
                         newT.size_of_e -= 1
 
-                if v.GetDegree() > maxi:
+                if v.GetDegree() > maxi and v.ind != index_to_remove.ind:
                     maxi = v.GetDegree()
                     newT.max_deg_v = v
 
@@ -214,8 +214,7 @@ class Tree:
         num_of_e = 0
         color[0] = 1
 
-        Que = []
-        Que.append(0)
+        Que = [0]
         Q_index = 0
 
         while Q_index < self.size_of_v and Q_index < len(Que):
@@ -236,7 +235,7 @@ class Tree:
     # ***************************** End Of BFS *************************************
 
     def isKn(self):
-        return self.size_of_e == self.size_of_v * (self.size_of_v - 1) / 2
+        return self.size_of_e == (self.size_of_v * (self.size_of_v - 1) / 2)
 
     def print_rel(self):
         print("|V| = {0}".format(self.size_of_v))
