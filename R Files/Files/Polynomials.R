@@ -26,9 +26,22 @@ Indepen_Polynomial$methods(
     
     print(tmp)
     returnValue(tmp)
+  },
+  
+  plotpoly = function(xlimit = 1, ylimit = 1){
+    if(!is.null(the_poly)){
+      plot(x = the_poly, xlim = c(-xlimit,xlimit), ylim = c(-ylimit,ylimit), col = "blue") 
+    }
+    
+  },
+  
+  findRoots = function(){
+    if (is.null(the_poly)) {
+      returnValue()
+    }
+    returnValue(polyroot(the_poly))
+    
   }
-  
-  
 )
 
 
