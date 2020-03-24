@@ -100,14 +100,8 @@ class Polynomial:
         
         
      
-#P = Polynomial([1,4,5,2])
 
-#print(P)
-#P.show_graph(-10,10)
-        
-        
-        
-        
+
         
         
         
