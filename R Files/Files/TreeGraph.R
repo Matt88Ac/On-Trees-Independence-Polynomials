@@ -203,7 +203,7 @@ TreeGraph$methods(
       subt$size_v <- size_v -1
       subt$origin_size <- origin_size
       subt$size_e <- size_e
-      subt$V <- V[!V %in% which_one]
+      subt$V <- V[!V$index %in% which_one]
       subt$E <- E
       
       subt$E[which_one] <- rep(FALSE, origin_size)
@@ -232,7 +232,7 @@ TreeGraph$methods(
         subt$size_v <- size_v -1 - V[which_one]$degree
         subt$origin_size <- origin_size
         subt$size_e <- size_e
-        subt$V <- V[!V %in% tmpo_removes]
+        subt$V <- V[!V$index %in% tmpo_removes]
         subt$E <- E
       
         subt$E[,tmpo_removes] <- rep(FALSE, origin_size)

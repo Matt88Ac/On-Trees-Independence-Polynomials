@@ -9,7 +9,7 @@ Vertex$methods(
   },
   
   removeNeigh = function(vert = "numeric") {
-    neighbors <<- neighbors[[!neighbors %in% vert]]
+    neighbors <<- neighbors[!neighbors %in% vert]
     degree <<- degree-1
     
   },

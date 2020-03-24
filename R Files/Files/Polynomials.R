@@ -1,4 +1,6 @@
 
+#Library(polynom)
+
 Indepen_Polynomial <- setRefClass("IndeP", fields = list(the_poly = "S3", the_t = "TreeGraph"))
 
 Indepen_Polynomial$methods(
