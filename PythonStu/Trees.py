@@ -11,7 +11,7 @@ class Tree:
     E = None
     origin = 0
 
-    max_deg_v = None
+    max_deg_v = None  # Vertex type
 
     # Random Tree Generator:
     def __init__(self, size):
@@ -24,8 +24,6 @@ class Tree:
 
         self.origin = size
 
-        self.E = np.zeros((size, size))
-
         maximum_degree = 0
         much_left = self.size_of_e
 
@@ -35,17 +33,16 @@ class Tree:
         is_good = False
 
         while not is_good:
-
+            self.E = np.zeros((size, size))
             for i in range(0, size):
                 self.V = np.insert(self.V, i, Vertex.Vertex(i, 0))
 
             A_index = 0
             B_index = size_A
-
+            self.max_deg_v = self.V[0]
             if size_A >= size_B:
 
                 for i in range(B_index, size):
-
                     # Index 'i' represents the B side.
 
                     self.E[A_index][i] = True
@@ -55,14 +52,6 @@ class Tree:
                     self.V[A_index].AddNei(i)
 
                     much_left -= 1
-
-                    if self.V[A_index].degree > maximum_degree:
-                        maximum_degree = self.V[A_index].degree
-                        self.max_deg_v = self.V[A_index]
-
-                    if self.V[i].degree > maximum_degree:
-                        maximum_degree = self.V[i].degree
-                        self.max_deg_v = self.V[i]
 
                     A_index += 1
 
@@ -74,6 +63,7 @@ class Tree:
                     x = random.randint(size_A, size - 1)  # x is an index for side B.
 
                     if self.E[A_index][x]:
+                        A_index += 1
                         continue
 
                     much_left -= 1
@@ -98,7 +88,6 @@ class Tree:
 
             else:
                 for i in range(0, size_A):
-
                     # Index 'i' represents the A side.
 
                     self.E[B_index][i] = True
@@ -106,14 +95,6 @@ class Tree:
 
                     self.V[i].AddNei(B_index)
                     self.V[B_index].AddNei(i)
-
-                    if self.V[B_index].degree > maximum_degree:
-                        maximum_degree = self.V[B_index].degree
-                        self.max_deg_v = self.V[B_index]
-
-                    if self.V[i].degree > maximum_degree:
-                        maximum_degree = self.V[i].degree
-                        self.max_deg_v = self.V[i]
 
                     B_index += 1
                     much_left -= 1
@@ -126,6 +107,7 @@ class Tree:
                     x = random.randint(0, size_A - 1)  # x is an index for side A.
 
                     if self.E[B_index][x]:
+                        B_index += 1
                         continue
 
                     much_left -= 1
@@ -150,7 +132,6 @@ class Tree:
             is_good = self.BFS(size)
             if not is_good:
                 self.V = np.array([], Vertex.Vertex)
-                self.E = np.zeros((size, size))
                 maximum_degree = 0
 
     #  ************************************ End of __init__ ***************************************
@@ -165,11 +146,10 @@ class Tree:
         newT.origin = self.origin
         newT.size_of_e = self.size_of_e
         newT.max_deg_v = newT.V[0]
-
         maxi = 0
 
         if x_or_nx:  # T - x, xEV
-           # print(' Visiting {0}, for T - x, when |V| = {1}'.format(index_to_remove.GetIndex(), self.size_of_v))
+            # print(' Visiting {0}, for T - x, when |V| = {1}'.format(index_to_remove.GetIndex(), self.size_of_v))
             for v in newT.V:
                 if v.AreNeighbors(index_to_remove.ind):
                     v.RemoveNeigh(index_to_remove.ind)
@@ -183,10 +163,10 @@ class Tree:
             newT.size_of_v -= 1
 
 
-
-        else:  # T - N[x], xEV
+        # T - N[x], xEV
+        else:
             newT.size_of_v -= 1
-           # print(' Visiting {0}, for T - N[x], when |V| = {1}'.format(index_to_remove.GetIndex(), self.size_of_v))
+            # print(' Visiting {0}, for T - N[x], when |V| = {1}'.format(index_to_remove.GetIndex(), self.size_of_v))
             tmpo_to_remove = []
 
             for v in newT.V:
