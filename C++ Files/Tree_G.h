@@ -441,6 +441,33 @@ public:
 
 	}
 
+	// Menorah Tree Graph
+	TreeGraph(char z, int size) : size_v(size*2), size_E(2*size-1), max_deg_vrx(0) {
+
+		// V[0] is always the 1 in the initial K1,n graph.
+		//the next n are his initial neighbors.
+		// from V[size] and on, all are leaf
+		
+		int i = 0, j=0;
+		
+		for (i; i < size; i++) {
+			this->V.push_back(vertex(i, 1));
+			if (i > 0) {
+				this->V[0].Nindex.push_back(i);
+				this->V[i].Nindex.push_back(0);
+				this->V[i].degree = 2;
+				this->V[0].degree++;
+			}
+		}
+
+		for ( i; i < this->size_v; i++){
+			this->V.push_back(vertex(i, 1));
+			this->V[j].Nindex.push_back(i);
+			this->V[i].Nindex.push_back(j);
+		}
+
+	}
+
 	//TreeGraph subGraph_for_cl(int index_of_ver) const;
 
 	TreeGraph GetTOpp() const;
@@ -623,28 +650,3 @@ ostream& operator << (ostream& os, const TreeGraph& x)
 
 	 return newT;
  }
-
-
- /*
- //TreeGraph TreeGraph::subGraph_for_cl(int index_of_ver) const
- //{
-	// TreeGraph newT;
-
-	// if (this->size_v == 0) { return newT; }
-	// 
-	// newT.size_v = V[index_of_ver].degree;
-	// newT.size_E = 0;
-	// newT.max_deg_vrx = 0;
-
-
-	// newT.V.reserve(newT.size_v);
-
-	// for (int i = 0; i < newT.size_v; i++)
-	// {
-	//	 newT.V.push_back(vertex(i, 0));
-	// }
-
-
-	// return newT;
-
- //} */
