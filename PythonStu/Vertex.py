@@ -1,7 +1,7 @@
 import numpy as np
 
 
-class Vertex:
+class Vertex():
     ind = 0
     degree = 0
     neighbors = np.array([], int)

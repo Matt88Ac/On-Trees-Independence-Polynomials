@@ -1,3 +1,9 @@
+install.packages("R6")
+library(R6)
+
+
+
+
 
 
 TreeGraph <- setRefClass("TreeGraph",  fields = list(  size_v = "numeric", size_e = "numeric", V = "vector", E = "matrix", 

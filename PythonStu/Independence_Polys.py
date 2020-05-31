@@ -4,7 +4,7 @@ import Polynomials as poly
 import Trees as trs
 
 
-class IndeP:
+class IndeP():
     The_Polynom = None
     The_Tree = None
 

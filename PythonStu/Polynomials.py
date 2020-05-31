@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from itertools import zip_longest
 
 
-class Polynomial:
+class Polynomial():
     coefficients = np.array([], int)
 
     def __init__(self, coef):

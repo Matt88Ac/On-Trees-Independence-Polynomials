@@ -4,7 +4,7 @@ import Vertex
 import numpy as np
 
 
-class Tree:
+class Tree():
     size_of_v = 0
     size_of_e = 0
     V = np.array([], Vertex.Vertex)
@@ -194,13 +194,14 @@ class Tree:
         num_of_e = 0
         color[0] = 1
 
-        Que = [0]
+        Que = np.array([], int)
         Q_index = 0
+        np.insert(Que, 0, 0)
 
-        while Q_index < self.size_of_v and Q_index < len(Que):
+        while Q_index < self.size_of_v and Q_index <= Que.size:
             for i in range(0, self.size_of_v):
-                if self.E[i][Que[Q_index]] == True and color[i] == 0:
-                    Que.append(i)
+                if self.E[i][Que[Q_index]] and color[i] == 0:
+                    np.insert(Que, Que.size - 1, i)
                     color[i] = 1
                     num_of_e += 1
                     num_of_nil -= 1
