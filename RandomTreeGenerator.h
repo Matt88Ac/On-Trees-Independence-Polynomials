@@ -39,6 +39,22 @@ struct Tree {
 			}
 		}
 
+		for (int i = 0; i < vert; i++) {
+			for (int j = 0; j < Vert_Info[i].Neighbours.size(); j++) {
+			
+				if (Vert_Info[i].Neighbours[j] == index) {
+					Vert_Info[i].Neighbours.erase(Vert_Info[i].Neighbours.begin() + j);
+					j--;
+					continue;
+				}
+			
+			    if (Vert_Info[i].Neighbours[j] > index ) {
+					Vert_Info[i].Neighbours[j]--;
+				}
+			
+			}
+		}
+
 		this->Degrees.erase(Degrees.begin() + index);
 		this->Vert_Info.erase(Vert_Info.begin() + index);
 		this->Adj_Matrix.Remove_Row(index);
