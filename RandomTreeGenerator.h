@@ -6,10 +6,15 @@
 #include <algorithm>
 #include "Cpp_SIPL.h"
 
+
+
+
 struct Tree {
 
 	std::vector<std::pair<int, int> > Tree_Edges;
+	std::vector<int> Degrees;
 	Matrix<int> Adj_Matrix;
+	int Max_Degree;
 	int vert;
 	Tree(int const &edges) {
 		Random_Utilitis rnd;
@@ -74,9 +79,26 @@ struct Tree {
 			Adj_Matrix[Tree_Edges[i].first - 1][Tree_Edges[i].second - 1] = 1;
 
 		}
+		Max_Degree = 0;
+		for (int i = 0; i < vert; i++) {
+			int count = 0;
+			for (int j = 0; j < vert; j++) {
+				if (Adj_Matrix[i][j] == 1) {
+					count++;
+				}
+			}
+
+			if (count > Max_Degree) {
+				Max_Degree = count;
+			}
+			//Max_Degree = count ? count > Max_Degree: Max_Degree;
+			Degrees.push_back(count);
+		}
 
 	
 	}
+
+	
 
 		
 };

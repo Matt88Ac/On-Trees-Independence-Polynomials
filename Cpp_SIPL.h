@@ -780,6 +780,9 @@ public:
 	template<class MType> friend std::ostream &operator<<(std::ostream &out, Matrix<MType> const &mat);
 	Matrix<MType> Reshape(int Rows, int Cols);
 	std::vector<MType> Flatten();
+	void Remove_Row(int const &row_index);
+	void Remove_Column(int const &column_index);
+
 
 
 protected:
@@ -1326,6 +1329,8 @@ template<class MType> std::vector<MType> Matrix<MType>::Flatten() {
 	return Result;
 }
 
+template<class MType> void Remove_Row(int const &row_index);
+template<class MType> void Remove_Column(int const &column_index);
 #endif MATRIX_STRUCTRE_THOTH
 
 

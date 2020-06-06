@@ -6,12 +6,14 @@ using namespace std;
 int main() {
 
 	  
+	Tree test(5);
+	cout << test.Adj_Matrix << endl << endl;
 
+	for (int i = 0; i < test.Degrees.size(); i++) {
+		cout << test.Degrees[i] << " ";
+	}
 
-
-
-	cout << "TEst";
-;
+	cout << endl << "Max Deg: " << test.Max_Degree;
 
 
 	cout << "\n\n\n\n";
