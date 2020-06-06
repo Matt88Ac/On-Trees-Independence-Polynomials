@@ -9,8 +9,8 @@
 
 
 struct Vert {
-	Vert(){}
-	Vert(int const &Vert_index,std::vector<int> neigh) {
+	Vert() {}
+	Vert(int const &Vert_index, std::vector<int> neigh) {
 		this->Vert_index = Vert_index;
 		this->Neighbours = neigh;
 	}
@@ -34,7 +34,7 @@ struct Tree {
 		}
 
 		for (int i = 0; i < vert; i++) {
-			if(Adj_Matrix[index][i]==1){
+			if (Adj_Matrix[index][i] == 1) {
 				Degrees[i]--;
 			}
 		}
@@ -55,9 +55,9 @@ struct Tree {
 		vert = edges;
 		for (int i = 0; i < length; i++)
 		{
-			prufer[i] = rnd.Random_INT(1,edges);
+			prufer[i] = rnd.Random_INT(1, edges);
 		}
-	
+
 		int vertices = edges;
 
 		std::vector<int> vertex_set(vertices, 0);
@@ -85,7 +85,7 @@ struct Tree {
 		}
 
 		j = 0;
-		int pa=-1, pb=-1;
+		int pa = -1, pb = -1;
 		// For the last element 
 		for (int i = 0; i < vertices; i++)
 		{
@@ -133,9 +133,9 @@ struct Tree {
 			Degrees.push_back(count);
 		}
 
-		
 
-	
+
+
 	}
 
 	Tree(const Tree& T, int which, bool v_or_nv) {
@@ -146,18 +146,16 @@ struct Tree {
 
 		if (v_or_nv)
 		{
-			this->vert = T.vert-1;
+			this->vert = T.vert;
 			int max = 0;
 			for (int i = 0; i < T.vert; i++) {
-				if(this->Adj_Matrix[i][which])
+				if (this->Adj_Matrix[i][which])
 				{
 					this->Degrees[i]--;
+					this->Max_Degree = max ? this->Degrees[i] <= max : this->Degrees[i];
 				}
-				this->Max_Degree = max ? this->Degrees[i] <= max : i;
-				max = this->Max_Degree;
 			}
 
-			
 			this->Adj_Matrix.Remove_Column(which);
 			this->Adj_Matrix.Remove_Row(which);
 
@@ -167,13 +165,12 @@ struct Tree {
 		else
 		{
 
-
-
-
 		}
 
 
 	}
+
+
 
 };
 
@@ -181,7 +178,7 @@ struct Tree {
 
 
 std::ostream &operator<<(std::ostream &out, std::pair<int, int> const &data) {
-	out << "( " << data.first << ", " << data.second<<" ) ";
+	out << "( " << data.first << ", " << data.second << " ) ";
 	return out;
 }
 std::ostream &operator<<(std::ostream &out, std::vector<std::pair<int, int>> const &data) {
@@ -199,7 +196,7 @@ std::ostream &operator<<(std::ostream &out, Vert const &data) {
 	}
 	out << " }\n";
 
-		return out;
+	return out;
 }
 
 Image Draw_Tree(Tree const &tree) {
@@ -207,7 +204,7 @@ Image Draw_Tree(Tree const &tree) {
 	Image TD;
 	Color_Palette CSET;
 	Random_Utilitis rnd;
-	std::vector<std::pair<std::pair<int, int>,int> > locations(tree.vert);
+	std::vector<std::pair<std::pair<int, int>, int> > locations(tree.vert);
 
 
 	Matrix<int> Adj((int)tree.Tree_Edges.size() + 1, (int)tree.Tree_Edges.size() + 1);
@@ -224,24 +221,24 @@ Image Draw_Tree(Tree const &tree) {
 	int p = 0;
 	for (int i = 0; i < tree.vert; i++) {
 
-		
-		std::pair<std::pair<int, int>,int> loc(std::pair<int,int>(rnd.Random_INT(10,tree.vert*40), rnd.Random_INT(10, tree.vert* 40)),i) ;
 
-			for (int j = 0; j < locations.size(); j++) {
-				if (loc == locations[i]) {
-					j = 0;
-					loc = std::pair<std::pair<int, int>, int>(std::pair<int,int>(rnd.Random_INT(10, tree.vert * 40), rnd.Random_INT(10, tree.vert * 40)),i);
-					break;
-				}
+		std::pair<std::pair<int, int>, int> loc(std::pair<int, int>(rnd.Random_INT(10, tree.vert * 40), rnd.Random_INT(10, tree.vert * 40)), i);
+
+		for (int j = 0; j < locations.size(); j++) {
+			if (loc == locations[i]) {
+				j = 0;
+				loc = std::pair<std::pair<int, int>, int>(std::pair<int, int>(rnd.Random_INT(10, tree.vert * 40), rnd.Random_INT(10, tree.vert * 40)), i);
+				break;
 			}
-			locations[i] = (loc);
+		}
+		locations[i] = (loc);
 
 
 
 	}
 	std::vector<Pixel> colors(tree.vert);
 	for (int i = 0; i < tree.vert; i++) {
-		colors[i] = CSET.Color_Serial_Number[3+i];
+		colors[i] = CSET.Color_Serial_Number[3 + i];
 	}
 
 
@@ -254,14 +251,14 @@ Image Draw_Tree(Tree const &tree) {
 	for (int i = 0; i < tree.vert; i++) {
 		for (int j = 0; j < tree.vert; j++) {
 			if (Adj[i][j] == 1) {
-				TD.Draw_Line(locations[i].first.first, locations[i].first.second, locations[j].first.first, locations[j].first.second, colors[i],S_AA_LINE);
+				TD.Draw_Line(locations[i].first.first, locations[i].first.second, locations[j].first.first, locations[j].first.second, colors[i], S_AA_LINE);
 			}
 		}
 	}
 
 	TD.Write_Image("Test.jpg");
 
-	
+
 	return TD;
 
 
