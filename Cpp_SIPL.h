@@ -1330,10 +1330,14 @@ template<class MType> std::vector<MType> Matrix<MType>::Flatten() {
 }
 
 template<class MType> void Matrix<MType>::Remove_Row(int const &row_index) {
-
+	this->Matrix_Body.erase(this->Matrix_Body.begin() + row_index);
+	this->Rows--;
 }
 template<class MType> void Matrix<MType>::Remove_Column(int const &column_index) {
-
+	for (int i = 0; i < Rows; i++) {
+		this->Matrix_Body[i].erase(Matrix_Body[i].begin() + column_index);
+	}
+	this->Cols--;
 }
 #endif MATRIX_STRUCTRE_THOTH
 
