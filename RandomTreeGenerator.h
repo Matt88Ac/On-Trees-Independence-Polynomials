@@ -8,46 +8,14 @@
 
 
 
-struct Vert {
-	Vert(){}
-	Vert(int const &Vert_index,std::vector<int> neigh) {
-		this->Vert_index = Vert_index;
-		this->Neighbours = neigh;
-	}
-	int Vert_index;
-	std::vector<int> Neighbours;
-};
-
 
 struct Tree {
 
 	std::vector<std::pair<int, int> > Tree_Edges;
 	std::vector<int> Degrees;
-	std::vector<Vert> Vert_Info;
 	Matrix<int> Adj_Matrix;
 	int Max_Degree;
 	int vert;
-	void Remove_Vert(int const &index) {
-
-		for (int i = index; i < vert; i++) {
-			Vert_Info[i].Vert_index--;
-		}
-
-		for (int i = 0; i < vert; i++) {
-			if(Adj_Matrix[index][i]==1){
-				Degrees[i]--;
-			}
-		}
-
-		this->Degrees.erase(Degrees.begin() + index);
-		this->Vert_Info.erase(Vert_Info.begin() + index);
-		this->Adj_Matrix.Remove_Row(index);
-		this->Adj_Matrix.Remove_Column(index);
-
-
-
-
-	}
 	Tree(int const &edges) {
 		Random_Utilitis rnd;
 		int length = edges - 2;
@@ -112,28 +80,20 @@ struct Tree {
 
 		}
 		Max_Degree = 0;
-		int holder = 0;
 		for (int i = 0; i < vert; i++) {
-			std::vector<int> N;
 			int count = 0;
 			for (int j = 0; j < vert; j++) {
 				if (Adj_Matrix[i][j] == 1) {
-					N.push_back(j);
 					count++;
 				}
 			}
 
-			this->Vert_Info.push_back(Vert(i, N));
-
-			if (count > holder) {
-				holder = count;
-				Max_Degree = i;
+			if (count > Max_Degree) {
+				Max_Degree = count;
 			}
 			//Max_Degree = count ? count > Max_Degree: Max_Degree;
 			Degrees.push_back(count);
 		}
-
-		
 
 	
 	}
@@ -189,17 +149,6 @@ std::ostream &operator<<(std::ostream &out, std::vector<std::pair<int, int>> con
 		out << data[i];
 	}
 	return out;
-}
-
-std::ostream &operator<<(std::ostream &out, Vert const &data) {
-	out << "Vert Index: " << data.Vert_index << "\n";
-	out << "Neighbours : {";
-	for (int i = 0; i < data.Neighbours.size(); i++) {
-		out << data.Neighbours[i] << ", ";
-	}
-	out << " }\n";
-
-		return out;
 }
 
 Image Draw_Tree(Tree const &tree) {
