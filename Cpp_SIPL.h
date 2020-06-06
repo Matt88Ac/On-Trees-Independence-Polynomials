@@ -1329,8 +1329,12 @@ template<class MType> std::vector<MType> Matrix<MType>::Flatten() {
 	return Result;
 }
 
-template<class MType> void Remove_Row(int const &row_index);
-template<class MType> void Remove_Column(int const &column_index);
+template<class MType> void Matrix<MType>::Remove_Row(int const &row_index) {
+
+}
+template<class MType> void Matrix<MType>::Remove_Column(int const &column_index) {
+
+}
 #endif MATRIX_STRUCTRE_THOTH
 
 
