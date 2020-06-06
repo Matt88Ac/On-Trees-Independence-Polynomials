@@ -1,17 +1,17 @@
-#include "RandomTreeGenerator.h"
-
+#include "Polys.h"
 
 using namespace std;
 
 int main() {
 
-	Tree test(5);
-	Tree removed(test, 0,false);
+	Tree test(6);
 
-
+	cout << test.Tree_Edges << endl;
 	
+	
+	IndeP p(test);
 
-
+	cout << p << endl;
 
 	cout << "\n\n\n\n";
 	system("pause");
