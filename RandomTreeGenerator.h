@@ -9,6 +9,7 @@
 struct Tree {
 
 	std::vector<std::pair<int, int> > Tree_Edges;
+	Matrix<int> Adj_Matrix;
 	int vert;
 	Tree(int const &edges) {
 		Random_Utilitis rnd;
@@ -64,20 +65,17 @@ struct Tree {
 
 		Tree_Edges.push_back(std::pair<int, int>(pa, pb));
 
-	
-	}
-	void Print_Adj_Matrix() const {
 
-		Matrix<int> Adj((int)Tree_Edges.size() + 1, (int)Tree_Edges.size() + 1);
 
 		for (int i = 0; i < Tree_Edges.size(); i++) {
-			Adj[Tree_Edges[i].second - 1][Tree_Edges[i].first - 1] = 1;
-			Adj[Tree_Edges[i].first - 1][Tree_Edges[i].second - 1] = 1;
+			Adj_Matrix[Tree_Edges[i].second - 1][Tree_Edges[i].first - 1] = 1;
+			Adj_Matrix[Tree_Edges[i].first - 1][Tree_Edges[i].second - 1] = 1;
 
 		}
-		std::cout << Adj << std::endl << std::endl;
 
+	
 	}
+
 		
 };
 
