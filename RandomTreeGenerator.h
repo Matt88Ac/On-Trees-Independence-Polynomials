@@ -106,15 +106,17 @@ struct Tree {
 
 		if (v_or_nv)
 		{
-			this->vert = T.vert;
+			this->vert = T.vert-1;
 			int max = 0;
 			for (int i = 0; i < T.vert; i++) {
 				if(this->Adj_Matrix[i][which])
 				{
 					this->Degrees[i]--;
-					this->Max_Degree = max ? this->Degrees[i] <= max : this->Degrees[i];
 				}
+				this->Max_Degree = max ? this->Degrees[i] <= max : i;
+				max = this->Max_Degree;
 			}
+
 			
 			this->Adj_Matrix.Remove_Column(which);
 			this->Adj_Matrix.Remove_Row(which);
@@ -124,6 +126,9 @@ struct Tree {
 
 		else
 		{
+
+
+
 
 		}
 
