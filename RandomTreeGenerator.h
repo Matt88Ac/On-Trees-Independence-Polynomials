@@ -98,6 +98,38 @@ struct Tree {
 	
 	}
 
+	Tree(const Tree& T, int which, bool v_or_nv) {
+
+		this->Adj_Matrix = T.Adj_Matrix;
+		this->Degrees = T.Degrees;
+
+
+		if (v_or_nv)
+		{
+			this->vert = T.vert;
+			int max = 0;
+			for (int i = 0; i < T.vert; i++) {
+				if(this->Adj_Matrix[i][which])
+				{
+					this->Degrees[i]--;
+					this->Max_Degree = max ? this->Degrees[i] <= max : this->Degrees[i];
+				}
+			}
+			
+			this->Adj_Matrix.Remove_Column(which);
+			this->Adj_Matrix.Remove_Row(which);
+
+
+		}
+
+		else
+		{
+
+		}
+
+
+	}
+
 };
 
 
