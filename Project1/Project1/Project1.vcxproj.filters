@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Cpp_SIPL.h">
+    <ClInclude Include="..\..\Cpp_SIPL.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="RandomTreeGenerator.h">
+    <ClInclude Include="..\..\RandomTreeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image.h">
+    <ClInclude Include="..\..\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stb_image_write.h">
+    <ClInclude Include="..\..\stb_image_write.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp">
+    <ClCompile Include="..\..\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

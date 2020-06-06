@@ -1038,82 +1038,82 @@ template<class MType> void Matrix<MType>::Random_Fill() {
 		}
 	}
 }
-template<class MType> std::vector<Matrix<MType> > Matrix<MType>::LU_Decomposition() {
-	if (this->Cols != this->Rows) {
-		std::cout << " Error  - Matrix Needs To Be NxN\n";
-		return  std::vector<Matrix<MType> >();
-	}
-	Matrix<double> LU(*this);
-	double *pivot = new double[this->Cols];
-	for (int i = 0; i < this->Cols; i++) {
-		pivot[i] = i;
-	}
-	int pivsign = 1;
-
-	std::vector<MType> LUrowi;
-	double *LUcolj = new double[this->Cols];
-	//std::array<double, this->Cols> LUcolj;
-
-	// Outer loop.
-
-	for (int j = 0; j < this->Cols; j++) {
-		for (int i = 0; i < this->Cols; i++) {
-			LUcolj[i] = LU.Matrix_Body[i][j];
-		}
-
-		for (int i = 0; i < this->Cols; i++) {
-			LUrowi = LU.Matrix_Body[i];
-			int kmax = Mmin(i, j);
-			double s = 0.0;
-			for (int k = 0; k < kmax; k++) {
-				s += LUrowi[k] * LUcolj[k];
-			}
-
-			LUrowi[j] = LUcolj[i] -= s;
-		}
-
-		int p = j;
-		for (int i = j + 1; i < this->Cols; i++) {
-
-			if (Mabs(LUcolj[i]) > Mabs(LUcolj[p])) {
-				p = i;
-			}
-		}
-		if (p != j) {
-			for (int k = 0; k < this->Cols; k++) {
-				double t = LU.Matrix_Body[p][k];
-				LU.Matrix_Body[p][k] = LU.Matrix_Body[j][k];
-				LU.Matrix_Body[j][k] = t;
-			}
-			double k = pivot[p];
-			pivot[p] = pivot[j];
-			pivot[j] = k;
-			pivsign = -pivsign;
-		}
-		if ((j < this->Cols) & (LU[j][j] != 0.0)) {
-			for (int i = j + 1; i < this->Cols; i++) {
-				LU[i][j] /= LU[j][j];
-			}
-		}
-	}
-
-
-	//Matrix[] LUP = new Matrix[3];
-	std::vector< Matrix<double> > LUP(3);
-	Matrix<MType> Lower = LU.Get_Lower_Matrix();
-	for (int i = 0; i < this->Cols; i++) {
-		Lower[i][i] = 1;
-	}
-	Matrix<MType> pivot_mat(1, this->Cols);
-	for (int i = 0; i < this->Cols; i++) {
-		pivot_mat[0][i] = pivot[i];
-	}
-	LUP[0] = Lower;
-	LUP[1] = LU.Get_Upper_Matrix();
-	LUP[2] = pivot_mat;
-	delete[] pivot;
-	return LUP;
-}
+//template<class MType> std::vector<Matrix<MType> > Matrix<MType>::LU_Decomposition() {
+//	if (this->Cols != this->Rows) {
+//		std::cout << " Error  - Matrix Needs To Be NxN\n";
+//		return  std::vector<Matrix<MType> >();
+//	}
+//	Matrix<double> LU(*this);
+//	double *pivot = new double[this->Cols];
+//	for (int i = 0; i < this->Cols; i++) {
+//		pivot[i] = i;
+//	}
+//	int pivsign = 1;
+//
+//	std::vector<MType> LUrowi;
+//	double *LUcolj = new double[this->Cols];
+//	//std::array<double, this->Cols> LUcolj;
+//
+//	// Outer loop.
+//
+//	for (int j = 0; j < this->Cols; j++) {
+//		for (int i = 0; i < this->Cols; i++) {
+//			LUcolj[i] = LU.Matrix_Body[i][j];
+//		}
+//
+//		for (int i = 0; i < this->Cols; i++) {
+//			LUrowi = LU.Matrix_Body[i];
+//			int kmax = Mmin(i, j);
+//			double s = 0.0;
+//			for (int k = 0; k < kmax; k++) {
+//				s += LUrowi[k] * LUcolj[k];
+//			}
+//
+//			LUrowi[j] = LUcolj[i] -= s;
+//		}
+//
+//		int p = j;
+//		for (int i = j + 1; i < this->Cols; i++) {
+//
+//			if (Mabs(LUcolj[i]) > Mabs(LUcolj[p])) {
+//				p = i;
+//			}
+//		}
+//		if (p != j) {
+//			for (int k = 0; k < this->Cols; k++) {
+//				double t = LU.Matrix_Body[p][k];
+//				LU.Matrix_Body[p][k] = LU.Matrix_Body[j][k];
+//				LU.Matrix_Body[j][k] = t;
+//			}
+//			double k = pivot[p];
+//			pivot[p] = pivot[j];
+//			pivot[j] = k;
+//			pivsign = -pivsign;
+//		}
+//		if ((j < this->Cols) & (LU[j][j] != 0.0)) {
+//			for (int i = j + 1; i < this->Cols; i++) {
+//				LU[i][j] /= LU[j][j];
+//			}
+//		}
+//	}
+//
+//
+//	//Matrix[] LUP = new Matrix[3];
+//	std::vector< Matrix<double> > LUP(3);
+//	Matrix<MType> Lower = LU.Get_Lower_Matrix();
+//	for (int i = 0; i < this->Cols; i++) {
+//		Lower[i][i] = 1;
+//	}
+//	Matrix<MType> pivot_mat(1, this->Cols);
+//	for (int i = 0; i < this->Cols; i++) {
+//		pivot_mat[0][i] = pivot[i];
+//	}
+//	LUP[0] = Lower;
+//	LUP[1] = LU.Get_Upper_Matrix();
+//	LUP[2] = pivot_mat;
+//	delete[] pivot;
+//	return LUP;
+//}
 template<class MType> std::vector<Matrix<MType> >  Matrix<MType>::QR_Decomposition() {
 	Matrix QR(*this);
 	std::vector<double> R_diagonal(this->Rows);
