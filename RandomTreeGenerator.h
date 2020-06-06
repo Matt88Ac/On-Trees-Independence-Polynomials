@@ -66,6 +66,8 @@ struct Tree {
 		Tree_Edges.push_back(std::pair<int, int>(pa, pb));
 
 
+		Adj_Matrix = Matrix<int>(vert, vert);
+
 
 		for (int i = 0; i < Tree_Edges.size(); i++) {
 			Adj_Matrix[Tree_Edges[i].second - 1][Tree_Edges[i].first - 1] = 1;
