@@ -25,13 +25,13 @@ struct Tree {
 	std::vector<int> Degrees;
 	std::vector<Vert> Vert_Info;
 	Matrix<int> Adj_Matrix;
+	std::vector<Pixel> Vert_Colors;
+
 	int Max_Degree;
 	int vert;
-	void Remove_Vert(int const &index) {
+	void Remove_Vert(int const index) {
 
-		for (int i = index; i < vert; i++) {
-			Vert_Info[i].Vert_index--;
-		}
+	
 
 		for (int i = 0; i < vert; i++) {
 			if (Adj_Matrix[index][i] == 1) {
@@ -39,20 +39,36 @@ struct Tree {
 			}
 		}
 
-		for (int i = 0; i < vert; i++) {
+
+
+		for (int i = 0; i < Vert_Info.size(); i++) {
 			for (int j = 0; j < Vert_Info[i].Neighbours.size(); j++) {
-			
+
 				if (Vert_Info[i].Neighbours[j] == index) {
 					Vert_Info[i].Neighbours.erase(Vert_Info[i].Neighbours.begin() + j);
 					j--;
-					continue;
+					break;
 				}
-			
-			    if (Vert_Info[i].Neighbours[j] > index ) {
+
+			}
+
+			for (int j = 0; j < Vert_Info[i].Neighbours.size(); j++) {
+
+				if (Vert_Info[i].Neighbours[j] > index) {
 					Vert_Info[i].Neighbours[j]--;
 				}
-			
+
 			}
+
+
+
+		}
+
+
+
+
+		for (int i = index; i < vert; i++) {
+			Vert_Info[i].Vert_index--;
 		}
 
 		this->Degrees.erase(Degrees.begin() + index);
@@ -60,7 +76,7 @@ struct Tree {
 		this->Adj_Matrix.Remove_Row(index);
 		this->Adj_Matrix.Remove_Column(index);
 		this->vert--;
-
+		this->Vert_Colors.erase(this->Vert_Colors.begin() + index);
 
 
 	}
@@ -148,6 +164,10 @@ struct Tree {
 			//Max_Degree = count ? count > Max_Degree: Max_Degree;
 			Degrees.push_back(count);
 		}
+		Color_Palette CSET;
+		for (int i = 0; i < vert; i++) {
+			Vert_Colors.push_back(CSET.Color_Serial_Number[3 + i]);
+		}
 
 
 
@@ -166,6 +186,28 @@ struct Tree {
 
 		else
 		{
+			std::cout << this->Adj_Matrix << std::endl;
+			for (int i = 0; i < Vert_Info[which].Neighbours.size(); i++) {
+
+				std::cout <<"====== " <<Vert_Info[which].Neighbours[i]<<std::endl;
+
+				this->Remove_Vert(Vert_Info[which].Neighbours[i]);
+
+				std::cout << "Step: \n" << this->Adj_Matrix << std::endl;
+				std::cout << "=SIZE= " << Vert_Info[which].Neighbours.size() << std::endl;
+
+
+				
+					i--;
+					continue;
+				
+
+			}
+
+			
+
+			this->Remove_Vert(which);
+			std::cout << "Self: \n" << this->Adj_Matrix << std::endl;
 
 		}
 
@@ -201,7 +243,7 @@ std::ostream &operator<<(std::ostream &out, Vert const &data) {
 	return out;
 }
 
-Image Draw_Tree(Tree const &tree) {
+Image Draw_Tree(Tree const &tree,std::string filename) {
 
 	Image TD;
 	Color_Palette CSET;
@@ -238,14 +280,11 @@ Image Draw_Tree(Tree const &tree) {
 
 
 	}
-	std::vector<Pixel> colors(tree.vert);
-	for (int i = 0; i < tree.vert; i++) {
-		colors[i] = CSET.Color_Serial_Number[3 + i];
-	}
+
 
 
 	for (int i = 0; i < locations.size(); i++) {
-		TD.Draw_Circle(locations[i].first.first, locations[i].first.second, tree.vert, colors[i], S_FILL);
+		TD.Draw_Circle(locations[i].first.first, locations[i].first.second, tree.vert, tree.Vert_Colors[i], S_FILL);
 
 	}
 
@@ -253,12 +292,12 @@ Image Draw_Tree(Tree const &tree) {
 	for (int i = 0; i < tree.vert; i++) {
 		for (int j = 0; j < tree.vert; j++) {
 			if (Adj[i][j] == 1) {
-				TD.Draw_Line(locations[i].first.first, locations[i].first.second, locations[j].first.first, locations[j].first.second, colors[i], S_AA_LINE);
+				TD.Draw_Line(locations[i].first.first, locations[i].first.second, locations[j].first.first, locations[j].first.second, tree.Vert_Colors[i], S_AA_LINE);
 			}
 		}
 	}
 
-	TD.Write_Image("Test.jpg");
+	TD.Write_Image(filename);
 
 
 	return TD;
