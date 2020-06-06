@@ -5,12 +5,9 @@ using namespace std;
 
 int main() {
 
-	  
 
 
-
-
-	cout << "TEst";
+	cout << "TE";
 ;
 
 
