@@ -64,9 +64,6 @@ struct Tree {
 
 		}
 
-
-
-
 		for (int i = index; i < vert; i++) {
 			Vert_Info[i].Vert_index--;
 		}
@@ -77,6 +74,16 @@ struct Tree {
 		this->Adj_Matrix.Remove_Column(index);
 		this->vert--;
 		this->Vert_Colors.erase(this->Vert_Colors.begin() + index);
+
+		int holder = 0;
+		Max_Degree = 0;
+		for (int i = 0;i < vert;i++) {
+			if (Degrees[i] > Max_Degree) {
+				Max_Degree = Degrees[i];
+				holder = i;
+			}
+		}
+		Max_Degree = holder;
 
 
 	}
@@ -186,31 +193,12 @@ struct Tree {
 
 		else
 		{
-#ifdef DEBUG
-
-
-			std::cout << this->Adj_Matrix << std::endl;
-#endif // DEBUG
-
 			for (int i = 0; i < Vert_Info[which].Neighbours.size(); i++) {
 
-#ifdef DEBUG
-
-
-				std::cout <<"====== " <<Vert_Info[which].Neighbours[i]<<std::endl;
-#endif // DEBUG
-
 				this->Remove_Vert(Vert_Info[which].Neighbours[i]);
-
-#ifdef DEBUG
-
-
-				std::cout << "Step: \n" << this->Adj_Matrix << std::endl;
-				std::cout << "=SIZE= " << Vert_Info[which].Neighbours.size() << std::endl;
-#endif // DEBUG
-
-				i--;
-				continue;
+				
+					i--;
+					continue;
 				
 
 			}
@@ -218,11 +206,6 @@ struct Tree {
 			
 
 			this->Remove_Vert(which);
-#ifdef DEBUG
-
-			std::cout << "Self: \n" << this->Adj_Matrix << std::endl;
-#endif // DEBUG
-
 		}
 
 
