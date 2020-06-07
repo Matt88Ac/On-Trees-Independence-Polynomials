@@ -186,20 +186,31 @@ struct Tree {
 
 		else
 		{
+#ifdef DEBUG
+
+
 			std::cout << this->Adj_Matrix << std::endl;
+#endif // DEBUG
+
 			for (int i = 0; i < Vert_Info[which].Neighbours.size(); i++) {
 
+#ifdef DEBUG
+
+
 				std::cout <<"====== " <<Vert_Info[which].Neighbours[i]<<std::endl;
+#endif // DEBUG
 
 				this->Remove_Vert(Vert_Info[which].Neighbours[i]);
 
+#ifdef DEBUG
+
+
 				std::cout << "Step: \n" << this->Adj_Matrix << std::endl;
 				std::cout << "=SIZE= " << Vert_Info[which].Neighbours.size() << std::endl;
+#endif // DEBUG
 
-
-				
-					i--;
-					continue;
+				i--;
+				continue;
 				
 
 			}
@@ -207,7 +218,10 @@ struct Tree {
 			
 
 			this->Remove_Vert(which);
+#ifdef DEBUG
+
 			std::cout << "Self: \n" << this->Adj_Matrix << std::endl;
+#endif // DEBUG
 
 		}
 
