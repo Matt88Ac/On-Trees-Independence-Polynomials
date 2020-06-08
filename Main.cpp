@@ -4,14 +4,16 @@ using namespace std;
 
 int main() {
 
-	Tree test(6);
+	Tree test(15);
 
 	cout << test.Tree_Edges << endl;
 	
 	
-	IndeP p(test);
+	//IndeP p(test);
 
-	cout << p << endl;
+	//cout << p << endl;
+
+	Draw_Tree_Bruteforce(test, "test2.jpg");
 
 	cout << "\n\n\n\n";
 	system("pause");
@@ -20,3 +22,4 @@ int main() {
 
 
 }
+

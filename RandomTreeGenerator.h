@@ -5,6 +5,7 @@
 #include <vector>
 #include <algorithm>
 #include "Cpp_SIPL.h"
+#include <sstream>
 
 
 
@@ -77,13 +78,13 @@ struct Tree {
 
 		int holder = 0;
 		Max_Degree = 0;
-		for (int i = 0;i < vert;i++) {
+		for (int i = 0;i < Degrees.size();i++) {
 			if (Degrees[i] > Max_Degree) {
 				Max_Degree = Degrees[i];
 				holder = i;
 			}
 		}
-		Max_Degree = holder;
+		Max_Degree = 0;
 
 
 	}
@@ -176,6 +177,7 @@ struct Tree {
 			Vert_Colors.push_back(CSET.Color_Serial_Number[3 + i]);
 		}
 
+		std::sort(this->Tree_Edges.begin(), this->Tree_Edges.end());
 
 
 
@@ -240,21 +242,12 @@ std::ostream &operator<<(std::ostream &out, Vert const &data) {
 	return out;
 }
 
-Image Draw_Tree(Tree const &tree,std::string filename) {
+Image Draw_Tree(Tree  &tree,std::string filename) {
 
 	Image TD;
 	Color_Palette CSET;
 	Random_Utilitis rnd;
 	std::vector<std::pair<std::pair<int, int>, int> > locations(tree.vert);
-
-
-	Matrix<int> Adj((int)tree.Tree_Edges.size() + 1, (int)tree.Tree_Edges.size() + 1);
-
-	for (int i = 0; i < tree.Tree_Edges.size(); i++) {
-		Adj[tree.Tree_Edges[i].second - 1][tree.Tree_Edges[i].first - 1] = 1;
-		Adj[tree.Tree_Edges[i].first - 1][tree.Tree_Edges[i].second - 1] = 1;
-
-	}
 
 
 	TD.Load_Blank_Canvas(tree.vert * 60, tree.vert * 60, CSET.Azure);
@@ -288,7 +281,7 @@ Image Draw_Tree(Tree const &tree,std::string filename) {
 
 	for (int i = 0; i < tree.vert; i++) {
 		for (int j = 0; j < tree.vert; j++) {
-			if (Adj[i][j] == 1) {
+			if (tree.Adj_Matrix[i][j] == 1) {
 				TD.Draw_Line(locations[i].first.first, locations[i].first.second, locations[j].first.first, locations[j].first.second, tree.Vert_Colors[i], S_AA_LINE);
 			}
 		}
@@ -300,4 +293,113 @@ Image Draw_Tree(Tree const &tree,std::string filename) {
 	return TD;
 
 
+}
+
+Image Draw_Tree_Bruteforce(Tree &tree, std::string filename) {
+	Image ImageBody;
+	Color_Palette CSET;
+	ImageBody.Load_Blank_Canvas(std::min(tree.vert * 100,2500), std::min(tree.vert * 100,2500) + 150, CSET.Azure);
+	std::random_device seed; //seed for psudo random engine 
+	std::mt19937 random_number_generator(seed()); //merssene twisster using the PR seed
+	std::uniform_int_distribution<size_t> indices(50, (tree.vert * 100) - 50);
+	std::stringstream ss;
+	std::string via;
+	int Px, Py, planer_score = 0, iterdebug = 0;
+	bool set = false;
+	std::vector<std::pair<int, int> > positions;
+	positions.reserve(tree.vert);
+	ImageBody.Draw_Text(20, (tree.vert * 100) / 2, filename, CSET.Black);
+	for (int i = 0; i < tree.vert; i++) {
+		Px = indices(random_number_generator);
+		Py = indices(random_number_generator);
+		positions.push_back(std::pair<int,int>(Px, Py));
+
+	}
+
+	while (true) {
+		for (int i = 0; i < tree.vert; i++) {
+			for (int j = 0; j < i; j++) {
+				if (tree.Adj_Matrix[i][j] == 1) {
+					std::vector<Pixel> Path = ImageBody.Get_Line_Pixels(positions[i].second, positions[i].first, positions[j].second, positions[j].second,S_AA_LINE);
+					for (int k = 0; k < Path.size(); k++) {
+						if (k >= std::min(tree.vert,25) && Path[k]!= CSET.Azure) {
+							positions[j].first = indices(random_number_generator);
+							positions[j].second = indices(random_number_generator);
+							positions[i].first = indices(random_number_generator);
+							positions[i].second = indices(random_number_generator);
+							set = true;
+							break;
+						}
+					}
+					if (set == true) {
+						break;
+					}
+					else {
+						ImageBody.Draw_Line(positions[i].second, positions[i].first, positions[j].second, positions[j].first, CSET.Color_Serial_Number[i + 5],S_AA_FILL);
+						//ImageBody.Draw_Circle(positions[i].second, positions[i].first, std::min(tree.vert, 25), CSET.Color_Serial_Number[i + 5], S_AA_FILL);
+			
+
+						ImageBody.Update_Pixel_Matrix();
+					}
+
+					Path.clear();
+
+				}
+			}
+			if (set == true) {
+				break;
+			}
+		}
+		if (set == true) {
+			set = false;
+
+
+			/*	ss << iterdebug;
+				via = ss.str();
+				ImageBody.Write_Image(via.c_str());
+				ss.str(string());
+				iterdebug++;*/
+
+			for (int i = 0; i <ImageBody.Image_Height; i++) {
+				for (int j = 0; j <ImageBody.Image_Width; j++) {
+					ImageBody.Set_Color(i, j, CSET.Azure);
+					ImageBody.Pixel_Matrix[i][j] = CSET.Azure;
+
+				}
+			}
+			planer_score = 0;
+		}
+		else {
+			planer_score++;
+			if (planer_score == tree.vert) {
+				break;
+			}
+		}
+	}
+
+
+
+
+
+
+	for (int i = 0; i < tree.vert; i++) {
+		ImageBody.Draw_Circle(positions[i].second, positions[i].first, std::min(tree.vert,25), CSET.Color_Serial_Number[i + 5], S_AA_FILL);
+		std::string v = "V " + std::to_string(i+1);
+		ImageBody.Draw_Text((std::min(tree.vert * 100, 2500)) - (i+1) * 90, (std::min(tree.vert * 100, 2500))+150 - 64, v, CSET.Color_Serial_Number[i + 5]);
+
+		for (int j = 0; j < i; j++) {
+			if (tree.Adj_Matrix[i][j] == 1) {
+				ImageBody.Draw_Line(positions[i].second, positions[i].first, positions[j].second, positions[j].first, CSET.Color_Serial_Number[i + 5],S_AA_LINE);
+			}
+		}
+	}
+
+
+
+	
+	
+
+
+	ImageBody.Write_Image(filename);
+	return ImageBody;
 }
