@@ -2,7 +2,7 @@
 
 /* To compute the independence polynomial, declare:  IndeP( TreeGraph_type your_Graph )  */
 
-
+int x = 0;
 
 
 #include "Tree_G.h"
@@ -486,7 +486,7 @@ IndeP IndeP::TimeSaver(const TreeGraph& T)
 
 IndeP IndeP::ComputeTree(const TreeGraph& T, IndeP& curr)
 {
-
+	x++;
 	if (T.getsize() == 0)
 	{
 		IndeP tmp;
